@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from time import time
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr
 
@@ -74,48 +74,78 @@ def model_pretrained(path, drug_encoding, target_encoding, **config):
 def repurpose(X_repurpose, target, model, drug_names = None, target_name = None):
 	# X_repurpose: a list of SMILES string
 	# target: one target 
+
 	print('repurposing...')
 	X_repurpose, target = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'repurposing')
 	y_pred = model.predict((X_repurpose, target))
 
 	if target_name is not None:
 		print('Drug Repurposing Result for '+target_name)
-	if drug_name is not None:
+	if drug_names is not None:
+		f_d = max([len(o) for o in drug_names]) + 1
 		for i in range(X_repurpose.shape[0]):
-			print(drug_name[i] + ' predicted to have binding affinity score' + str(y_pred[i]))
+			if model.binary:
+				if y_pred[i].item() > 0.5:
+					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target')	
+				else:
+					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target')								
+			else:
+				print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i].item()))
 
 	return y_pred
 
-def virtual_screening(X_repurpose, target, model, drug_names = None, target_name = None):
+def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
 	print('repurposing...')
 	X_repurpose, target = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
 	y_pred = model.predict((X_repurpose, target))
 
-	if drug_name is not None and target_name is not None:
+	if drug_names is not None and target_names is not None:
 		print('Virtual Screening Result')
+		f_d = max([len(o) for o in drug_names]) + 1
+		f_p = max([len(o) for o in target_names]) + 1
 		for i in range(X_repurpose.shape[0]):
-			print(drug_name[i] + ' and target ' + target_name[i] + ' predicted to have binding affinity score' + str(y_pred[i]))
+			if model.binary:
+				if y_pred[i].item() > 0.5:
+					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))	
+				else:
+					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))								
+			else:
+				print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i].item()))
 	return y_pred
 
 
 class DBTA:
 	def __init__(self, drug_encoding, target_encoding, **config):
-		if drug_encoding == 'ECFP4':
-			#TODO: support multiple encoding scheme for static input 
+		if drug_encoding == 'Morgan' or 'Pubchem' or 'Daylight' or 'rdkit_2d_normalized':
+			# Future TODO: support multiple encoding scheme for static input 
 			self.model_drug = MLP(config['input_dim_drug'], config['hidden_dim_drug'], config['mlp_hidden_dims_drug'])
+		elif drug_encoding == 'SMILES_CNN':
+			raise NotImplementedError
+		elif drug_encoding == 'SMILES_Transformer':
+			raise NotImplementedError
+		elif drug_encoding == 'MPNN':
+			raise NotImplementedError
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
-		if target_encoding == 'AAC':
+		if target_encoding == 'AAC' or 'PseudoAAC' or 'Conjoint_triad' or 'Quasi-seq':
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
+		elif target_encoding == 'CNN':
+			raise NotImplementedError			
+		elif target_encoding == 'Transformer':
+			raise NotImplementedError			
+		else:
+			raise AttributeError('Please use one of the available encoding method.')
 
 		self.model = Classifier(self.model_drug, self.model_protein, **config)
 		self.config = config
 		self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+		
 		self.drug_encoding = drug_encoding
 		self.target_encoding = target_encoding
+		self.binary = False
 
 	def test_(self, data_generator, model):
 	    y_pred = []
@@ -123,14 +153,25 @@ class DBTA:
 	    model.eval()
 	    for i, (v_d, v_p, label) in enumerate(data_generator):
 	        score = model(v_d.float().to(self.device), v_p.float().to(self.device))
-	        logits = torch.squeeze(score).detach().cpu().numpy()
+	        if self.binary:
+	        	m = torch.nn.Sigmoid()
+	        	logits = torch.squeeze(m(score)).detach().cpu().numpy()
+	        else:
+		        logits = torch.squeeze(score).detach().cpu().numpy()
 	        label_ids = label.to('cpu').numpy()
 	        y_label = y_label + label_ids.flatten().tolist()
 	        y_pred = y_pred + logits.flatten().tolist()
-	    return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+	        outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
+	    if self.binary:
+	    	return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
+	    else:
+		    return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None):
 		# TODO: support binary classification
+
+		if len(train.Label.unique()) == 2:
+			self.binary = True
 
 		lr = self.config['LR']
 		BATCH_SIZE = self.config['batch_size']
@@ -139,11 +180,12 @@ class DBTA:
 
 		self.model = self.model.to(self.device)
 
+		# support multiple GPUs
 		if torch.cuda.device_count() > 1:
 			print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
 			self.model = nn.DataParallel(self.model, dim = 0)
 
-		# TODO: support multiple optimizers with parameters
+		# Future TODO: support multiple optimizers with parameters
 		opt = torch.optim.Adam(self.model.parameters(), lr = lr)
 
 		print('--- Data Preparation ---')
@@ -151,16 +193,19 @@ class DBTA:
 		params = {'batch_size': BATCH_SIZE,
 	    		'shuffle': True,
 	    		'num_workers': 0,
-	    		'drop_last': True}
+	    		'drop_last': False}
 
-		training_generator = data.DataLoader(data_process_loader(train.index.values, train.Label.values, train, **self.config))
-		validation_generator = data.DataLoader(data_process_loader(val.index.values, val.Label.values, val, **self.config))
+		training_generator = data.DataLoader(data_process_loader(train.index.values, train.Label.values, train, **self.config), **params)
+		validation_generator = data.DataLoader(data_process_loader(val.index.values, val.Label.values, val, **self.config), **params)
 		
 		if test is not None:
-			testing_generator = data.DataLoader(data_process_loader(test.index.values, test.Label.values, test, **self.config))
+			testing_generator = data.DataLoader(data_process_loader(test.index.values, test.Label.values, test, **self.config), **params)
 
-	    # early stopping
-		max_MSE = 10000
+		# early stopping
+		if self.binary:
+			max_auc = 0
+		else:
+			max_MSE = 10000
 		model_max = copy.deepcopy(self.model)
 
 		print('--- Go for Training ---')
@@ -169,10 +214,15 @@ class DBTA:
 				score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
 				label = Variable(torch.from_numpy(np.array(label)).float())
 
-				loss_fct = torch.nn.MSELoss()
-				n = torch.squeeze(score, 1)
-
-				loss = loss_fct(n, label)
+				if self.binary:
+					loss_fct = torch.nn.BCELoss()
+					m = torch.nn.Sigmoid()
+					n = torch.squeeze(m(score), 1)
+					loss = loss_fct(n, label)
+				else:
+					loss_fct = torch.nn.MSELoss()
+					n = torch.squeeze(score, 1)
+					loss = loss_fct(n, label)
 				loss_history.append(loss)
 
 				opt.zero_grad()
@@ -182,18 +232,28 @@ class DBTA:
 				if (i % 100 == 0):
 					print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + ' with loss ' + str(loss.cpu().detach().numpy()))
 
-
 			with torch.set_grad_enabled(False):
-				mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
-				if mse < max_MSE:
-					model_max = copy.deepcopy(self.model)
-					max_MSE = mse
-				print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
-		
+				if self.binary:
+					auc, auprc, f1, logits = self.test_(validation_generator, self.model)
+					if auc > max_auc:
+						model_max = copy.deepcopy(self.model)
+						max_auc = auc   
+					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))
+				else:
+					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
+					if mse < max_MSE:
+						model_max = copy.deepcopy(self.model)
+						max_MSE = mse
+					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+			
 		if test is not None:
 			print('--- Go for Testing ---')
-			mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
-			print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+			if self.binary:
+				auc, auprc, f1, logits = self.test_(testing_generator, model_max)
+				print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
+			else:
+				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
+				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 		# load early stopped model
 		self.model = model_max
 		print('--- Training Finished ---')
@@ -202,6 +262,10 @@ class DBTA:
 		print('predicting...')
 		v_d, v_p = X_test
 		score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
+		if self.binary:
+			m = torch.nn.Sigmoid()
+			logits = torch.squeeze(m(score)).detach().cpu().numpy()
+			score = np.asarray([1 if i else 0 for i in (np.asarray(logits) >= 0.5)])
 		return score
 
 	def save_model(self, path):
@@ -209,12 +273,4 @@ class DBTA:
 
 	def load_pretrained(self, path):
 		self.model.load_state_dict(torch.load(path))
-
-
-
-
-
-
-
-
 
