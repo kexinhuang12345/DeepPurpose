@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from rdkit import Chem
+from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem
 from pybiomed_helper import _GetPseudoAAC, CalculateAADipeptideComposition, calcPubChemFingerAll
 import torch
@@ -51,7 +51,6 @@ def create_fold_setting_unseen_protein(df, fold_seed, frac):
     
     return train, val, test
 
-
 # unseen drug
 def create_fold_setting_unseen_drug(df, fold_seed, frac):
     train_frac, val_frac, test_frac = frac
@@ -66,29 +65,39 @@ def create_fold_setting_unseen_drug(df, fold_seed, frac):
     train = train_val[~train_val['SMILES'].isin(drug_drop_val)]
     
     return train, val, test
-
+#TODO: add one target, drug folding
 
 def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_method = 'random', frac = [0.7, 0.1, 0.2]):
-'''
-	drug_encoding, select from 
-'''
+
 	df_data = pd.DataFrame(zip(X_drug, X_target, y))
 	df_data.rename(columns={0:'SMILES',
-	                          1: 'Target Sequence',
-	                          2: 'Label'}, 
-	                 inplace=True)
+							1: 'Target Sequence',
+							2: 'Label'}, 
+							inplace=True)
 
-	if drug_encoding == 'ECFP':
-		df_data['drug_encoding'] = df_data.SMILES.apply(smiles2ecfp)
+	print('in total: ' + str(len(df_data)) + ' drug-target pairs')
+
+	print('encoding drug...')
+	print('unique drugs: ' + str(len(df_data['SMILES'].unique())))
+
+	if drug_encoding == 'ECFP4':
+		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2ecfp)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'Pubchem':
-		df_data['drug_encoding'] = df_data.SMILES.apply(calcPubChemFingerAll)
+		unique = pd.Series(df_data['SMILES'].unique()).apply(calcPubChemFingerAll)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'Path-FP':
 		raise NotImplementedError
 	elif drug_encoding == 'rdkit_2d_normalized':
 		try:
-		    from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
-		 	df_data['drug_encoding'] = df_data.SMILES.apply(smiles2rdkit2d)
-		except ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
+			from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
+			unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2rdkit2d)
+			unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+			df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
+		except:
+			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
 	elif drug_encoding == 'SMILES_CNN':
 		raise NotImplementedError
 	elif drug_encoding == 'SMILES_Transformer':
@@ -98,11 +107,18 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 	else:
 		raise NotImplementedError("Please use the correct drug encoding available!")
 
-
+	print('drug encoding finished...')
+	print('encoding protein...')
+	print('unique target sequence: ' + str(len(df_data['Target Sequence'].unique())))
 	if target_encoding == 'AAC':
-		df_data['target_encoding'] = df_data['Target Sequence'].apply(CalculateAADipeptideComposition)
+		print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU. Calculate your time by the unique target sequence #, instead of the entire dataset.')
+		AA = pd.Series(df_data['Target Sequence'].unique()).apply(CalculateAADipeptideComposition)
+		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
+		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	elif target_encoding == 'PseudoAAC':
-		df_data['target_encoding'] = df_data['Target Sequence'].apply(_GetPseudoAAC)
+		AA = pd.Series(df_data['Target Sequence'].unique()).apply(_GetPseudoAAC)
+		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
+		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	elif target_encoding == 'CNN':
 		raise NotImplementedError		
 	elif target_encoding == 'Transformer':
@@ -110,23 +126,85 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 	else:
 		raise NotImplementedError("Please use the correct protein encoding available!")
 
-
+	print('protein encoding finished...')
+	print('splitting dataset...')
 	if split_method == 'random': 
 		train, val, test = create_fold(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
 	elif split_method == 'unseen_drug':
 		train, val, test = create_fold_setting_unseen_drug(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
 	elif split_method == 'unseen_protein':
 		train, val, test = create_fold_setting_unseen_protein(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
-	elif:
+	else:
 		raise NotImplementedError("Please select one of the three split method: random, unseen_drug, unseen_target!")
 
+	print('Done.')
 	return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
 
-	#(train.drug_encoding.values, train.target_encoding.values), (val.drug_encoding.val, train.target_encoding.values), (test.drug_encoding.values, test.target_encoding.values), train.Label.values, val.Label.values, test.Label.values
+def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding, target_encoding, mode):
+	if drug_encoding == 'ECFP4':
+		unique = pd.Series(np.unique(X_repurpose)).apply(smiles2ecfp)
+		unique_dict = dict(zip(np.unique(X_repurpose), unique))
+		X_repurpose = [unique_dict[i] for i in X_repurpose]
+	elif drug_encoding == 'Pubchem':
+		unique = pd.Series(np.unique(X_repurpose)).apply(calcPubChemFingerAll)
+		unique_dict = dict(zip(np.unique(X_repurpose), unique))
+		X_repurpose = [unique_dict[i] for i in X_repurpose]
+	elif drug_encoding == 'Path-FP':
+		raise NotImplementedError
+	elif drug_encoding == 'rdkit_2d_normalized':
+		try:
+			from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
+			unique = pd.Series(np.unique(X_repurpose)).apply(smiles2rdkit2d)
+			unique_dict = dict(zip(np.unique(X_repurpose), unique))
+			X_repurpose = [unique_dict[i] for i in X_repurpose]		
+		except:
+			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
+	elif drug_encoding == 'SMILES_CNN':
+		raise NotImplementedError
+	elif drug_encoding == 'SMILES_Transformer':
+		raise NotImplementedError
+	elif drug_encoding == 'MPNN':
+		raise NotImplementedError
+	else:
+		raise NotImplementedError("Please use the correct drug encoding available!")
+
+	if mode == 'repurposing':
+		if target_encoding == 'AAC':
+			target = CalculateAADipeptideComposition(target)
+		elif target_encoding == 'PseudoAAC':
+			target = _GetPseudoAAC(target)
+		elif target_encoding == 'CNN':
+			raise NotImplementedError		
+		elif target_encoding == 'Transformer':
+			raise NotImplementedError
+		else:
+			raise NotImplementedError("Please use the correct protein encoding available!")
+
+		return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
+	 
+	 elif mode == 'virtual screening':
+		if target_encoding == 'AAC':
+			unique = pd.Series(np.unique(target)).apply(CalculateAADipeptideComposition)
+			unique_dict = dict(zip(np.unique(target), unique))
+			target = [unique_dict[i] for i in target]
+		elif target_encoding == 'PseudoAAC':
+			unique = pd.Series(np.unique(target)).apply(_GetPseudoAAC)
+			unique_dict = dict(zip(np.unique(target), unique))
+			target = [unique_dict[i] for i in target]
+		elif target_encoding == 'CNN':
+			raise NotImplementedError		
+		elif target_encoding == 'Transformer':
+			raise NotImplementedError
+		else:
+			raise NotImplementedError("Please use the correct protein encoding available!")
+		return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.vstack(np.array(target)).astype(np.float))
+	else:
+		raise NotImplementedError("Please select repurposing or virtual screening!")
+
 
 class data_process_loader(data.Dataset):
 
-    def __init__(self, list_IDs, labels, df, config):
+    def __init__(self, list_IDs, labels, df, **config):
         'Initialization'
         self.labels = labels
         self.list_IDs = list_IDs
@@ -145,5 +223,76 @@ class data_process_loader(data.Dataset):
             
         y = self.labels[index]
         return v_d, v_p, y
+
+
+def generate_config(drug_encoding, target_encoding, 
+					input_dim_drug = 2048, 
+					input_dim_protein = 8420,
+					hidden_dim_drug = 256, 
+					hidden_dim_protein = 256,
+					cls_hidden_dims = [1024, 256, 64],
+					mlp_hidden_dims_drug = [1024, 256, 64],
+					mlp_hidden_dims_target = [1024, 256, 64],
+					batch_size = 64,
+					train_epoch = 10,
+					LR = 1e-4
+					):
+
+	base_config = {'input_dim_drug': input_dim_drug,
+					'input_dim_protein': input_dim_protein,
+					'hidden_dim_drug': hidden_dim_drug, # hidden dim of drug
+					'hidden_dim_protein': hidden_dim_protein, # hidden dim of protein
+					'cls_hidden_dims' : cls_hidden_dims, # decoder classifier dim 1
+					'batch_size': batch_size,
+					'train_epoch': train_epoch,
+					'LR': LR
+	}
+
+	
+	if drug_encoding == 'ECFP4':
+		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
+	elif drug_encoding == 'Pubchem':
+		base_config['input_dim_drug'] = 881
+	elif drug_encoding == 'Path-FP':
+		raise NotImplementedError
+	elif drug_encoding == 'rdkit_2d_normalized':
+		base_config['input_dim_drug'] = 200
+	elif drug_encoding == 'SMILES_CNN':
+		raise NotImplementedError
+	elif drug_encoding == 'SMILES_Transformer':
+		raise NotImplementedError
+	elif drug_encoding == 'MPNN':
+		raise NotImplementedError
+	else:
+		raise NotImplementedError("Please use the correct drug encoding available!")
+
+	if target_encoding == 'AAC':
+		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1				
+	elif target_encoding == 'PseudoAAC':
+		raise NotImplementedError		
+	elif target_encoding == 'CNN':
+		raise NotImplementedError		
+	elif target_encoding == 'Transformer':
+		raise NotImplementedError
+	else:
+		raise NotImplementedError("Please use the correct protein encoding available!")
+
+
+	return base_config
+
+def convert_y_unit(y, from_, to_):
+	# basis as nM
+
+	if from_ == 'nM':
+		y = y
+	elif from_ == 'p':
+		y = 10**(-y) / 1e-9
+
+	if to_ == 'p':
+		y = -np.log10(y*1e-9)
+	elif to == 'nM':
+		y = y
+
+	return y
 
 
