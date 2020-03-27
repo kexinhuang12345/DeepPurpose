@@ -18,8 +18,41 @@ np.random.seed(3)
 import copy
 
 from utils import data_process_loader, data_process_repurpose_virtual_screening
-    
-    
+from model_helper import Encoder_MultipleLayers, Embeddings    
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+class transformer(nn.Sequential):
+	def __init__(self, encoding, **config):
+		super(transformer, self).__init__()
+		if encoding == 'drug':
+			self.emb = Embeddings(config['input_dim_drug'], config['transformer_emb_size_drug'], 50, config['transformer_dropout_rate'])
+			self.encoder = Encoder_MultipleLayers(config['transformer_n_layer_drug'], 
+													config['transformer_emb_size_drug'], 
+													config['transformer_intermediate_size_drug'], 
+													config['transformer_num_attention_heads_drug'],
+													config['transformer_attention_probs_dropout'],
+													config['transformer_hidden_dropout_rate'])
+		elif encoding == 'protein':
+			self.emb = Embeddings(config['input_dim_protein'], config['transformer_emb_size_target'], 545, config['transformer_dropout_rate'])
+			self.encoder = Encoder_MultipleLayers(config['transformer_n_layer_target'], 
+													config['transformer_emb_size_target'], 
+													config['transformer_intermediate_size_target'], 
+													config['transformer_num_attention_heads_target'],
+													config['transformer_attention_probs_dropout'],
+													config['transformer_hidden_dropout_rate'])
+
+	def forward(self, v):
+		e = v[0].long().to(device)
+		e_mask = v[1].long().to(device)
+		ex_e_mask = e_mask.unsqueeze(1).unsqueeze(2)
+		ex_e_mask = (1.0 - ex_e_mask) * -10000.0
+
+		emb = self.emb(e)
+		encoded_layers = self.encoder(emb.float(), ex_e_mask.float())
+		return encoded_layers[:,0]
+
+
 class MLP(nn.Sequential):
 	def __init__(self, input_dim, hidden_dim, hidden_dims):
 		super(MLP, self).__init__()
@@ -30,9 +63,10 @@ class MLP(nn.Sequential):
 
 	def forward(self, v):
 		# predict
+		v = v.float().to(device)
 		for i, l in enumerate(self.predictor):
 			v = l(v)
-		return v    
+		return v 
 
 
 class Classifier(nn.Sequential):
@@ -118,28 +152,28 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 class DBTA:
 	def __init__(self, drug_encoding, target_encoding, **config):
-		if drug_encoding == 'Morgan' or 'Pubchem' or 'Daylight' or 'rdkit_2d_normalized':
+		if drug_encoding == 'Morgan' or drug_encoding=='Pubchem' or drug_encoding=='Daylight' or drug_encoding=='rdkit_2d_normalized':
 			# Future TODO: support multiple encoding scheme for static input 
 			self.model_drug = MLP(config['input_dim_drug'], config['hidden_dim_drug'], config['mlp_hidden_dims_drug'])
 		elif drug_encoding == 'SMILES_CNN':
 			raise NotImplementedError
 		elif drug_encoding == 'SMILES_Transformer':
-			raise NotImplementedError
+			self.model_drug = transformer('drug', **config)
 		elif drug_encoding == 'MPNN':
 			raise NotImplementedError
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
-		if target_encoding == 'AAC' or 'PseudoAAC' or 'Conjoint_triad' or 'Quasi-seq':
+		if target_encoding == 'AAC' or target_encoding == 'PseudoAAC' or target_encoding == 'Conjoint_triad' or target_encoding == 'Quasi-seq':
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
 		elif target_encoding == 'CNN':
 			raise NotImplementedError
 		elif target_encoding == 'attention_CNN':
 			raise NotImplementedError
-		elif target_encoding == 'RNN':
+		elif target_encoding == 'CNN_RNN':
 			raise NotImplementedError			
 		elif target_encoding == 'Transformer':
-			raise NotImplementedError			
+			self.model_protein = transformer('protein', **config)
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
@@ -152,24 +186,24 @@ class DBTA:
 		self.binary = False
 
 	def test_(self, data_generator, model):
-	    y_pred = []
-	    y_label = []
-	    model.eval()
-	    for i, (v_d, v_p, label) in enumerate(data_generator):
-	        score = model(v_d.float().to(self.device), v_p.float().to(self.device))
-	        if self.binary:
-	        	m = torch.nn.Sigmoid()
-	        	logits = torch.squeeze(m(score)).detach().cpu().numpy()
-	        else:
-		        logits = torch.squeeze(score).detach().cpu().numpy()
-	        label_ids = label.to('cpu').numpy()
-	        y_label = y_label + label_ids.flatten().tolist()
-	        y_pred = y_pred + logits.flatten().tolist()
-	        outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
-	    if self.binary:
-	    	return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
-	    else:
-		    return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+		y_pred = []
+		y_label = []
+		model.eval()
+		for i, (v_d, v_p, label) in enumerate(data_generator):
+			score = model(v_d, v_p)
+			if self.binary:
+				m = torch.nn.Sigmoid()
+				logits = torch.squeeze(m(score)).detach().cpu().numpy()
+			else:
+				logits = torch.squeeze(score).detach().cpu().numpy()
+			label_ids = label.to('cpu').numpy()
+			y_label = y_label + label_ids.flatten().tolist()
+			y_pred = y_pred + logits.flatten().tolist()
+			outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
+		if self.binary:
+			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
+		else:
+			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None):
 		if len(train.Label.unique()) == 2:
@@ -213,7 +247,7 @@ class DBTA:
 		print('--- Go for Training ---')
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
+				score = self.model(v_d, v_p)
 				label = Variable(torch.from_numpy(np.array(label)).float())
 
 				if self.binary:
@@ -263,7 +297,7 @@ class DBTA:
 	def predict(self, X_test):
 		print('predicting...')
 		v_d, v_p = X_test
-		score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
+		score = self.model(v_d.to(self.device), v_p.to(self.device))
 		if self.binary:
 			m = torch.nn.Sigmoid()
 			logits = torch.squeeze(m(score)).detach().cpu().numpy()
