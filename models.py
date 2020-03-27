@@ -13,13 +13,16 @@ from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr
 
+
 torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
 
-from utils import data_process_loader, data_process_repurpose_virtual_screening
-    
-    
+from utils import data_process_loader, data_process_repurpose_virtual_screening, create_var, index_select_ND
+
+
+
+
 class MLP(nn.Sequential):
 	def __init__(self, input_dim, hidden_dim, hidden_dims):
 		super(MLP, self).__init__()
@@ -32,7 +35,47 @@ class MLP(nn.Sequential):
 		# predict
 		for i, l in enumerate(self.predictor):
 			v = l(v)
-		return v    
+		return v  
+
+
+class MPNN(nn.Sequential):
+
+	def __init__(self, mpnn_hidden_size, mpnn_depth):
+		super(MPNN, self).__init__()
+		self.mpnn_hidden_size = mpnn_hidden_size
+		self.mpnn_depth = mpnn_depth 
+		from chemutils import ATOM_FDIM, BOND_FDIM
+
+		self.W_i = nn.Linear(ATOM_FDIM + BOND_FDIM, self.mpnn_hidden_size, bias=False)
+		self.W_h = nn.Linear(self.mpnn_hidden_size, self.mpnn_hidden_size, bias=False)
+		self.W_o = nn.Linear(ATOM_FDIM + self.mpnn_hidden_size, self.mpnn_hidden_size)
+
+	def forward(self, fatoms, fbonds, agraph, bgraph):
+		fatoms = create_var(fatoms)
+		fbonds = create_var(fbonds)
+		agraph = create_var(agraph)
+		bgraph = create_var(bgraph)
+
+		binput = self.W_i(fbonds)
+		message = F.relu(binput)
+
+		for i in range(self.mpnn_depth - 1):
+			nei_message = index_select_ND(message, 0, bgraph)
+			nei_message = nei_message.sum(dim=1)
+			nei_message = self.W_h(nei_message)
+			message = F.relu(binput + nei_message)
+
+		nei_message = index_select_ND(message, 0, agraph)
+		nei_message = nei_message.sum(dim=1)
+		ainput = torch.cat([fatoms, nei_message], dim=1)
+		atom_hiddens = F.relu(self.W_o(ainput))
+		print(atom_hiddens.shape)
+
+
+
+
+
+
 
 
 class Classifier(nn.Sequential):
@@ -118,7 +161,8 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 class DBTA:
 	def __init__(self, drug_encoding, target_encoding, **config):
-		if drug_encoding == 'Morgan' or 'Pubchem' or 'Daylight' or 'rdkit_2d_normalized':
+		### merge fix a small bug  if or or or 
+		if drug_encoding == 'Morgan' or drug_encoding=='Pubchem' or drug_encoding=='Daylight' or drug_encoding=='rdkit_2d_normalized':
 			# Future TODO: support multiple encoding scheme for static input 
 			self.model_drug = MLP(config['input_dim_drug'], config['hidden_dim_drug'], config['mlp_hidden_dims_drug'])
 		elif drug_encoding == 'SMILES_CNN':
@@ -126,7 +170,9 @@ class DBTA:
 		elif drug_encoding == 'SMILES_Transformer':
 			raise NotImplementedError
 		elif drug_encoding == 'MPNN':
-			raise NotImplementedError
+			self.model_drug = MPNN(config['mpnn_hidden_size'], config['mpnn_depth'])
+			#raise NotImplementedError
+			#self.model_drug = MPNN()
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
