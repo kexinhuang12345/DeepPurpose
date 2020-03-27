@@ -176,7 +176,7 @@ class DBTA:
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
-		if target_encoding == 'AAC' or 'PseudoAAC' or 'Conjoint_triad' or 'Quasi-seq':
+		if target_encoding == 'AAC' or target_encoding=='PseudoAAC' or target_encoding=='Conjoint_triad' or target_encoding=='Quasi-seq':
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
 		elif target_encoding == 'CNN':
 			raise NotImplementedError
