@@ -8,6 +8,7 @@ import torch
 from torch.utils import data
 
 from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
+<<<<<<< HEAD
 from subword_nmt.apply_bpe import BPE
 import codecs
 
@@ -31,6 +32,25 @@ sub_csv = pd.read_csv('./ESPF/subword_units_map_uniprot_2000.csv')
 
 idx2word_p = sub_csv['index'].values
 words2idx_p = dict(zip(idx2word_p, range(0, len(idx2word_p))))
+=======
+from chemutils import get_mol, atom_features, bond_features, MAX_NB
+
+
+def create_var(tensor, requires_grad=None):
+    if requires_grad is None:
+        return Variable(tensor)
+    else:
+        return Variable(tensor, requires_grad=requires_grad)
+
+
+def index_select_ND(source, dim, index):
+    index_size = index.size()
+    suffix_dim = source.size()[1:]
+    final_size = index_size + suffix_dim
+    target = source.index_select(dim, index.view(-1))
+    return target.view(final_size)
+
+>>>>>>> origin/master
 
 def smiles2morgan(s, radius = 2, nBits = 1024):
     try:
@@ -64,6 +84,53 @@ def smiles2daylight(s):
 		print('rdkit not found this smiles: ' + s + ' convert to all 1 features')
 		features = np.ones((2048, ))
 	return np.array(features)
+
+def smiles2mpnnfeature(smiles):
+	#try: 
+	fatoms, fbonds, agraph, bgraph = [], [], [], [] 
+	in_bonds,all_bonds = [],[(-1,-1)]
+	mol = get_mol(smiles)
+	n_atoms = mol.GetNumAtoms()
+	for atom in mol.GetAtoms():
+		fatoms.append( atom_features(atom))
+		in_bonds.append([])
+
+	for bond in mol.GetBonds():
+		a1 = bond.GetBeginAtom()
+		a2 = bond.GetEndAtom()
+		x = a1.GetIdx() 
+		y = a2.GetIdx()
+
+		b = len(all_bonds)
+		all_bonds.append((x,y))
+		fbonds.append( torch.cat([fatoms[x], bond_features(bond)], 0) )
+		in_bonds[y].append(b)
+
+		b = len(all_bonds)
+		all_bonds.append((y,x))
+		fbonds.append( torch.cat([fatoms[y], bond_features(bond)], 0) )
+		in_bonds[x].append(b)
+
+	total_bonds = len(all_bonds)
+	fatoms = torch.stack(fatoms, 0) 
+	fbonds = torch.stack(fbonds, 0) 
+	agraph = torch.zeros(n_atoms,MAX_NB).long()
+	bgraph = torch.zeros(total_bonds,MAX_NB).long()
+	for a in range(n_atoms):
+		for i,b in enumerate(in_bonds[a]):
+			agraph[a,i] = b
+
+	for b1 in range(1, total_bonds):
+		x,y = all_bonds[b1]
+		for i,b2 in enumerate(in_bonds[x]):
+			if all_bonds[b2][0] != y:
+				bgraph[b1,i] = b2
+	#except: 
+	#fatoms, fbonds, agraph, bgraph = [], [], [], [] 
+
+	return (fatoms, fbonds, agraph, bgraph)  
+
+
 
 # random_fold
 def create_fold(df, fold_seed, frac):
@@ -146,7 +213,10 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'MPNN':
-		raise NotImplementedError
+		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]		
+		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
@@ -367,7 +437,9 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	elif drug_encoding == 'MPNN':
-		raise NotImplementedError
+		base_config['mpnn_hidden_size'] = 50
+		base_config['mpnn_depth'] = 3 
+		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
