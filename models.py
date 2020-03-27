@@ -179,6 +179,10 @@ class DBTA:
 		if target_encoding == 'AAC' or 'PseudoAAC' or 'Conjoint_triad' or 'Quasi-seq':
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
 		elif target_encoding == 'CNN':
+			raise NotImplementedError
+		elif target_encoding == 'attention_CNN':
+			raise NotImplementedError
+		elif target_encoding == 'RNN':
 			raise NotImplementedError			
 		elif target_encoding == 'Transformer':
 			raise NotImplementedError			
@@ -214,8 +218,6 @@ class DBTA:
 		    return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None):
-		# TODO: support binary classification
-
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 

@@ -215,6 +215,10 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	elif target_encoding == 'CNN':
 		raise NotImplementedError		
+	elif target_encoding == 'attention_CNN':
+		raise NotImplementedError
+	elif target_encoding == 'RNN':
+		raise NotImplementedError
 	elif target_encoding == 'Transformer':
 		raise NotImplementedError
 	else:
@@ -274,7 +278,11 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 		elif target_encoding == 'Quasi-seq':
 			target = GetQuasiSequenceOrder(target)
 		elif target_encoding == 'CNN':
-			raise NotImplementedError		
+			raise NotImplementedError	
+		elif target_encoding == 'attention_CNN':
+			raise NotImplementedError
+		elif target_encoding == 'RNN':
+			raise NotImplementedError	
 		elif target_encoding == 'Transformer':
 			raise NotImplementedError
 		else:
@@ -300,7 +308,11 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 			unique_dict = dict(zip(np.unique(target), unique))
 			target = [unique_dict[i] for i in target]
 		elif target_encoding == 'CNN':
-			raise NotImplementedError		
+			raise NotImplementedError
+		elif target_encoding == 'attention_CNN':
+			raise NotImplementedError
+		elif target_encoding == 'RNN':
+			raise NotImplementedError						
 		elif target_encoding == 'Transformer':
 			raise NotImplementedError
 		else:
@@ -391,7 +403,11 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['input_dim_protein'] = 100
 		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1				
 	elif target_encoding == 'CNN':
-		raise NotImplementedError		
+		raise NotImplementedError
+	elif target_encoding == 'attention_CNN':
+		raise NotImplementedError
+	elif target_encoding == 'RNN':
+		raise NotImplementedError
 	elif target_encoding == 'Transformer':
 		raise NotImplementedError
 	else:
