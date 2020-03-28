@@ -53,19 +53,52 @@ class transformer(nn.Sequential):
 		encoded_layers = self.encoder(emb.float(), ex_e_mask.float())
 		return encoded_layers[:,0]
 
-'''
-working currently
+
 class CNN(nn.Sequential):
 	def __init__(self, encoding, **config):
 		super(CNN, self).__init__()
 		if encoding == 'drug':
-			self.conv1 = nn.Conv1d(in_channels = 1, out_channels = config['cnn_conv1_drug_#filters'])
+			in_ch = [51] + config['cnn_drug_filters']
+			kernels = config['cnn_drug_kernels']
+			layer_size = len(config['cnn_drug_filters'])
+			self.conv = nn.ModuleList([nn.Conv1d(in_channels = in_ch[i], 
+													out_channels = in_ch[i+1], 
+													kernel_size = kernels[i]) for i in range(layer_size)])
+			self.conv = self.conv.double()
+			n_size_d = self._get_conv_output((51, 100))
+			#n_size_d = 1000
+			self.fc1 = nn.Linear(n_size_d, config['hidden_dim_drug'])
+
+		if encoding == 'protein':
+			in_ch = [21] + config['cnn_target_filters']
+			kernels = config['cnn_target_kernels']
+			layer_size = len(config['cnn_target_filters'])
+			self.conv = nn.ModuleList([nn.Conv1d(in_channels = in_ch[i], 
+													out_channels = in_ch[i+1], 
+													kernel_size = kernels[i]) for i in range(layer_size)])
+			self.conv = self.conv.double()
+			n_size_p = self._get_conv_output((21, 1000))
+
+			self.fc1 = nn.Linear(n_size_p, config['hidden_dim_protein'])
+
+	def _get_conv_output(self, shape):
+		bs = 1
+		input = Variable(torch.rand(bs, *shape))
+		output_feat = self._forward_features(input.double())
+		n_size = output_feat.data.view(bs, -1).size(1)
+		return n_size
+
+	def _forward_features(self, x):
+		for l in self.conv:
+			x = F.relu(l(x))
+		x = F.adaptive_max_pool1d(x, output_size=1)
+		return x
 
 	def forward(self, v):
-
-
-		return 
-'''
+		v = self._forward_features(v.double())
+		v = v.view(v.size(0), -1)
+		v = self.fc1(v.float())
+		return v
 
 class MLP(nn.Sequential):
 	def __init__(self, input_dim, hidden_dim, hidden_dims):
@@ -143,12 +176,12 @@ class Classifier(nn.Sequential):
 
 		return v_f    
 
-def model_initialize(drug_encoding, target_encoding, **config):
-	model = DBTA(drug_encoding, target_encoding, **config)
+def model_initialize(**config):
+	model = DBTA(**config)
 	return model
 
 def model_pretrained(path, drug_encoding, target_encoding, **config):
-	model = DBTA(drug_encoding, target_encoding, **config)
+	model = DBTA(**config)
 	model.load_pretrained(path)
 	return model
 
@@ -198,13 +231,15 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 
 class DBTA:
-	def __init__(self, drug_encoding, target_encoding, **config):
+	def __init__(self, **config):
+		drug_encoding = config['drug_encoding']
+		target_encoding = config['target_encoding']
 
 		if drug_encoding == 'Morgan' or drug_encoding=='Pubchem' or drug_encoding=='Daylight' or drug_encoding=='rdkit_2d_normalized':
 			# Future TODO: support multiple encoding scheme for static input 
 			self.model_drug = MLP(config['input_dim_drug'], config['hidden_dim_drug'], config['mlp_hidden_dims_drug'])
 		elif drug_encoding == 'CNN':
-			raise NotImplementedError
+			self.model_drug = CNN('drug', **config)
 		elif drug_encoding == 'Transformer':
 			self.model_drug = transformer('drug', **config)
 		elif drug_encoding == 'MPNN':
@@ -215,11 +250,9 @@ class DBTA:
 		if target_encoding == 'AAC' or target_encoding == 'PseudoAAC' or target_encoding == 'Conjoint_triad' or target_encoding == 'Quasi-seq':
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
 		elif target_encoding == 'CNN':
-			raise NotImplementedError
-		elif target_encoding == 'attention_CNN':
-			raise NotImplementedError
+			self.model_protein = CNN('protein', **config)
 		elif target_encoding == 'CNN_RNN':
-			raise NotImplementedError			
+			raise NotImplementedError
 		elif target_encoding == 'Transformer':
 			self.model_protein = transformer('protein', **config)
 		else:

@@ -209,7 +209,7 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 		except:
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
 	elif drug_encoding == 'CNN':
-		raise NotImplementedError
+		pass
 	elif drug_encoding == 'Transformer':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
@@ -246,8 +246,6 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 	elif target_encoding == 'CNN':
 		pass		
 		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
-	elif target_encoding == 'attention_CNN':
-		pass
 	elif target_encoding == 'CNN_RNN':
 		pass
 	elif target_encoding == 'Transformer':
@@ -291,34 +289,33 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 
 class data_process_loader(data.Dataset):
 
-    def __init__(self, list_IDs, labels, df, **config):
-        'Initialization'
-        self.labels = labels
-        self.list_IDs = list_IDs
-        self.df = df
-        self.config = config
+	def __init__(self, list_IDs, labels, df, **config):
+		'Initialization'
+		self.labels = labels
+		self.list_IDs = list_IDs
+		self.df = df
+		self.config = config
 
-    def __len__(self):
-        'Denotes the total number of samples'
-        return len(self.list_IDs)
+	def __len__(self):
+		'Denotes the total number of samples'
+		return len(self.list_IDs)
 
-    def __getitem__(self, index):
-        'Generates one sample of data'
-        index = self.list_IDs[index]
-        if self.config['drug_encoding'] == 'CNN':
-        	v_d = self.df.iloc[index]['SMILES']
-        	v_d = trans_drug(v_d)
-        else:
+	def __getitem__(self, index):
+		'Generates one sample of data'
+		index = self.list_IDs[index]
+		if self.config['drug_encoding'] == 'CNN':
+			v_d = self.df.iloc[index]['SMILES']
+			v_d = trans_drug(v_d)
+		else:
 			v_d = self.df.iloc[index]['drug_encoding']
 
-        if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'attention_CNN' or self.config['target_encoding'] == 'CNN_RNN':
-        	v_p = self.df.iloc[index]['Target Sequence']
-        	v_p = trans_protein(v_p)
-        else:
-	        v_p = self.df.iloc[index]['target_encoding']
-            
-        y = self.labels[index]
-        return v_d, v_p, y
+		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
+			v_p = self.df.iloc[index]['Target Sequence']
+			v_p = trans_protein(v_p)
+		else:
+			v_p = self.df.iloc[index]['target_encoding']
+		y = self.labels[index]
+		return v_d, v_p, y
 
 
 def generate_config(drug_encoding, target_encoding, 
@@ -344,7 +341,11 @@ def generate_config(drug_encoding, target_encoding,
 					transformer_attention_probs_dropout = 0.1,
 					transformer_hidden_dropout_rate = 0.1,
 					mpnn_hidden_size = 50,
-					mpnn_depth = 3
+					mpnn_depth = 3,
+					cnn_drug_filters = [8,32,64],
+					cnn_drug_kernels = [4,8,12],
+					cnn_target_filters = [8,32,64],
+					cnn_target_kernels = [4,8,12]
 					):
 
 	base_config = {'input_dim_drug': input_dim_drug,
@@ -354,7 +355,9 @@ def generate_config(drug_encoding, target_encoding,
 					'cls_hidden_dims' : cls_hidden_dims, # decoder classifier dim 1
 					'batch_size': batch_size,
 					'train_epoch': train_epoch,
-					'LR': LR
+					'LR': LR,
+					'drug_encoding': drug_encoding,
+					'target_encoding': target_encoding
 	}
 
 	
@@ -370,7 +373,8 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['input_dim_drug'] = 200
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
 	elif drug_encoding == 'CNN':
-		raise NotImplementedError
+		base_config['cnn_drug_filters'] = cnn_drug_filters
+		base_config['cnn_drug_kernels'] = cnn_drug_kernels
 	elif drug_encoding == 'Transformer':
 		base_config['input_dim_drug'] = 2586
 		base_config['transformer_emb_size_drug'] = transformer_emb_size_drug
@@ -399,9 +403,8 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['input_dim_protein'] = 100
 		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1				
 	elif target_encoding == 'CNN':
-		raise NotImplementedError
-	elif target_encoding == 'attention_CNN':
-		raise NotImplementedError
+		base_config['cnn_target_filters'] = cnn_target_filters
+		base_config['cnn_target_kernels'] = cnn_target_kernels
 	elif target_encoding == 'CNN_RNN':
 		raise NotImplementedError
 	elif target_encoding == 'Transformer':
@@ -476,7 +479,7 @@ def drug2emb_encoder(x):
 amino_char = ['?', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y']
 smiles_char = ['?', ' ', '#', '%', '(', ')', '+', ',', '-', '.', '/', '0', '1', '2',
 		'3', '4', '5', '6', '7', '8', '9', ':', '=', '@', 'A', 'B', 'C',
-		'F', 'H', 'I', 'N', 'O', 'P', 'R', 'S', 'V', '[', '\\', ']', 'a',
+		'F', 'H', 'I', 'N', 'O', 'P', 'R', 'S', 'V','[', '\\', ']', 'a',
 		'b', 'c', 'e', 'i', 'l', 'n', 'o', 'r', 's', 'u', '|']
 
 from sklearn.preprocessing import OneHotEncoder
@@ -492,13 +495,13 @@ def trans_protein(x):
 		temp = temp + ['?'] * (MAX_SEQ_PROTEIN-len(temp))
 	else:
 		temp = temp [:MAX_SEQ_PROTEIN]
-	return enc_protein.transform(np.array(temp).reshape(-1,1)).toarray()
+	return enc_protein.transform(np.array(temp).reshape(-1,1)).toarray().T
 
 def trans_drug(x):
-	temp = list(x.upper())
+	temp = list(x)
 	if len(temp) < MAX_SEQ_DRUG:
 		temp = temp + ['?'] * (MAX_SEQ_DRUG-len(temp))
 	else:
 		temp = temp [:MAX_SEQ_DRUG]
-	return enc_drug.transform(np.array(list(x.upper())).reshape(-1,1)).toarray()
+	return enc_drug.transform(np.array(temp).reshape(-1,1)).toarray().T
 
