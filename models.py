@@ -2,6 +2,7 @@ import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
 from torch.utils import data
+from torch.utils.data import SequentialSampler
 from torch import nn 
 
 from tqdm import tqdm
@@ -13,13 +14,11 @@ from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr
 
-
 torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
 
-<<<<<<< HEAD
-from utils import data_process_loader, data_process_repurpose_virtual_screening
+from utils import data_process_loader, data_process_repurpose_virtual_screening, create_var, index_select_ND
 from model_helper import Encoder_MultipleLayers, Embeddings    
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -53,12 +52,20 @@ class transformer(nn.Sequential):
 		emb = self.emb(e)
 		encoded_layers = self.encoder(emb.float(), ex_e_mask.float())
 		return encoded_layers[:,0]
-=======
-from utils import data_process_loader, data_process_repurpose_virtual_screening, create_var, index_select_ND
+
+'''
+working currently
+class CNN(nn.Sequential):
+	def __init__(self, encoding, **config):
+		super(CNN, self).__init__()
+		if encoding == 'drug':
+			self.conv1 = nn.Conv1d(in_channels = 1, out_channels = config['cnn_conv1_drug_#filters'])
+
+	def forward(self, v):
 
 
->>>>>>> origin/master
-
+		return 
+'''
 
 class MLP(nn.Sequential):
 	def __init__(self, input_dim, hidden_dim, hidden_dims):
@@ -73,11 +80,7 @@ class MLP(nn.Sequential):
 		v = v.float().to(device)
 		for i, l in enumerate(self.predictor):
 			v = l(v)
-<<<<<<< HEAD
-		return v 
-=======
 		return v  
-
 
 class MPNN(nn.Sequential):
 
@@ -111,13 +114,6 @@ class MPNN(nn.Sequential):
 		ainput = torch.cat([fatoms, nei_message], dim=1)
 		atom_hiddens = F.relu(self.W_o(ainput))
 		print(atom_hiddens.shape)
-
-
-
-
-
-
->>>>>>> origin/master
 
 
 class Classifier(nn.Sequential):
@@ -161,71 +157,62 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None)
 	# target: one target 
 
 	print('repurposing...')
-	X_repurpose, target = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'repurposing')
-	y_pred = model.predict((X_repurpose, target))
-
+	df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'repurposing')
+	y_pred = model.predict(df_data)
+	print('---------------')
 	if target_name is not None:
 		print('Drug Repurposing Result for '+target_name)
 	if drug_names is not None:
 		f_d = max([len(o) for o in drug_names]) + 1
 		for i in range(X_repurpose.shape[0]):
 			if model.binary:
-				if y_pred[i].item() > 0.5:
-					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target')	
+				if y_pred[i] > 0.5:
+					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target')	
 				else:
-					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target')								
+					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target')								
 			else:
-				print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i].item()))
+				print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i]))
 
 	return y_pred
 
 def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
-	print('repurposing...')
-	X_repurpose, target = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
-	y_pred = model.predict((X_repurpose, target))
-
+	print('virtual screening...')
+	df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
+	y_pred = model.predict(df_data)
+	print('---------------')
 	if drug_names is not None and target_names is not None:
 		print('Virtual Screening Result')
 		f_d = max([len(o) for o in drug_names]) + 1
 		f_p = max([len(o) for o in target_names]) + 1
 		for i in range(X_repurpose.shape[0]):
 			if model.binary:
-				if y_pred[i].item() > 0.5:
-					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))	
+				if y_pred[i] > 0.5:
+					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))	
 				else:
-					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))								
+					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))								
 			else:
-				print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i].item()))
+				print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i]))
 	return y_pred
 
 
 class DBTA:
 	def __init__(self, drug_encoding, target_encoding, **config):
-<<<<<<< HEAD
-=======
-		### merge fix a small bug  if or or or 
->>>>>>> origin/master
+
 		if drug_encoding == 'Morgan' or drug_encoding=='Pubchem' or drug_encoding=='Daylight' or drug_encoding=='rdkit_2d_normalized':
 			# Future TODO: support multiple encoding scheme for static input 
 			self.model_drug = MLP(config['input_dim_drug'], config['hidden_dim_drug'], config['mlp_hidden_dims_drug'])
-		elif drug_encoding == 'SMILES_CNN':
+		elif drug_encoding == 'CNN':
 			raise NotImplementedError
-		elif drug_encoding == 'SMILES_Transformer':
+		elif drug_encoding == 'Transformer':
 			self.model_drug = transformer('drug', **config)
 		elif drug_encoding == 'MPNN':
 			self.model_drug = MPNN(config['mpnn_hidden_size'], config['mpnn_depth'])
-			#raise NotImplementedError
-			#self.model_drug = MPNN()
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
-<<<<<<< HEAD
 		if target_encoding == 'AAC' or target_encoding == 'PseudoAAC' or target_encoding == 'Conjoint_triad' or target_encoding == 'Quasi-seq':
-=======
-		if target_encoding == 'AAC' or target_encoding=='PseudoAAC' or target_encoding=='Conjoint_triad' or target_encoding=='Quasi-seq':
->>>>>>> origin/master
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
 		elif target_encoding == 'CNN':
 			raise NotImplementedError
@@ -246,7 +233,7 @@ class DBTA:
 		self.target_encoding = target_encoding
 		self.binary = False
 
-	def test_(self, data_generator, model):
+	def test_(self, data_generator, model, repurposing_mode = False):
 		y_pred = []
 		y_label = []
 		model.eval()
@@ -262,8 +249,12 @@ class DBTA:
 			y_pred = y_pred + logits.flatten().tolist()
 			outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
 		if self.binary:
+			if repurposing_mode:
+				return y_pred
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
+			if repurposing_mode:
+				return y_pred
 			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None):
@@ -355,14 +346,24 @@ class DBTA:
 		self.model = model_max
 		print('--- Training Finished ---')
 
-	def predict(self, X_test):
+	def predict(self, df_data):
 		print('predicting...')
-		v_d, v_p = X_test
-		score = self.model(v_d.to(self.device), v_p.to(self.device))
+
+		info = data_process_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
+		
+		params = {'batch_size': self.config['batch_size'],
+				'shuffle': False,
+				'num_workers': 0,
+				'drop_last': False,
+				'sampler':SequentialSampler(info)}
+
+		generator = data.DataLoader(info, **params)
+
 		if self.binary:
-			m = torch.nn.Sigmoid()
-			logits = torch.squeeze(m(score)).detach().cpu().numpy()
-			score = np.asarray([1 if i else 0 for i in (np.asarray(logits) >= 0.5)])
+				score = self.test_(generator, self.model, repurposing_mode = True)
+		else:
+				logits = self.test_(generator, self.model, repurposing_mode = True)
+				score = np.asarray([1 if i else 0 for i in (np.asarray(logits) >= 0.5)])
 		return score
 
 	def save_model(self, path):
