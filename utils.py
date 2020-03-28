@@ -210,6 +210,8 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
 	elif drug_encoding == 'CNN':
 		pass
+	elif target_encoding == 'CNN_RNN':
+		pass
 	elif drug_encoding == 'Transformer':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
@@ -303,7 +305,7 @@ class data_process_loader(data.Dataset):
 	def __getitem__(self, index):
 		'Generates one sample of data'
 		index = self.list_IDs[index]
-		if self.config['drug_encoding'] == 'CNN':
+		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = self.df.iloc[index]['SMILES']
 			v_d = trans_drug(v_d)
 		else:
@@ -345,7 +347,15 @@ def generate_config(drug_encoding, target_encoding,
 					cnn_drug_filters = [8,32,64],
 					cnn_drug_kernels = [4,8,12],
 					cnn_target_filters = [8,32,64],
-					cnn_target_kernels = [4,8,12]
+					cnn_target_kernels = [4,8,12],
+					rnn_Use_GRU_LSTM_drug = 'LSTM',
+					rnn_drug_hid_dim = 64,
+					rnn_drug_n_layers = 2,
+					rnn_drug_bidirectional = True,
+					rnn_Use_GRU_LSTM_target = 'LSTM',
+					rnn_target_hid_dim = 64,
+					rnn_target_n_layers = 2,
+					rnn_target_bidirectional = True
 					):
 
 	base_config = {'input_dim_drug': input_dim_drug,
@@ -373,6 +383,13 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['input_dim_drug'] = 200
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
 	elif drug_encoding == 'CNN':
+		base_config['cnn_drug_filters'] = cnn_drug_filters
+		base_config['cnn_drug_kernels'] = cnn_drug_kernels
+	elif target_encoding == 'CNN_RNN':
+		base_config['rnn_Use_GRU_LSTM_drug'] = rnn_Use_GRU_LSTM_drug
+		base_config['rnn_drug_hid_dim'] = rnn_drug_hid_dim
+		base_config['rnn_drug_n_layers'] = rnn_drug_n_layers
+		base_config['rnn_drug_bidirectional'] = rnn_drug_bidirectional 
 		base_config['cnn_drug_filters'] = cnn_drug_filters
 		base_config['cnn_drug_kernels'] = cnn_drug_kernels
 	elif drug_encoding == 'Transformer':
@@ -406,7 +423,12 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['cnn_target_filters'] = cnn_target_filters
 		base_config['cnn_target_kernels'] = cnn_target_kernels
 	elif target_encoding == 'CNN_RNN':
-		raise NotImplementedError
+		base_config['rnn_Use_GRU_LSTM_target'] = rnn_Use_GRU_LSTM_target
+		base_config['rnn_target_hid_dim'] = rnn_target_hid_dim
+		base_config['rnn_target_n_layers'] = rnn_target_n_layers
+		base_config['rnn_target_bidirectional'] = rnn_target_bidirectional 
+		base_config['cnn_target_filters'] = cnn_target_filters
+		base_config['cnn_target_kernels'] = cnn_target_kernels
 	elif target_encoding == 'Transformer':
 		base_config['input_dim_protein'] = 4114
 		base_config['transformer_emb_size_target'] = transformer_emb_size_target
