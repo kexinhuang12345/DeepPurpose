@@ -50,7 +50,12 @@ class MPNN(nn.Sequential):
 		self.W_h = nn.Linear(self.mpnn_hidden_size, self.mpnn_hidden_size, bias=False)
 		self.W_o = nn.Linear(ATOM_FDIM + self.mpnn_hidden_size, self.mpnn_hidden_size)
 
-	def forward(self, fatoms, fbonds, agraph, bgraph):
+	def forward(self, feature):
+		fatoms, fbonds, agraph, bgraph = feature 
+		fatoms = fatoms.squeeze(0)
+		fbonds = fbonds.squeeze(0)
+		agraph = agraph.squeeze(0)
+		bgraph = bgraph.squeeze(0)
 		fatoms = create_var(fatoms)
 		fbonds = create_var(fbonds)
 		agraph = create_var(agraph)
@@ -58,7 +63,7 @@ class MPNN(nn.Sequential):
 
 		binput = self.W_i(fbonds)
 		message = F.relu(binput)
-
+		#print("shapes", fbonds.shape, binput.shape, message.shape)
 		for i in range(self.mpnn_depth - 1):
 			nei_message = index_select_ND(message, 0, bgraph)
 			nei_message = nei_message.sum(dim=1)
@@ -69,11 +74,7 @@ class MPNN(nn.Sequential):
 		nei_message = nei_message.sum(dim=1)
 		ainput = torch.cat([fatoms, nei_message], dim=1)
 		atom_hiddens = F.relu(self.W_o(ainput))
-		print(atom_hiddens.shape)
-
-
-
-
+		return torch.mean(atom_hiddens, 0).view(1,-1) 
 
 
 
@@ -99,7 +100,6 @@ class Classifier(nn.Sequential):
 		v_P = self.model_protein(v_P)
 		# concatenate and classify
 		v_f = torch.cat((v_D, v_P), 1)
-
 		for i, l in enumerate(self.predictor):
 			v_f = l(v_f)
 
@@ -126,7 +126,7 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None)
 		print('Drug Repurposing Result for '+target_name)
 	if drug_names is not None:
 		f_d = max([len(o) for o in drug_names]) + 1
-		for i in range(X_repurpose.shape[0]):
+		for i in range(target.shape[0]):
 			if model.binary:
 				if y_pred[i].item() > 0.5:
 					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target')	
@@ -148,7 +148,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 		print('Virtual Screening Result')
 		f_d = max([len(o) for o in drug_names]) + 1
 		f_p = max([len(o) for o in target_names]) + 1
-		for i in range(X_repurpose.shape[0]):
+		for i in range(target.shape[0]):
 			if model.binary:
 				if y_pred[i].item() > 0.5:
 					print('{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))	
@@ -170,7 +170,7 @@ class DBTA:
 		elif drug_encoding == 'SMILES_Transformer':
 			raise NotImplementedError
 		elif drug_encoding == 'MPNN':
-			self.model_drug = MPNN(config['mpnn_hidden_size'], config['mpnn_depth'])
+			self.model_drug = MPNN(config['hidden_dim_drug'], config['mpnn_depth'])
 			#raise NotImplementedError
 			#self.model_drug = MPNN()
 		else:
@@ -198,24 +198,27 @@ class DBTA:
 		self.binary = False
 
 	def test_(self, data_generator, model):
-	    y_pred = []
-	    y_label = []
-	    model.eval()
-	    for i, (v_d, v_p, label) in enumerate(data_generator):
-	        score = model(v_d.float().to(self.device), v_p.float().to(self.device))
-	        if self.binary:
-	        	m = torch.nn.Sigmoid()
-	        	logits = torch.squeeze(m(score)).detach().cpu().numpy()
-	        else:
-		        logits = torch.squeeze(score).detach().cpu().numpy()
-	        label_ids = label.to('cpu').numpy()
-	        y_label = y_label + label_ids.flatten().tolist()
-	        y_pred = y_pred + logits.flatten().tolist()
-	        outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
-	    if self.binary:
-	    	return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
-	    else:
-		    return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+		y_pred = []
+		y_label = []
+		model.eval()
+		for i, (v_d, v_p, label) in enumerate(data_generator):
+			if self.drug_encoding == "MPNN":
+				score = self.model(v_d, v_p.float().to(self.device))
+			else:
+				score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
+			if self.binary:
+				m = torch.nn.Sigmoid()
+				logits = torch.squeeze(m(score)).detach().cpu().numpy()
+			else:
+				logits = torch.squeeze(score).detach().cpu().numpy()
+			label_ids = label.to('cpu').numpy()
+			y_label = y_label + label_ids.flatten().tolist()
+			y_pred = y_pred + logits.flatten().tolist()
+			outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
+		if self.binary:
+			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
+		else:
+			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None):
 		if len(train.Label.unique()) == 2:
@@ -243,6 +246,7 @@ class DBTA:
 	    		'num_workers': 0,
 	    		'drop_last': False}
 
+
 		training_generator = data.DataLoader(data_process_loader(train.index.values, train.Label.values, train, **self.config), **params)
 		validation_generator = data.DataLoader(data_process_loader(val.index.values, val.Label.values, val, **self.config), **params)
 		
@@ -259,7 +263,10 @@ class DBTA:
 		print('--- Go for Training ---')
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
+				if (self.drug_encoding == "MPNN"):
+					score = self.model(v_d, v_p.float().to(self.device))
+				else:
+					score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
 				label = Variable(torch.from_numpy(np.array(label)).float())
 
 				if self.binary:
@@ -309,7 +316,17 @@ class DBTA:
 	def predict(self, X_test):
 		print('predicting...')
 		v_d, v_p = X_test
-		score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
+
+		if self.drug_encoding == "MPNN":
+			length = len(v_d)
+			score = []
+			for i in range(length):
+				single_score = self.model(v_d[i], v_p[i].view(1,-1).float().to(self.device))
+				score.append(single_score)
+			score = torch.Tensor(score)
+		else:
+			score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))		
+		#score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
 		if self.binary:
 			m = torch.nn.Sigmoid()
 			logits = torch.squeeze(m(score)).detach().cpu().numpy()

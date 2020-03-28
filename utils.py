@@ -6,9 +6,9 @@ from rdkit.Chem.Fingerprints import FingerprintMols
 from pybiomed_helper import _GetPseudoAAC, CalculateAADipeptideComposition, calcPubChemFingerAll, CalculateConjointTriad, GetQuasiSequenceOrder
 import torch
 from torch.utils import data
-
+from torch.autograd import Variable
 from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
-from chemutils import get_mol, atom_features, bond_features, MAX_NB
+from chemutils import get_mol, atom_features, bond_features, MAX_NB, ATOM_FDIM, BOND_FDIM
 
 
 def create_var(tensor, requires_grad=None):
@@ -60,9 +60,11 @@ def smiles2daylight(s):
 	return np.array(features)
 
 def smiles2mpnnfeature(smiles):
+	## mpn.py::tensorize  
 	#try: 
-	fatoms, fbonds, agraph, bgraph = [], [], [], [] 
-	in_bonds,all_bonds = [],[(-1,-1)]
+	padding = torch.zeros(ATOM_FDIM + BOND_FDIM)
+	fatoms, fbonds = [], [padding] 
+	in_bonds,all_bonds = [], [(-1,-1)] 
 	mol = get_mol(smiles)
 	n_atoms = mol.GetNumAtoms()
 	for atom in mol.GetAtoms():
@@ -187,7 +189,7 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 	elif drug_encoding == 'MPNN':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]		
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]	
 		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
@@ -264,7 +266,10 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 	elif drug_encoding == 'SMILES_Transformer':
 		raise NotImplementedError
 	elif drug_encoding == 'MPNN':
-		raise NotImplementedError
+		unique = pd.Series(np.unique(X_repurpose)).apply(smiles2mpnnfeature)
+		unique_dict = dict(zip(np.unique(X_repurpose), unique))
+		X_repurpose = [unique_dict[i] for i in X_repurpose]	
+		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
@@ -288,7 +293,10 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 		else:
 			raise AttributeError("Please use the correct protein encoding available!")
 
-		return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
+		if drug_encoding == "MPNN":
+			return X_repurpose, torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
+		else:
+			return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
 	 
 	elif mode == 'virtual screening':
 		if target_encoding == 'AAC':
@@ -314,10 +322,13 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 		elif target_encoding == 'RNN':
 			raise NotImplementedError						
 		elif target_encoding == 'Transformer':
-			raise NotImplementedError
+			raise NotImplementedError 
 		else:
 			raise NotImplementedError("Please use the correct protein encoding available!")
-		return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.vstack(np.array(target)).astype(np.float))
+		if drug_encoding == "MPNN":
+			return X_repurpose, torch.Tensor(np.vstack(np.array(target)).astype(np.float))
+		else:
+			return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.vstack(np.array(target)).astype(np.float))
 	else:
 		raise AttributeError("Please select repurposing or virtual screening!")
 
@@ -385,8 +396,9 @@ def generate_config(drug_encoding, target_encoding,
 	elif drug_encoding == 'SMILES_Transformer':
 		raise NotImplementedError
 	elif drug_encoding == 'MPNN':
-		base_config['mpnn_hidden_size'] = 50
+		base_config['hidden_dim_drug'] = 50
 		base_config['mpnn_depth'] = 3 
+		base_config['batch_size'] = 1
 		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
