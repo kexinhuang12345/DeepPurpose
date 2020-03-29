@@ -18,6 +18,10 @@ torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
 
+import os
+if os.getcwd()[-3:] != 'DTI':
+	os.chdir('./DTI/')
+
 from utils import data_process_loader, data_process_repurpose_virtual_screening, create_var, index_select_ND
 from model_helper import Encoder_MultipleLayers, Embeddings    
 
@@ -363,8 +367,6 @@ class DBTA:
 			self.model_drug = transformer('drug', **config)
 		elif drug_encoding == 'MPNN':
 			self.model_drug = MPNN(config['hidden_dim_drug'], config['mpnn_depth'])
-			#raise NotImplementedError
-			#self.model_drug = MPNN()
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
@@ -511,20 +513,6 @@ class DBTA:
 
 	def predict(self, df_data):
 		print('predicting...')
-		'''
-		v_d, v_p = df_data
-
-		if self.drug_encoding == "MPNN":
-			length = len(v_d)
-			score = []
-			for i in range(length):
-				single_score = self.model(v_d[i], v_p[i].view(1,-1).float().to(self.device))
-				score.append(single_score)
-			score = torch.Tensor(score)
-		else:
-			score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))	
-		'''	
-		#score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
 		info = data_process_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		
 		params = {'batch_size': self.config['batch_size'],
@@ -537,9 +525,9 @@ class DBTA:
 
 		if self.binary:
 			score = self.test_(generator, self.model, repurposing_mode = True)
+			score = np.asarray([1 if i else 0 for i in (np.asarray(score) >= 0.5)])
 		else:
-			logits = self.test_(generator, self.model, repurposing_mode = True)
-			score = np.asarray([1 if i else 0 for i in (np.asarray(logits) >= 0.5)])
+			score = self.test_(generator, self.model, repurposing_mode = True)
 		return score
 
 	def save_model(self, path):
