@@ -3,7 +3,7 @@
 </h1>
 
 <h3 align="center">
-<p> A Drug Repurposing and Virtual Screening Toolkit with SOTA Deep Learning Methods
+<p> A Drug Repurposing and Virtual Screening Toolkit with \n State-of-the-Art Deep Learning Methods
 </h3>
 
 This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit. It allows extremely easy usage (only ten lines of codes) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning. 
@@ -72,7 +72,7 @@ _ = models.virtual_screening(X_repurpose, target, model, drug_name, target_name)
 Output:
 ------------------
 Virtual Screening Result
-Drug 16007391     predicted to NOT have interaction with the target P36896 
+Drug 16007391   predicted to NOT have interaction with the target P36896 
 Drug 44355753   predicted to have interaction with the target P00374 
 Drug 24180719   predicted to NOT have interaction with the target P61075 
 '''
