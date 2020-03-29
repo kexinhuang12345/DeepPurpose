@@ -13,7 +13,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 - 10 lines of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning and machine learning researchers to push forward the frontiers of DTI prediction.
 
-- 15+ state-of-the-art encodings for drug and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network. Switching encoding is as simple as changing the encoding names!
+- 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network. Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
@@ -74,6 +74,7 @@ Output:
 Virtual Screening Result
 Drug 16007391     predicted to NOT have interaction with the target P36896 
 Drug 44355753   predicted to have interaction with the target P00374 
+Drug 24180719   predicted to NOT have interaction with the target P61075 
 '''
 ```
 
@@ -87,7 +88,39 @@ Currently, we support the following encodings:
 
 | Drug Encodings  | Description |
 |-----------------|-------------|
-| Morgan Fingerprint | A substructure |
-|  MPNN | Message-passing neural network  |
+| Morgan | Extended-Connectivity Fingerprints |
+| Pubchem| Pubchem Substructure-based Fingerprints|
+| Daylight | Daylight-type fingerprints | 
+| rdkit_2d_normalized| Normalized Descriptastorus|
+| CNN | Convolutional Neural Network on SMILES|
+|CNN_RNN| A GRU/LSTM on top of a CNN on SMILES|
+|Transformer| Transformer Encoder on ESPF|
+|  MPNN | Message-passing neural network |
+
+| Target Encodings  | Description |
+|-----------------|-------------|
+| AAC | Amino acid composition up to 3-mers |
+| PseudoAAC| Pseudo amino acid composition|
+| Conjoint_triad | Conjoint triad features | 
+| Quasi-seq| Quasi-sequence order descriptor|
+| CNN | Convolutional Neural Network on target seq|
+|CNN_RNN| A GRU/LSTM on top of a CNN on target seq|
+|Transformer| Transformer Encoder on ESPF|
+
+## Documentations
+
+
+## Cite Us
+
+Please cite [arxiv]():
+```
+@article{
+}
+
+```
+
+## Contact
+Please contact kexinhuang@hsph.harvard.edu for help or submit an issue. 
+
 
 
