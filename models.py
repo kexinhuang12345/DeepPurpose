@@ -19,6 +19,7 @@ np.random.seed(3)
 import copy
 
 import os
+
 if os.getcwd()[-3:] != 'DTI':
 	os.chdir('./DTI/')
 
@@ -387,6 +388,7 @@ class DBTA:
 		
 		self.drug_encoding = drug_encoding
 		self.target_encoding = target_encoding
+		self.result_folder = config['result_folder']
 		self.binary = False
 
 
@@ -476,7 +478,7 @@ class DBTA:
 					loss_fct = torch.nn.MSELoss()
 					n = torch.squeeze(score, 1)
 					loss = loss_fct(n, label)
-				loss_history.append(loss)
+				loss_history.append(loss.item())
 
 				opt.zero_grad()
 				loss.backward()
@@ -509,7 +511,18 @@ class DBTA:
 				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 		# load early stopped model
 		self.model = model_max
+
+		### learning curve 
+		fontsize = 16
+		iter_num = list(range(1,len(loss_history)+1))
+		plt.plot(iter_num, loss_history, "bo-")
+		plt.xlabel("iteration", fontsize = fontsize)
+		plt.ylabel("loss value", fontsize = fontsize)
+		fig_file = os.path.join(self.result_folder, "loss_curve.png")
+		plt.savefig(fig_file)
+
 		print('--- Training Finished ---')
+
 
 	def predict(self, df_data):
 		print('predicting...')
