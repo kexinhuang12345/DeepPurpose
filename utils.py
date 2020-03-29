@@ -330,6 +330,7 @@ class data_process_loader(data.Dataset):
 
 
 def generate_config(drug_encoding, target_encoding, 
+					result_folder = "./result/",
 					input_dim_drug = 1024, 
 					input_dim_protein = 8420,
 					hidden_dim_drug = 256, 
@@ -376,8 +377,11 @@ def generate_config(drug_encoding, target_encoding,
 					'train_epoch': train_epoch,
 					'LR': LR,
 					'drug_encoding': drug_encoding,
-					'target_encoding': target_encoding
+					'target_encoding': target_encoding, 
+					'result_folder': result_folder, 
 	}
+	if not os.path.exists(base_config['result_folder']):
+		os.makedirs(base_config['result_folder'])
 	
 	if drug_encoding == 'Morgan':
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
