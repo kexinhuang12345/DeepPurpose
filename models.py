@@ -460,6 +460,12 @@ class DBTA:
 			max_MSE = 10000
 		model_max = copy.deepcopy(self.model)
 
+		valid_metric_record = []
+		valid_metric_header = ["# epoch"] 
+		if self.binary:
+			valid_metric_header.extend(["AUROC", "AUPRC", "F1"])
+		else:
+			valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 		print('--- Go for Training ---')
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
@@ -491,6 +497,7 @@ class DBTA:
 				if self.binary:  
 					## binary: ROC-AUC, PR-AUC, F1  
 					auc, auprc, f1, logits = self.test_(validation_generator, self.model)
+					valid_metric_record.append((auc, auprc, f1))
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc   
@@ -498,10 +505,12 @@ class DBTA:
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
 					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
+					valid_metric_record.append((mse, r2, p_val, CI))
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
-					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: '\
+						 + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			
 		if test is not None:
 			print('--- Go for Testing ---')
