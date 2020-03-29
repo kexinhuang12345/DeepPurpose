@@ -216,19 +216,19 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 			df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 		except:
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
+	elif drug_encoding == 'MPNN':
+		print('in here')
+		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'CNN':
 		pass
-	elif target_encoding == 'CNN_RNN':
+	elif drug_encoding == 'CNN_RNN':
 		pass
 	elif drug_encoding == 'Transformer':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-	elif drug_encoding == 'MPNN':
-		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]	
-		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
@@ -284,112 +284,7 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 	print('Done.')
 	return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
 
-""" 
-def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding, target_encoding, mode):
-	print('utils data_process_repurpose_virtual_screening ', X_repurpose.shape)
-	if drug_encoding == 'Morgan':
-		unique = pd.Series(np.unique(X_repurpose)).apply(smiles2morgan)
-		unique_dict = dict(zip(np.unique(X_repurpose), unique))
-		X_repurpose = [unique_dict[i] for i in X_repurpose]
-	elif drug_encoding == 'Pubchem':
-		unique = pd.Series(np.unique(X_repurpose)).apply(calcPubChemFingerAll)
-		unique_dict = dict(zip(np.unique(X_repurpose), unique))
-		X_repurpose = [unique_dict[i] for i in X_repurpose]
-	elif drug_encoding == 'Daylight':
-		unique = pd.Series(np.unique(X_repurpose)).apply(smiles2daylight)
-		unique_dict = dict(zip(np.unique(X_repurpose), unique))
-		X_repurpose = [unique_dict[i] for i in X_repurpose]
-	elif drug_encoding == 'rdkit_2d_normalized':
-		try:
-			from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
-			unique = pd.Series(np.unique(X_repurpose)).apply(smiles2rdkit2d)
-			unique_dict = dict(zip(np.unique(X_repurpose), unique))
-			X_repurpose = [unique_dict[i] for i in X_repurpose]		
-		except:
-			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
-	elif drug_encoding == 'SMILES_CNN':
-		raise NotImplementedError
-	elif drug_encoding == 'SMILES_Transformer':
-		raise NotImplementedError
-	elif drug_encoding == 'MPNN':
-		unique = pd.Series(np.unique(X_repurpose)).apply(smiles2mpnnfeature)
-		unique_dict = dict(zip(np.unique(X_repurpose), unique))
-		X_repurpose = [unique_dict[i] for i in X_repurpose]
-		#print(X_repurpose[0])	
-		#raise NotImplementedError
-	else:
-		raise AttributeError("Please use the correct drug encoding available!")
 
-	if mode == 'repurposing':
-		if target_encoding == 'AAC':
-			target = CalculateAADipeptideComposition(target)
-		elif target_encoding == 'PseudoAAC':
-			target = _GetPseudoAAC(target)
-		elif target_encoding == 'Conjoint_triad':
-			target = CalculateConjointTriad(target)
-		elif target_encoding == 'Quasi-seq':
-			target = GetQuasiSequenceOrder(target)
-		elif target_encoding == 'CNN':
-			raise NotImplementedError	
-		elif target_encoding == 'attention_CNN':
-			raise NotImplementedError
-		elif target_encoding == 'RNN':
-			raise NotImplementedError	
-		elif target_encoding == 'Transformer':
-			raise NotImplementedError
-		else:
-			raise AttributeError("Please use the correct protein encoding available!")
-
-		'''if drug_encoding == "MPNN":
-			return X_repurpose, torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
-		else:
-			return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
-		''' 
-	elif mode == 'virtual screening':
-		if target_encoding == 'AAC':
-			unique = pd.Series(np.unique(target)).apply(CalculateAADipeptideComposition)
-			unique_dict = dict(zip(np.unique(target), unique))
-			target = [unique_dict[i] for i in target]
-		elif target_encoding == 'PseudoAAC':
-			unique = pd.Series(np.unique(target)).apply(_GetPseudoAAC)
-			unique_dict = dict(zip(np.unique(target), unique))
-			target = [unique_dict[i] for i in target]
-		elif target_encoding == 'Conjoint_triad':
-			unique = pd.Series(np.unique(target)).apply(CalculateConjointTriad)
-			unique_dict = dict(zip(np.unique(target), unique))
-			target = [unique_dict[i] for i in target]
-		elif target_encoding == 'Quasi-seq':
-			unique = pd.Series(np.unique(target)).apply(GetQuasiSequenceOrder)
-			unique_dict = dict(zip(np.unique(target), unique))
-			target = [unique_dict[i] for i in target]
-		elif target_encoding == 'CNN':
-			raise NotImplementedError
-		elif target_encoding == 'attention_CNN':
-			raise NotImplementedError
-		elif target_encoding == 'RNN':
-			raise NotImplementedError						
-		elif target_encoding == 'Transformer':
-			raise NotImplementedError 
-		else:
-			raise NotImplementedError("Please use the correct protein encoding available!")
-		'''if drug_encoding == "MPNN":
-			return X_repurpose, torch.Tensor(np.vstack(np.array(target)).astype(np.float))
-		else:
-			return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.vstack(np.array(target)).astype(np.float))
-		'''
-	if mode == 'repurposing':
-		target = np.tile(target, (len(X_repurpose), ))
-	elif mode == 'virtual screening':
-		target = target
-	else:
-		raise AttributeError("Please select repurposing or virtual screening!")
-
-	df, _, _ = data_process(X_repurpose, target, drug_encoding = drug_encoding, 
-								target_encoding = target_encoding, 
-								split_method='repurposing_VS')
-
-	return df
-"""
 def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding, target_encoding, mode):
 	if mode == 'repurposing':
 		target = np.tile(target, (len(X_repurpose), ))
@@ -485,7 +380,8 @@ def generate_config(drug_encoding, target_encoding,
 					'target_encoding': target_encoding
 	}
 
-	
+	print(drug_encoding)
+
 	if drug_encoding == 'Morgan':
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
 	elif drug_encoding == 'Pubchem':
@@ -497,6 +393,9 @@ def generate_config(drug_encoding, target_encoding,
 	elif drug_encoding == 'rdkit_2d_normalized':
 		base_config['input_dim_drug'] = 200
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
+	elif drug_encoding == 'MPNN':
+		base_config['hidden_dim_drug'] = 50
+		base_config['mpnn_depth'] = mpnn_depth 
 	elif drug_encoding == 'CNN':
 		base_config['cnn_drug_filters'] = cnn_drug_filters
 		base_config['cnn_drug_kernels'] = cnn_drug_kernels
@@ -516,13 +415,6 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_dropout_rate'] = transformer_dropout_rate
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
-	elif drug_encoding == 'MPNN':
-		base_config['hidden_dim_drug'] = 50
-		base_config['mpnn_depth'] = 3 
-		base_config['batch_size'] = 1
-		base_config['mpnn_hidden_size'] = mpnn_hidden_size
-		base_config['mpnn_depth'] = mpnn_depth
-		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
