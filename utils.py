@@ -146,8 +146,8 @@ def create_fold(df, fold_seed, frac):
     
     return train, val, test
 
-# unseen protein
-def create_fold_setting_unseen_protein(df, fold_seed, frac):
+# cold protein
+def create_fold_setting_cold_protein(df, fold_seed, frac):
     train_frac, val_frac, test_frac = frac
     gene_drop = df['Target Sequence'].drop_duplicates().sample(frac = test_frac, replace = False, random_state = fold_seed).values
     
@@ -161,8 +161,8 @@ def create_fold_setting_unseen_protein(df, fold_seed, frac):
     
     return train, val, test
 
-# unseen drug
-def create_fold_setting_unseen_drug(df, fold_seed, frac):
+# cold drug
+def create_fold_setting_cold_drug(df, fold_seed, frac):
     train_frac, val_frac, test_frac = frac
     drug_drop = df['SMILES'].drop_duplicates().sample(frac = test_frac, replace = False, random_state = fold_seed).values
     
@@ -216,19 +216,19 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 			df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 		except:
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
-	elif drug_encoding == 'MPNN':
-		print('in here')
-		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'CNN':
 		pass
-	elif drug_encoding == 'CNN_RNN':
+	elif target_encoding == 'CNN_RNN':
 		pass
 	elif drug_encoding == 'Transformer':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
+	elif drug_encoding == 'MPNN':
+		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]	
+		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
@@ -270,20 +270,19 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 	print('splitting dataset...')
 	if split_method == 'random': 
 		train, val, test = create_fold(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
-	elif split_method == 'unseen_drug':
-		train, val, test = create_fold_setting_unseen_drug(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
-	elif split_method == 'unseen_protein':
-		train, val, test = create_fold_setting_unseen_protein(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
+	elif split_method == 'cold_drug':
+		train, val, test = create_fold_setting_cold_drug(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
+	elif split_method == 'cold_protein':
+		train, val, test = create_fold_setting_cold_protein(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
 	elif split_method == 'repurposing_VS':
 		train = df_data
 		val = df_data
 		test = df_data
 	else:
-		raise AttributeError("Please select one of the three split method: random, unseen_drug, unseen_target!")
+		raise AttributeError("Please select one of the three split method: random, cold_drug, cold_target!")
 
 	print('Done.')
 	return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
-
 
 def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding, target_encoding, mode):
 	if mode == 'repurposing':
@@ -380,8 +379,7 @@ def generate_config(drug_encoding, target_encoding,
 					'target_encoding': target_encoding
 	}
 
-	print(drug_encoding)
-
+	
 	if drug_encoding == 'Morgan':
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
 	elif drug_encoding == 'Pubchem':
@@ -393,9 +391,6 @@ def generate_config(drug_encoding, target_encoding,
 	elif drug_encoding == 'rdkit_2d_normalized':
 		base_config['input_dim_drug'] = 200
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
-	elif drug_encoding == 'MPNN':
-		base_config['hidden_dim_drug'] = 50
-		base_config['mpnn_depth'] = mpnn_depth 
 	elif drug_encoding == 'CNN':
 		base_config['cnn_drug_filters'] = cnn_drug_filters
 		base_config['cnn_drug_kernels'] = cnn_drug_kernels
@@ -415,6 +410,13 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_dropout_rate'] = transformer_dropout_rate
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
+	elif drug_encoding == 'MPNN':
+		base_config['hidden_dim_drug'] = 50
+		base_config['mpnn_depth'] = 3 
+		base_config['batch_size'] = 1
+		base_config['mpnn_hidden_size'] = mpnn_hidden_size
+		base_config['mpnn_depth'] = mpnn_depth
+		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
@@ -462,7 +464,7 @@ def convert_y_unit(y, from_, to_):
 		y = 10**(-y) / 1e-9
 
 	if to_ == 'p':
-		y = -np.log10(y*1e-9)
+		y = -np.log10(y*1e-9 + 1e-10)
 	elif to == 'nM':
 		y = y
 
