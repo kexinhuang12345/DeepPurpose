@@ -9,7 +9,31 @@ from torch.utils import data
 from torch.autograd import Variable
 from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
 from chemutils import get_mol, atom_features, bond_features, MAX_NB, ATOM_FDIM, BOND_FDIM
+from subword_nmt.apply_bpe import BPE
+import codecs
 
+import os
+if os.getcwd()[-3:] != 'DTI':
+	os.chdir('./DTI/')
+# ESPF encoding
+vocab_path = './ESPF/drug_codes_chembl_freq_1500.txt'
+bpe_codes_drug = codecs.open(vocab_path)
+dbpe = BPE(bpe_codes_drug, merges=-1, separator='')
+sub_csv = pd.read_csv('./ESPF/subword_units_map_chembl_freq_1500.csv')
+
+idx2word_d = sub_csv['index'].values
+words2idx_d = dict(zip(idx2word_d, range(0, len(idx2word_d))))
+
+vocab_path = './ESPF/protein_codes_uniprot_2000.txt'
+bpe_codes_protein = codecs.open(vocab_path)
+pbpe = BPE(bpe_codes_protein, merges=-1, separator='')
+#sub_csv = pd.read_csv(dataFolder + '/subword_units_map_protein.csv')
+sub_csv = pd.read_csv('./ESPF/subword_units_map_uniprot_2000.csv')
+
+idx2word_p = sub_csv['index'].values
+words2idx_p = dict(zip(idx2word_p, range(0, len(idx2word_p))))
+
+from chemutils import get_mol, atom_features, bond_features, MAX_NB
 
 def create_var(tensor, requires_grad=None):
     if requires_grad is None:
@@ -18,13 +42,17 @@ def create_var(tensor, requires_grad=None):
         return Variable(tensor, requires_grad=requires_grad)
 
 
+def length_func(list_or_tensor):
+	if type(list_or_tensor)==list:
+		return len(list_or_tensor)
+	return list_or_tensor.shape[0]
+
 def index_select_ND(source, dim, index):
     index_size = index.size()
     suffix_dim = source.size()[1:]
     final_size = index_size + suffix_dim
     target = source.index_select(dim, index.view(-1))
     return target.view(final_size)
-
 
 def smiles2morgan(s, radius = 2, nBits = 1024):
     try:
@@ -150,7 +178,13 @@ def create_fold_setting_unseen_drug(df, fold_seed, frac):
 
 #TODO: add one target, drug folding
 
-def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_method = 'random', frac = [0.7, 0.1, 0.2]):
+def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=None, split_method = 'random', frac = [0.7, 0.1, 0.2]):
+	if split_method == 'repurposing_VS':
+		y = [-1]*len(X_drug) # create temp y for compatitibility
+
+	if len(X_target) == 1:
+		# one target high throughput screening setting
+		X_target = np.tile(target, (length_func(X_drug), ))
 
 	df_data = pd.DataFrame(zip(X_drug, X_target, y))
 	df_data.rename(columns={0:'SMILES',
@@ -182,10 +216,14 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 			df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 		except:
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
-	elif drug_encoding == 'SMILES_CNN':
-		raise NotImplementedError
-	elif drug_encoding == 'SMILES_Transformer':
-		raise NotImplementedError
+	elif drug_encoding == 'CNN':
+		pass
+	elif target_encoding == 'CNN_RNN':
+		pass
+	elif drug_encoding == 'Transformer':
+		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'MPNN':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
@@ -197,6 +235,7 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 	print('drug encoding finished...')
 	print('encoding protein...')
 	print('unique target sequence: ' + str(len(df_data['Target Sequence'].unique())))
+
 	if target_encoding == 'AAC':
 		print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU. Calculate your time by the unique target sequence #, instead of the entire dataset.')
 		AA = pd.Series(df_data['Target Sequence'].unique()).apply(CalculateAADipeptideComposition)
@@ -216,13 +255,14 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
 		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	elif target_encoding == 'CNN':
-		raise NotImplementedError		
-	elif target_encoding == 'attention_CNN':
-		raise NotImplementedError
-	elif target_encoding == 'RNN':
-		raise NotImplementedError
+		pass		
+		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
+	elif target_encoding == 'CNN_RNN':
+		pass
 	elif target_encoding == 'Transformer':
-		raise NotImplementedError
+		AA = pd.Series(df_data['Target Sequence'].unique()).apply(protein2emb_encoder)
+		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
+		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	else:
 		raise AttributeError("Please use the correct protein encoding available!")
 
@@ -234,13 +274,19 @@ def data_process(X_drug, X_target, y, drug_encoding, target_encoding, split_meth
 		train, val, test = create_fold_setting_unseen_drug(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
 	elif split_method == 'unseen_protein':
 		train, val, test = create_fold_setting_unseen_protein(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
+	elif split_method == 'repurposing_VS':
+		train = df_data
+		val = df_data
+		test = df_data
 	else:
 		raise AttributeError("Please select one of the three split method: random, unseen_drug, unseen_target!")
 
 	print('Done.')
 	return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
 
+""" 
 def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding, target_encoding, mode):
+	print('utils data_process_repurpose_virtual_screening ', X_repurpose.shape)
 	if drug_encoding == 'Morgan':
 		unique = pd.Series(np.unique(X_repurpose)).apply(smiles2morgan)
 		unique_dict = dict(zip(np.unique(X_repurpose), unique))
@@ -268,7 +314,8 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 	elif drug_encoding == 'MPNN':
 		unique = pd.Series(np.unique(X_repurpose)).apply(smiles2mpnnfeature)
 		unique_dict = dict(zip(np.unique(X_repurpose), unique))
-		X_repurpose = [unique_dict[i] for i in X_repurpose]	
+		X_repurpose = [unique_dict[i] for i in X_repurpose]
+		#print(X_repurpose[0])	
 		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
@@ -293,11 +340,11 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 		else:
 			raise AttributeError("Please use the correct protein encoding available!")
 
-		if drug_encoding == "MPNN":
+		'''if drug_encoding == "MPNN":
 			return X_repurpose, torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
 		else:
 			return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.tile(target, (len(X_repurpose), 1)))
-	 
+		''' 
 	elif mode == 'virtual screening':
 		if target_encoding == 'AAC':
 			unique = pd.Series(np.unique(target)).apply(CalculateAADipeptideComposition)
@@ -325,35 +372,67 @@ def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding,
 			raise NotImplementedError 
 		else:
 			raise NotImplementedError("Please use the correct protein encoding available!")
-		if drug_encoding == "MPNN":
+		'''if drug_encoding == "MPNN":
 			return X_repurpose, torch.Tensor(np.vstack(np.array(target)).astype(np.float))
 		else:
 			return torch.Tensor(np.vstack(np.array(X_repurpose)).astype(np.float)), torch.Tensor(np.vstack(np.array(target)).astype(np.float))
+		'''
+	if mode == 'repurposing':
+		target = np.tile(target, (len(X_repurpose), ))
+	elif mode == 'virtual screening':
+		target = target
 	else:
 		raise AttributeError("Please select repurposing or virtual screening!")
 
+	df, _, _ = data_process(X_repurpose, target, drug_encoding = drug_encoding, 
+								target_encoding = target_encoding, 
+								split_method='repurposing_VS')
+
+	return df
+"""
+def data_process_repurpose_virtual_screening(X_repurpose, target, drug_encoding, target_encoding, mode):
+	if mode == 'repurposing':
+		target = np.tile(target, (len(X_repurpose), ))
+	elif mode == 'virtual screening':
+		target = target
+	else:
+		raise AttributeError("Please select repurposing or virtual screening!")
+
+	df, _, _ = data_process(X_repurpose, target, drug_encoding = drug_encoding, 
+								target_encoding = target_encoding, 
+								split_method='repurposing_VS')
+
+	return df
 
 class data_process_loader(data.Dataset):
 
-    def __init__(self, list_IDs, labels, df, **config):
-        'Initialization'
-        self.labels = labels
-        self.list_IDs = list_IDs
-        self.df = df
-        self.config = config
+	def __init__(self, list_IDs, labels, df, **config):
+		'Initialization'
+		self.labels = labels
+		self.list_IDs = list_IDs
+		self.df = df
+		self.config = config
 
-    def __len__(self):
-        'Denotes the total number of samples'
-        return len(self.list_IDs)
+	def __len__(self):
+		'Denotes the total number of samples'
+		return len(self.list_IDs)
 
-    def __getitem__(self, index):
-        'Generates one sample of data'
-        index = self.list_IDs[index]
-        v_p = self.df.iloc[index]['target_encoding']
-        v_d = self.df.iloc[index]['drug_encoding']
-            
-        y = self.labels[index]
-        return v_d, v_p, y
+	def __getitem__(self, index):
+		'Generates one sample of data'
+		index = self.list_IDs[index]
+		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
+			v_d = self.df.iloc[index]['SMILES']
+			v_d = trans_drug(v_d)
+		else:
+			v_d = self.df.iloc[index]['drug_encoding']
+
+		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
+			v_p = self.df.iloc[index]['Target Sequence']
+			v_p = trans_protein(v_p)
+		else:
+			v_p = self.df.iloc[index]['target_encoding']
+		y = self.labels[index]
+		return v_d, v_p, y
 
 
 def generate_config(drug_encoding, target_encoding, 
@@ -366,7 +445,32 @@ def generate_config(drug_encoding, target_encoding,
 					mlp_hidden_dims_target = [1024, 256, 64],
 					batch_size = 64,
 					train_epoch = 10,
-					LR = 1e-4
+					LR = 1e-4,
+					transformer_emb_size_drug = 256,
+					transformer_intermediate_size_drug = 1024,
+					transformer_num_attention_heads_drug = 4,
+					transformer_n_layer_drug = 1,
+					transformer_emb_size_target = 256,
+					transformer_intermediate_size_target = 1024,
+					transformer_num_attention_heads_target = 4,
+					transformer_n_layer_target = 1,
+					transformer_dropout_rate = 0.1,
+					transformer_attention_probs_dropout = 0.1,
+					transformer_hidden_dropout_rate = 0.1,
+					mpnn_hidden_size = 50,
+					mpnn_depth = 3,
+					cnn_drug_filters = [8,32,64],
+					cnn_drug_kernels = [4,8,12],
+					cnn_target_filters = [8,32,64],
+					cnn_target_kernels = [4,8,12],
+					rnn_Use_GRU_LSTM_drug = 'LSTM',
+					rnn_drug_hid_dim = 64,
+					rnn_drug_n_layers = 2,
+					rnn_drug_bidirectional = True,
+					rnn_Use_GRU_LSTM_target = 'LSTM',
+					rnn_target_hid_dim = 64,
+					rnn_target_n_layers = 2,
+					rnn_target_bidirectional = True
 					):
 
 	base_config = {'input_dim_drug': input_dim_drug,
@@ -376,7 +480,9 @@ def generate_config(drug_encoding, target_encoding,
 					'cls_hidden_dims' : cls_hidden_dims, # decoder classifier dim 1
 					'batch_size': batch_size,
 					'train_epoch': train_epoch,
-					'LR': LR
+					'LR': LR,
+					'drug_encoding': drug_encoding,
+					'target_encoding': target_encoding
 	}
 
 	
@@ -391,14 +497,31 @@ def generate_config(drug_encoding, target_encoding,
 	elif drug_encoding == 'rdkit_2d_normalized':
 		base_config['input_dim_drug'] = 200
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
-	elif drug_encoding == 'SMILES_CNN':
-		raise NotImplementedError
-	elif drug_encoding == 'SMILES_Transformer':
-		raise NotImplementedError
+	elif drug_encoding == 'CNN':
+		base_config['cnn_drug_filters'] = cnn_drug_filters
+		base_config['cnn_drug_kernels'] = cnn_drug_kernels
+	elif target_encoding == 'CNN_RNN':
+		base_config['rnn_Use_GRU_LSTM_drug'] = rnn_Use_GRU_LSTM_drug
+		base_config['rnn_drug_hid_dim'] = rnn_drug_hid_dim
+		base_config['rnn_drug_n_layers'] = rnn_drug_n_layers
+		base_config['rnn_drug_bidirectional'] = rnn_drug_bidirectional 
+		base_config['cnn_drug_filters'] = cnn_drug_filters
+		base_config['cnn_drug_kernels'] = cnn_drug_kernels
+	elif drug_encoding == 'Transformer':
+		base_config['input_dim_drug'] = 2586
+		base_config['transformer_emb_size_drug'] = transformer_emb_size_drug
+		base_config['transformer_num_attention_heads_drug'] = transformer_num_attention_heads_drug
+		base_config['transformer_intermediate_size_drug'] = transformer_intermediate_size_drug
+		base_config['transformer_n_layer_drug'] = transformer_n_layer_drug
+		base_config['transformer_dropout_rate'] = transformer_dropout_rate
+		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
+		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	elif drug_encoding == 'MPNN':
 		base_config['hidden_dim_drug'] = 50
 		base_config['mpnn_depth'] = 3 
 		base_config['batch_size'] = 1
+		base_config['mpnn_hidden_size'] = mpnn_hidden_size
+		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
@@ -415,13 +538,24 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['input_dim_protein'] = 100
 		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1				
 	elif target_encoding == 'CNN':
-		raise NotImplementedError
-	elif target_encoding == 'attention_CNN':
-		raise NotImplementedError
-	elif target_encoding == 'RNN':
-		raise NotImplementedError
+		base_config['cnn_target_filters'] = cnn_target_filters
+		base_config['cnn_target_kernels'] = cnn_target_kernels
+	elif target_encoding == 'CNN_RNN':
+		base_config['rnn_Use_GRU_LSTM_target'] = rnn_Use_GRU_LSTM_target
+		base_config['rnn_target_hid_dim'] = rnn_target_hid_dim
+		base_config['rnn_target_n_layers'] = rnn_target_n_layers
+		base_config['rnn_target_bidirectional'] = rnn_target_bidirectional 
+		base_config['cnn_target_filters'] = cnn_target_filters
+		base_config['cnn_target_kernels'] = cnn_target_kernels
 	elif target_encoding == 'Transformer':
-		raise NotImplementedError
+		base_config['input_dim_protein'] = 4114
+		base_config['transformer_emb_size_target'] = transformer_emb_size_target
+		base_config['transformer_num_attention_heads_target'] = transformer_num_attention_heads_target
+		base_config['transformer_intermediate_size_target'] = transformer_intermediate_size_target
+		base_config['transformer_n_layer_target'] = transformer_n_layer_target	
+		base_config['transformer_dropout_rate'] = transformer_dropout_rate
+		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
+		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	else:
 		raise AttributeError("Please use the correct protein encoding available!")
 
@@ -442,4 +576,72 @@ def convert_y_unit(y, from_, to_):
 
 	return y
 
+def protein2emb_encoder(x):
+    max_p = 545
+    t1 = pbpe.process_line(x).split()  # split
+    try:
+        i1 = np.asarray([words2idx_p[i] for i in t1])  # index
+    except:
+        i1 = np.array([0])
+
+    l = len(i1)
+   
+    if l < max_p:
+        i = np.pad(i1, (0, max_p - l), 'constant', constant_values = 0)
+        input_mask = ([1] * l) + ([0] * (max_p - l))
+    else:
+        i = i1[:max_p]
+        input_mask = [1] * max_p
+        
+    return i, np.asarray(input_mask)
+
+def drug2emb_encoder(x):
+    max_d = 50
+    t1 = dbpe.process_line(x).split()  # split
+    try:
+        i1 = np.asarray([words2idx_d[i] for i in t1])  # index
+    except:
+        i1 = np.array([0])
+    
+    l = len(i1)
+
+    if l < max_d:
+        i = np.pad(i1, (0, max_d - l), 'constant', constant_values = 0)
+        input_mask = ([1] * l) + ([0] * (max_d - l))
+
+    else:
+        i = i1[:max_d]
+        input_mask = [1] * max_d
+
+    return i, np.asarray(input_mask)
+
+# '?' padding
+amino_char = ['?', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y']
+smiles_char = ['?', ' ', '#', '%', '(', ')', '+', ',', '-', '.', '/', '0', '1', '2',
+		'3', '4', '5', '6', '7', '8', '9', ':', '=', '@', 'A', 'B', 'C',
+		'F', 'H', 'I', 'N', 'O', 'P', 'R', 'S', 'V','[', '\\', ']', 'a',
+		'b', 'c', 'e', 'i', 'l', 'n', 'o', 'r', 's', 'u', '|']
+
+from sklearn.preprocessing import OneHotEncoder
+enc_protein = OneHotEncoder().fit(np.array(amino_char).reshape(-1, 1))
+enc_drug = OneHotEncoder().fit(np.array(smiles_char).reshape(-1, 1))
+
+MAX_SEQ_PROTEIN = 1000
+MAX_SEQ_DRUG = 100
+
+def trans_protein(x):
+	temp = list(x.upper())
+	if len(temp) < MAX_SEQ_PROTEIN:
+		temp = temp + ['?'] * (MAX_SEQ_PROTEIN-len(temp))
+	else:
+		temp = temp [:MAX_SEQ_PROTEIN]
+	return enc_protein.transform(np.array(temp).reshape(-1,1)).toarray().T
+
+def trans_drug(x):
+	temp = list(x)
+	if len(temp) < MAX_SEQ_DRUG:
+		temp = temp + ['?'] * (MAX_SEQ_DRUG-len(temp))
+	else:
+		temp = temp [:MAX_SEQ_DRUG]
+	return enc_drug.transform(np.array(temp).reshape(-1,1)).toarray().T
 
