@@ -11,10 +11,11 @@ from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
 from chemutils import get_mol, atom_features, bond_features, MAX_NB, ATOM_FDIM, BOND_FDIM
 from subword_nmt.apply_bpe import BPE
 import codecs
+import pickle
 
 import os
-if os.getcwd()[-3:] != 'DTI':
-	os.chdir('./DTI/')
+if os.getcwd()[-7:] != 'Purpose':
+	os.chdir('./DeepPurpose/')
 # ESPF encoding
 vocab_path = './ESPF/drug_codes_chembl_freq_1500.txt'
 bpe_codes_drug = codecs.open(vocab_path)
@@ -335,10 +336,10 @@ def generate_config(drug_encoding, target_encoding,
 					input_dim_protein = 8420,
 					hidden_dim_drug = 256, 
 					hidden_dim_protein = 256,
-					cls_hidden_dims = [1024, 256, 64],
+					cls_hidden_dims = [1024, 1024, 512],
 					mlp_hidden_dims_drug = [1024, 256, 64],
 					mlp_hidden_dims_target = [1024, 256, 64],
-					batch_size = 64,
+					batch_size = 256,
 					train_epoch = 10,
 					LR = 1e-4,
 					transformer_emb_size_drug = 256,
@@ -354,9 +355,9 @@ def generate_config(drug_encoding, target_encoding,
 					transformer_hidden_dropout_rate = 0.1,
 					mpnn_hidden_size = 50,
 					mpnn_depth = 3,
-					cnn_drug_filters = [8,32,64],
-					cnn_drug_kernels = [4,8,12],
-					cnn_target_filters = [8,32,64],
+					cnn_drug_filters = [32,64,96],
+					cnn_drug_kernels = [4,6,8],
+					cnn_target_filters = [32,64,96],
 					cnn_target_kernels = [4,8,12],
 					rnn_Use_GRU_LSTM_drug = 'LSTM',
 					rnn_drug_hid_dim = 64,
@@ -415,6 +416,7 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	elif drug_encoding == 'MPNN':
 		base_config['hidden_dim_drug'] = 50
+		base_config['batch_size'] = batch_size
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
@@ -466,7 +468,7 @@ def convert_y_unit(y, from_, to_):
 
 	if to_ == 'p':
 		y = -np.log10(y*1e-9 + 1e-10)
-	elif to == 'nM':
+	elif to_ == 'nM':
 		y = y
 
 	return y
@@ -542,3 +544,11 @@ def trans_drug(x):
 		temp = temp [:MAX_SEQ_DRUG]
 	return enc_drug.transform(np.array(temp).reshape(-1,1)).toarray().T
 
+
+def save_dict(path, obj):
+	with open(path + '/config.pkl', 'wb') as f:
+		pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_dict(path):
+	with open(path + '/config.pkl', 'rb') as f:
+		return pickle.load(f)
