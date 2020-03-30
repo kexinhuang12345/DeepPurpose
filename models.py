@@ -325,14 +325,18 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 				if model.binary:
 					if y_pred[i] > 0.5:
 						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to have interaction with the target')
+							' predicted to have interaction with the target' + \
+							' with interaction probability of ' + "{0:4f}".format(y_pred[i]))
 						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to have interaction with the target' + '\n')	
+							' predicted to have interaction with the target' \
+							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i]) + '\n')	
 					else:
 						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to NOT have interaction with the target')	
+							' predicted to NOT have interaction with the target' \
+							+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]))	
 						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to NOT have interaction with the target'+ '\n')								
+							' predicted to NOT have interaction with the target' \
+							+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]) + '\n')								
 				else:
 					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i]))
@@ -344,6 +348,8 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
 	fo = os.path.join(result_folder, "virtual_screening.txt")
+	if not model.binary:
+		print_list = []
 	with open(fo,'w') as fout:
 		print('virtual screening...')
 		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
@@ -357,21 +363,28 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 				if model.binary:
 					if y_pred[i] > 0.5:
 						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target '\
-							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p))	
+							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
+							 + ' with interaction probability of ' + "{0:4f}".format(y_pred[i]))	
 						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target '\
-							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p) + '\n')
+							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
+							 + ' with interaction probability of ' + "{0:4f}".format(y_pred[i]) + '\n')
 					else:
 						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' \
-							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p))
+							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
+							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i]))
 						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' \
-							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + '\n')								
+							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
+							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i]) + '\n')								
 				else:
-					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
+					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
 						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
-						+ "{0:.2f}".format(y_pred[i]))
-					fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
-						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
-						+ "{0:.2f}".format(y_pred[i]) + '\n')
+						+ "{0:.2f}".format(y_pred[i])
+					print_list.append((string, y_pred[i]))
+		print_list.sort(key = lambda x:x[1], reverse = True)
+		print_list = [i[0] for i in print_list]
+		for lst in print_list:
+			print(lst)
+			fout.write(lst + "\n")
 
 	return y_pred
 
