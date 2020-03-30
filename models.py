@@ -13,7 +13,7 @@ from time import time
 from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr
-
+import pickle 
 torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
@@ -460,6 +460,12 @@ class DBTA:
 			max_MSE = 10000
 		model_max = copy.deepcopy(self.model)
 
+		valid_metric_record = []
+		valid_metric_header = ["# epoch"] 
+		if self.binary:
+			valid_metric_header.extend(["AUROC", "AUPRC", "F1"])
+		else:
+			valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 		print('--- Go for Training ---')
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
@@ -488,18 +494,23 @@ class DBTA:
 					print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + ' with loss ' + str(loss.cpu().detach().numpy()))
 
 			with torch.set_grad_enabled(False):
-				if self.binary:
+				if self.binary:  
+					## binary: ROC-AUC, PR-AUC, F1  
 					auc, auprc, f1, logits = self.test_(validation_generator, self.model)
+					valid_metric_record.append((auc, auprc, f1))
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc   
 					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))
-				else:
+				else:  
+					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
 					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
+					valid_metric_record.append((mse, r2, p_val, CI))
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
-					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: '\
+						 + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			
 		if test is not None:
 			print('--- Go for Testing ---')
@@ -518,6 +529,10 @@ class DBTA:
 		plt.plot(iter_num, loss_history, "bo-")
 		plt.xlabel("iteration", fontsize = fontsize)
 		plt.ylabel("loss value", fontsize = fontsize)
+		pkl_file = os.path.join(self.result_folder, "loss_curve_iter.pkl")
+		with open(pkl_file, 'wb') as pck:
+			pickle.dump(loss_history, pck)
+
 		fig_file = os.path.join(self.result_folder, "loss_curve.png")
 		plt.savefig(fig_file)
 
