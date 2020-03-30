@@ -17,6 +17,7 @@ import pickle
 torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
+from prettytable import PrettyTable
 
 import os
 
@@ -466,6 +467,9 @@ class DBTA:
 			valid_metric_header.extend(["AUROC", "AUPRC", "F1"])
 		else:
 			valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+		table = PrettyTable(valid_metric_header)
+		float2str = lambda x:'%0.4f'%x
+
 		print('--- Go for Training ---')
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
@@ -497,7 +501,8 @@ class DBTA:
 				if self.binary:  
 					## binary: ROC-AUC, PR-AUC, F1  
 					auc, auprc, f1, logits = self.test_(validation_generator, self.model)
-					valid_metric_record.append((auc, auprc, f1))
+					lst = ["epoch " + str(epo)] + list(map(float2str,[auc, auprc, f1]))
+					valid_metric_record.append(lst)
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc   
@@ -505,12 +510,15 @@ class DBTA:
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
 					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
-					valid_metric_record.append((mse, r2, p_val, CI))
+					lst = ["epoch " + str(epo)] + list(map(float2str,[mse, r2, p_val, CI]))
+					valid_metric_record.append(lst)
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
 					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: '\
 						 + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+			table.add_row(lst)
+		print(table)
 			
 		if test is not None:
 			print('--- Go for Testing ---')
