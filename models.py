@@ -22,10 +22,10 @@ import scikitplot as skplt
 
 import os
 
-if os.getcwd()[-3:] != 'DTI':
-	os.chdir('./DTI/')
+if os.getcwd()[-7:] != 'Purpose':
+	os.chdir('./DeepPurpose/')
 
-from utils import data_process_loader, data_process_repurpose_virtual_screening, create_var, index_select_ND
+from utils import *
 from model_helper import Encoder_MultipleLayers, Embeddings    
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -272,8 +272,6 @@ class MPNN(nn.Sequential):
 
 
 
-
-
 class Classifier(nn.Sequential):
 	def __init__(self, model_drug, model_protein, **config):
 		super(Classifier, self).__init__()
@@ -304,12 +302,13 @@ def model_initialize(**config):
 	model = DBTA(**config)
 	return model
 
-def model_pretrained(path, drug_encoding, target_encoding, **config):
+def model_pretrained(path_dir):
+	config = load_dict(path_dir)
 	model = DBTA(**config)
-	model.load_pretrained(path)
+	model.load_pretrained(path_dir + '/model.pt')
 	return model
 
-def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/"):
+def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/", convert_y = False):
 	# X_repurpose: a list of SMILES string
 	# target: one target 
 	fo = os.path.join(result_folder, "repurposing.txt")
@@ -319,6 +318,10 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 		print('repurposing...')
 		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'repurposing')
 		y_pred = model.predict(df_data)
+
+		if convert_y:
+			y_pred = convert_y_unit(np.array(y_pred), 'p', 'nM')
+
 		print('---------------')
 		if target_name is not None:
 			print('Drug Repurposing Result for '+target_name)
@@ -344,8 +347,12 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i])
 					print_list.append((string, y_pred[i]))
+		
+		if convert_y:
+			print_list.sort(key = lambda x:x[1])
+		else:
+			print_list.sort(key = lambda x:x[1], reverse = True)
 
-		print_list.sort(key = lambda x:x[1], reverse = True)
 		print_list = [i[0] for i in print_list]
 		for lst in print_list:
 			print(lst)
@@ -639,8 +646,9 @@ class DBTA:
 			score = self.test_(generator, self.model, repurposing_mode = True)
 		return score
 
-	def save_model(self, path):
-		torch.save(self.model.state_dict(), path)
+	def save_model(self, path_dir):
+		torch.save(self.model.state_dict(), path_dir + '/model.pt')
+		save_dict(path_dir, self.config)
 
 	def load_pretrained(self, path):
 		self.model.load_state_dict(torch.load(path))
