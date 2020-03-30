@@ -372,6 +372,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 					fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
 						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
 						+ "{0:.2f}".format(y_pred[i]) + '\n')
+
 	return y_pred
 
 
