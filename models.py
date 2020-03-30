@@ -18,6 +18,7 @@ torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
 from prettytable import PrettyTable
+import scikitplot as skplt
 
 import os
 
@@ -461,10 +462,16 @@ class DBTA:
 				return y_pred
 			## ROC-AUC curve 
 			roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
-
+			y_pred0 = np.array(y_pred).reshape(-1,1)
+			y_pred2 = np.array([1-i for i in y_pred]).reshape(-1,1)
+			y_prediction = np.concatenate([y_pred0, y_pred2], 1)
+			skplt.metrics.plot_roc_curve(y_label, y_prediction)
+			plt.savefig(roc_auc_file)
+			plt.clf()
 			## PR-AUC curve
 			pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
-
+			skplt.metrics.plot_precision_recall(y_label, y_prediction)
+			plt.savefig(pr_auc_file)
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
 			if repurposing_mode:
