@@ -415,6 +415,12 @@ class DBTA:
 		if self.binary:
 			if repurposing_mode:
 				return y_pred
+			## ROC-AUC curve 
+			roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
+
+			## PR-AUC curve
+			pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
+
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
 			if repurposing_mode:
