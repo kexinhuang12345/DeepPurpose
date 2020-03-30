@@ -522,18 +522,32 @@ class DBTA:
 		with open(prettytable_file, 'w') as fp:
 			fp.write(table.get_string())
 
+
+
 		if test is not None:
 			print('--- Go for Testing ---')
 			if self.binary:
 				auc, auprc, f1, logits = self.test_(testing_generator, model_max)
+				test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+				test_table.add_row(list(map(float2str, [auc, auprc, f1])))
 				print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
 			else:
 				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
+				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
 				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 		# load early stopped model
 		self.model = model_max
 
-		### learning curve 
+
+		######### learning record ###########
+
+		### 1. test results
+		prettytable_file = os.path.join(self.result_folder, "test_markdowntable.txt")
+		with open(prettytable_file, 'w') as fp:
+			fp.write(test_table.get_string())
+
+		### 2. learning curve 
 		fontsize = 16
 		iter_num = list(range(1,len(loss_history)+1))
 		plt.plot(iter_num, loss_history, "bo-")
