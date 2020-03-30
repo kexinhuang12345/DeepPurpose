@@ -35,8 +35,11 @@ from DeepPurpose.dataset import *
 
 # Load Data, SMILES for drug, Amino Acid Sequence for Target. 
 # Support both continuous (IC50, Kd, etc.) and binary (interaction or not). Automatically adjust the loss and evaluation metrics. Support public dataset loading.
-X_drug, X_target, y  = process_BindingDB(download_BindingDB(SAVE_PATH), y = 'Kd', binary = False, convert_to_log = True)
 # e.g. ['Cc1ccc(CNS(=O)(=O)c2ccc(s2)S(N)(=O)=O)cc1', ...], ['MSHHWGYGKHNGPEHWHKDFPIAKGERQSPVDIDTH...', ...], [0.46, 0.49, ...]
+X_drug, X_target, y  = process_BindingDB(download_BindingDB(SAVE_PATH),
+										y = 'Kd', 
+										binary = False, 
+										convert_to_log = True)
 
 # Type in the encoding names for drug/protein.
 drug_encoding, target_encoding = 'MPNN', 'Transformer'
@@ -52,14 +55,13 @@ config = generate_config(drug_encoding, target_encoding, transformer_n_layer_tar
 model = models.model_initialize(**config)
 
 # Train the model and support early stopping
-model.train(train, val, test)
 # Detailed output including a tidy table storing validation loss, metrics, AUC curves figures and etc. are stored in the ./result folder.
+model.train(train, val, test)
 
 # Repurpose using the trained model or pre-trained model
+# loading repurposing dataset using Broad Repurposing Hub and SARS-CoV 3CL Protease Target.
 X_repurpose, drug_name, drug_cid = load_broad_repurposing_hub(SAVE_PATH)
-# loading repurposing dataset ['CN1CCN(CC1)c1c(F)cc2c3c1SCCn3cc(C(O)=O)c2=O	', ...], ['Rufloxacin', ...], ['58258', ...] 
 target, target_name = load_SARS_CoV_Protease_3CL()
-# 'MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...', 'P36507'
 
 _ = models.repurpose(X_repurpose, target, model, drug_name, target_name)
 '''
