@@ -214,7 +214,8 @@ def load_broad_repurposing_hub(path):
 	url = 'https://drive.google.com/uc?export=download&id=1A4HbHMZvhgDjx5ZjS-uVrCGBaVmvU8wd'
 	saved_path_data = wget.download(url, path)
 	df = pd.read_csv(saved_path_data)
-	return df.smiles.values, df.title.values, df.cid.values
+	df = df.fillna('UNK')
+	return df.smiles.values, df.title.values, df.cid.values.astype(str)
 
 def load_SARS_CoV_Protease_3CL():
 	target = 'SGFKKLVSPSSAVEKCIVSVSYRGNNLNGLWLGDSIYCPRHVLGKFSGDQWGDVLNLANNHEFEVVTQNGVTLNVVSRRLKGAVLILQTAVANAETPKYKFVKANCGDSFTIACSYGGTVIGLYPVTMRSNGTIRASFLAGACGSVGFNIEKGVVNFFYMHHLELPNALHTGTDLMGEFYGGYVDEEVAQRVPPDNLVTNNIVAWLYAAIISVKESSFSQPKWLESTTVSIEDYNRWASDNGFTPFSTSTAITKLSAITGVDVCKLLRTIMVKSAQWGSDPILGQYNFEDELTPESVFNQVGGVRLQ'

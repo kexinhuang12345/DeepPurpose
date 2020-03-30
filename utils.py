@@ -218,7 +218,7 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
 	elif drug_encoding == 'CNN':
 		pass
-	elif target_encoding == 'CNN_RNN':
+	elif drug_encoding == 'CNN_RNN':
 		pass
 	elif drug_encoding == 'Transformer':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
@@ -415,7 +415,6 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	elif drug_encoding == 'MPNN':
 		base_config['hidden_dim_drug'] = 50
-		base_config['batch_size'] = 1
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
@@ -527,6 +526,7 @@ MAX_SEQ_DRUG = 100
 
 def trans_protein(x):
 	temp = list(x.upper())
+	temp = [i if i in amino_char else '?' for i in temp]
 	if len(temp) < MAX_SEQ_PROTEIN:
 		temp = temp + ['?'] * (MAX_SEQ_PROTEIN-len(temp))
 	else:
@@ -535,6 +535,7 @@ def trans_protein(x):
 
 def trans_drug(x):
 	temp = list(x)
+	temp = [i if i in smiles_char else '?' for i in temp]
 	if len(temp) < MAX_SEQ_DRUG:
 		temp = temp + ['?'] * (MAX_SEQ_DRUG-len(temp))
 	else:
