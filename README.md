@@ -13,18 +13,18 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 - 10 lines of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning and machine learning researchers to push forward the frontiers of DTI prediction.
 
-- 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network. Switching encoding is as simple as changing the encoding names!
+- 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network. Most of the combinations of the encodings are not yet in existing works. Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
-	- support cold target, cold drug settings for robust model evaluations and support one-target high throughput sequencing assay data setup.
-	- many dataset loading scripts to ease the tedious preprocessing. 
+	- support cold target, cold drug settings for robust model evaluations and support single-target high throughput sequencing assay data setup.
+	- many dataset loading and downloading/unzipping scripts to ease the tedious preprocessing. 
 	- label unit conversion for skewed label distribution such as Kd.
 	- time reference for computational expensive encoding.
-	- easy monitoring of training process with early stopping on validation set.
+	- easy monitoring of training process with detailed training metrics output also support early stopping.
 	- detailed output records such as rank list for repurposing result.
 	- various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.
-	- allow easy pretraining models loading 
+	- easily load pretrained models 
 
 ## Example
 
