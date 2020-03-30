@@ -68,7 +68,7 @@ _ = models.repurpose(X_repurpose, target, model, drug_name, target_name)
 Output:
 ------------------
 Drug Repurposing Result for SARS-CoV 3CL Protease
-Drug Rufloxacin   	predicted to have binding affinity score 4.87
+Drug Rufloxacin     predicted to have binding affinity score 4.87
 Drug Sparfloxacin   predicted to have binding affinity score 5.39
 Drug Cefoperazone   predicted to have binding affinity score 4.70
 ...
