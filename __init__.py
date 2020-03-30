@@ -1,2 +1,2 @@
-from DTI import models
-from DTI import utils 
+from DeepPurpose import models
+from DeepPurpose import utils 
