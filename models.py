@@ -518,8 +518,10 @@ class DBTA:
 					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: '\
 						 + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			table.add_row(lst)
-		print(table)
-			
+		prettytable_file = os.path.join(self.result_folder, "valid_markdowntable.txt")
+		with open(prettytable_file, 'w') as fp:
+			fp.write(table.get_string())
+
 		if test is not None:
 			print('--- Go for Testing ---')
 			if self.binary:
