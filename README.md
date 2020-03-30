@@ -37,9 +37,9 @@ from DeepPurpose.dataset import *
 # Support both continuous (IC50, Kd, etc.) and binary (interaction or not). Automatically adjust the loss and evaluation metrics. Support public dataset loading.
 # e.g. ['Cc1ccc(CNS(=O)(=O)c2ccc(s2)S(N)(=O)=O)cc1', ...], ['MSHHWGYGKHNGPEHWHKDFPIAKGERQSPVDIDTH...', ...], [0.46, 0.49, ...]
 X_drug, X_target, y  = process_BindingDB(download_BindingDB(SAVE_PATH),
-										y = 'Kd', 
-										binary = False, 
-										convert_to_log = True)
+					 y = 'Kd', 
+					 binary = False, 
+					 convert_to_log = True)
 
 # Type in the encoding names for drug/protein.
 drug_encoding, target_encoding = 'MPNN', 'Transformer'
