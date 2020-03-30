@@ -15,7 +15,8 @@ The KIBA dataset can be found in https://jcheminf.biomedcentral.com/articles/10.
 
 The Drug Target Common Dataset can be found in https://drugtargetcommons.fimm.fi/.
 
-The COVID-19 Dataset including SARS-CoV, Broad Repurposing Hub can be found in https://www.aicures.mit.edu/data; and https://pubchem.ncbi.nlm.nih.gov/bioassay/1706. https://github.com/yangkevin2/coronavirus_data
+The COVID-19 Dataset including SARS-CoV, Broad Repurposing Hub can be found in https://www.aicures.mit.edu/data; and https://pubchem.ncbi.nlm.nih.gov/bioassay/1706. 
+We use some existing files from https://github.com/yangkevin2/coronavirus_data
 
 We use the SMILES, protein sequence from DeepDTA github repo: https://github.com/hkmztrk/DeepDTA/tree/master/data.
 '''
@@ -215,3 +216,7 @@ def load_broad_repurposing_hub(path):
 	df = pd.read_csv(saved_path_data)
 	return df.smiles.values, df.title.values, df.cid.values
 
+def load_SARS_CoV_Protease_3CL():
+	target = 'SGFKKLVSPSSAVEKCIVSVSYRGNNLNGLWLGDSIYCPRHVLGKFSGDQWGDVLNLANNHEFEVVTQNGVTLNVVSRRLKGAVLILQTAVANAETPKYKFVKANCGDSFTIACSYGGTVIGLYPVTMRSNGTIRASFLAGACGSVGFNIEKGVVNFFYMHHLELPNALHTGTDLMGEFYGGYVDEEVAQRVPPDNLVTNNIVAWLYAAIISVKESSFSQPKWLESTTVSIEDYNRWASDNGFTPFSTSTAITKLSAITGVDVCKLLRTIMVKSAQWGSDPILGQYNFEDELTPESVFNQVGGVRLQ'
+	target_name = 'SARS-CoV 3CL Protease'
+	return target, target_name
