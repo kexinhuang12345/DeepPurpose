@@ -308,48 +308,70 @@ def model_pretrained(path, drug_encoding, target_encoding, **config):
 	model.load_pretrained(path)
 	return model
 
-def repurpose(X_repurpose, target, model, drug_names = None, target_name = None):
+def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/"):
 	# X_repurpose: a list of SMILES string
 	# target: one target 
-
-	print('repurposing...')
-	df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'repurposing')
-	y_pred = model.predict(df_data)
-	print('---------------')
-	if target_name is not None:
-		print('Drug Repurposing Result for '+target_name)
-	if drug_names is not None:
-		f_d = max([len(o) for o in drug_names]) + 1
-		for i in range(len(X_repurpose)):
-			if model.binary:
-				if y_pred[i] > 0.5:
-					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target')	
+	fo = os.path.join(result_folder, "repurposing.txt")
+	with open(fo, 'w') as fout:
+		print('repurposing...')
+		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'repurposing')
+		y_pred = model.predict(df_data)
+		print('---------------')
+		if target_name is not None:
+			print('Drug Repurposing Result for '+target_name)
+		if drug_names is not None:
+			f_d = max([len(o) for o in drug_names]) + 1
+			for i in range(len(X_repurpose)):
+				if model.binary:
+					if y_pred[i] > 0.5:
+						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+							' predicted to have interaction with the target')
+						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+							' predicted to have interaction with the target' + '\n')	
+					else:
+						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+							' predicted to NOT have interaction with the target')	
+						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+							' predicted to NOT have interaction with the target'+ '\n')								
 				else:
-					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target')								
-			else:
-				print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i]))
-
+					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i]))
+					fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i]) + '\n')
 	return y_pred
 
-def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None):
+def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/"):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
-	print('virtual screening...')
-	df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
-	y_pred = model.predict(df_data)
-	print('---------------')
-	if drug_names is not None and target_names is not None:
-		print('Virtual Screening Result')
-		f_d = max([len(o) for o in drug_names]) + 1
-		f_p = max([len(o) for o in target_names]) + 1
-		for i in range(target.shape[0]):
-			if model.binary:
-				if y_pred[i] > 0.5:
-					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))	
+	fo = os.path.join(result_folder, "virtual_screening.txt")
+	with open(fo,'w') as fout:
+		print('virtual screening...')
+		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
+		y_pred = model.predict(df_data)
+		print('---------------')
+		if drug_names is not None and target_names is not None:
+			print('Virtual Screening Result')
+			f_d = max([len(o) for o in drug_names]) + 1
+			f_p = max([len(o) for o in target_names]) + 1
+			for i in range(target.shape[0]):
+				if model.binary:
+					if y_pred[i] > 0.5:
+						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target '\
+							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p))	
+						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target '\
+							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p) + '\n')
+					else:
+						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' \
+							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p))
+						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' \
+							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + '\n')								
 				else:
-					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p))								
-			else:
-				print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' + '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i]))
+					print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
+						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
+						+ "{0:.2f}".format(y_pred[i]))
+					fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
+						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
+						+ "{0:.2f}".format(y_pred[i]) + '\n')
 	return y_pred
 
 
