@@ -101,9 +101,9 @@ conda env create -f environ.yml
 
 conda activate deeppurpose
 ## Activate conda environment
-
-Checkout demos in the DEMO Folder to start...
 ```
+
+Checkout demos in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start...
 
 ## Encodings
 Currently, we support the following encodings:
