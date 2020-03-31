@@ -35,9 +35,9 @@ import DeepPurpose.models as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
-# Load Data, SMILES for drug, Amino Acid Sequence for Target. 
-# Support both continuous (IC50, Kd, etc.) and binary (interaction or not). Automatically adjust the loss and evaluation metrics. Support public dataset loading.
+# Load Data, an array of SMILES for drug, an array of Amino Acid Sequence for Target and an array of binding values/0-1 label.
 # e.g. ['Cc1ccc(CNS(=O)(=O)c2ccc(s2)S(N)(=O)=O)cc1', ...], ['MSHHWGYGKHNGPEHWHKDFPIAKGERQSPVDIDTH...', ...], [0.46, 0.49, ...]
+# In this example, BindingDB with Kd binding score is used.
 X_drug, X_target, y  = process_BindingDB(download_BindingDB(SAVE_PATH),
 					 y = 'Kd', 
 					 binary = False, 
@@ -46,26 +46,29 @@ X_drug, X_target, y  = process_BindingDB(download_BindingDB(SAVE_PATH),
 # Type in the encoding names for drug/protein.
 drug_encoding, target_encoding = 'MPNN', 'Transformer'
 
-# Data processing, allow cold drug/protein setup split.
+# Data processing, here we select cold protein split setup.
 train, val, test = data_process(X_drug, X_target, y, 
                                 drug_encoding, target_encoding, 
                                 split_method='cold_protein', 
                                 frac=[0.7,0.1,0.2])
 
-# Generate model, allow easy model tuning via configs
+# Generate new model using default values; also allow model tuning via input parameters.
 config = generate_config(drug_encoding, target_encoding, transformer_n_layer_target = 3)
-model = models.model_initialize(**config)
+net = models.model_initialize(**config)
 
-# Train the model and support early stopping
+# Train the new model.
 # Detailed output including a tidy table storing validation loss, metrics, AUC curves figures and etc. are stored in the ./result folder.
-model.train(train, val, test)
+net.train(train, val, test)
+
+# or simply load pretrained model from a model directory path
+net = models.model_pretrained(MODEL_PATH_DIR)
 
 # Repurpose using the trained model or pre-trained model
-# loading repurposing dataset using Broad Repurposing Hub and SARS-CoV 3CL Protease Target.
+# In this example, loading repurposing dataset using Broad Repurposing Hub and SARS-CoV 3CL Protease Target.
 X_repurpose, drug_name, drug_cid = load_broad_repurposing_hub(SAVE_PATH)
 target, target_name = load_SARS_CoV_Protease_3CL()
 
-_ = models.repurpose(X_repurpose, target, model, drug_name, target_name)
+_ = models.repurpose(X_repurpose, target, net, drug_name, target_name)
 '''
 Output:
 ------------------
@@ -76,10 +79,11 @@ Drug Cefoperazone   predicted to have binding affinity score 4.70
 ...
 '''
 
-# Virtual screening using the trained model or pre-trained model (in this example, model is trained with binary outcome)
+# Virtual screening using the trained model or pre-trained model 
+# In this example, model is trained with binary outcome and customized input is provided. 
 X_repurpose, drug_name, target, target_name = ['CCCCCCCOc1cccc(c1)C([O-])=O', ...], ['16007391', ...], ['MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...', ...], ['P36896', 'P00374']
 
-_ = models.virtual_screening(X_repurpose, target, model, drug_name, target_name)
+_ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 '''
 Output:
 ------------------
@@ -125,7 +129,7 @@ conda deactivate
 ## Exit conda environment 
 ```
 
-Checkout demos in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start...
+Checkout demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start...
 
 ## Encodings
 Currently, we support the following encodings:
@@ -164,7 +168,7 @@ Please cite [arxiv]():
 ```
 
 ## Contact
-Please contact kexinhuang@hsph.harvard.edu for help or submit an issue. 
+Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
 
 
 
