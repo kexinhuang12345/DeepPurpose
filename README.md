@@ -102,6 +102,13 @@ conda env create -f environ.yml
 
 conda activate deeppurpose
 ## activate conda environment
+
+## run code
+... ...
+
+conda deactivate 
+## exit conda environment 
+
 ```
 
 ## Encodings
