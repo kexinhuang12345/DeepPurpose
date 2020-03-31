@@ -1,4 +1,4 @@
-name: dti
+name: deeppurpose
 channels:
   - rdkit
   - pytorch
@@ -80,5 +80,4 @@ dependencies:
     - lifelines==0.24.3
     - prettytable==0.7.2
     - subword-nmt==0.3.7
-prefix: /Users/futianfan/anaconda3/envs/dti
 
