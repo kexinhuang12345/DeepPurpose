@@ -308,7 +308,7 @@ def model_pretrained(path_dir):
 	model.load_pretrained(path_dir + '/model.pt')
 	return model
 
-def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/", convert_y = False):
+def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/", convert_y = False, output_num_max = 10):
 	# X_repurpose: a list of SMILES string
 	# target: one target 
 	fo = os.path.join(result_folder, "repurposing.txt")
@@ -355,12 +355,20 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 
 		print_list = [i[0] for i in print_list]
 		for lst in print_list:
-			print(lst)
 			fout.write(lst + "\n")
+
+		for idx, lst in enumerate(print_list):
+			print(lst)
+			if idx == output_num_max:
+				print('---------------')
+				print('Top '+str(int(output_num_max)) +' is printed here. Please see the full list in the output folder!')
+				print('---------------')
+				print('Note: Adjust the output list length through output_num_max parameter.')
+				break
 
 	return y_pred
 
-def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/"):
+def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/", convert_y = False, output_num_max = 10):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
 	fo = os.path.join(result_folder, "virtual_screening.txt")
@@ -370,6 +378,10 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 		print('virtual screening...')
 		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
 		y_pred = model.predict(df_data)
+
+		if convert_y:
+			y_pred = convert_y_unit(np.array(y_pred), 'p', 'nM')
+
 		print('---------------')
 		if drug_names is not None and target_names is not None:
 			print('Virtual Screening Result')
@@ -398,9 +410,18 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 					print_list.append((string, y_pred[i]))
 		print_list.sort(key = lambda x:x[1], reverse = True)
 		print_list = [i[0] for i in print_list]
+
 		for lst in print_list:
-			print(lst)
 			fout.write(lst + "\n")
+
+		for idx, lst in enumerate(print_list):
+			print(lst)
+			if idx == output_num_max:
+				print('---------------')
+				print('Top '+str(int(output_num_max)) +' is printed here. Please see the full list in the output folder!')
+				print('---------------')
+				print('Note: Adjust the output list length through output_num_max parameter.')
+				break
 
 	return y_pred
 
