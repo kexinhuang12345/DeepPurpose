@@ -6,19 +6,19 @@
 <p> A Drug Repurposing and Virtual Screening Toolkit with State-of-the-Art Deep Learning Methods
 </h3>
 
-This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit. It allows extremely easy usage (only ten lines of codes) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning. 
+This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows extremely easy usage (only ten lines of codes) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning while facilitating deep learning method research in this field by providing a flexible framework and baseline. 
 
 
 ### Features
 
-- 10 lines of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning and machine learning researchers to push forward the frontiers of DTI prediction.
+- 10 lines of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning and machine learning researchers to push forward the frontiers of DTI prediction. 
 
 - 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network. Most of the combinations of the encodings are not yet in existing works. Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
 	- support cold target, cold drug settings for robust model evaluations and support single-target high throughput sequencing assay data setup.
-	- many dataset loading and downloading/unzipping scripts to ease the tedious preprocessing. 
+	- many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing. 
 	- label unit conversion for skewed label distribution such as Kd.
 	- time reference for computational expensive encoding.
 	- easy monitoring of training process with detailed training metrics output also support early stopping.
