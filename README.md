@@ -90,7 +90,8 @@ Drug 24180719   predicted to NOT have interaction with the target P61075 with in
 
 ## Install
 ```
-conda ...
+conda env create -f environ.yml 
+conda activate deeppurpose
 ```
 
 ## Encodings
