@@ -91,17 +91,18 @@ Drug 24180719   predicted to NOT have interaction with the target P61075 with in
 ## Install
 ```
 git clone git@github.com:kexinhuang12345/DeepPurpose.git
-## download code repo
+# Download code repository
 
-cd DeepPurpose_folder
-## change directory to deeppurpose
+cd DeepPurpose
+# Change directory to DeepPurpose
 
 conda env create -f environ.yml  
-## build environment using conda
-
+## Build virtual environment using conda
 
 conda activate deeppurpose
-## activate conda environment
+## Activate conda environment
+
+Checkout demos in the DEMO Folder to start...
 ```
 
 ## Encodings
