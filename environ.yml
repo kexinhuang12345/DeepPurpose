@@ -2,15 +2,15 @@ name: dti
 channels:
   - rdkit
   - pytorch
-  - conda-forge
   - rmg
+  - conda-forge
   - defaults
 dependencies:
   - blas=1.0=mkl
   - bzip2=1.0.8=h1de35cc_0
-  - ca-certificates=2020.1.1=0
+  - ca-certificates=2019.11.28=hecc5488_0
   - cairo=1.14.12=hc4e6be7_4
-  - certifi=2019.11.28=py37_1
+  - certifi=2019.11.28=py37hc8dfbb8_1
   - cycler=0.10.0=py37_0
   - descriptastorus=2.2.0=py_0
   - fontconfig=2.13.0=h5d5b041_1
@@ -60,6 +60,7 @@ dependencies:
   - rdkit=2019.09.3.0=py37h65625ec_1
   - readline=7.0=h1de35cc_5
   - scikit-learn=0.22.1=py37h27c97d8_0
+  - scikit-plot=0.3.7=py_1
   - scipy=1.4.1=py37h9fa6033_0
   - setuptools=46.1.1=py37_0
   - six=1.14.0=py37_0
