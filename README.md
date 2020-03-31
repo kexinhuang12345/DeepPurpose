@@ -100,18 +100,14 @@ conda env create -f environ.yml
 ## Build virtual environment using conda
 
 conda activate deeppurpose
-<<<<<<< HEAD
-## activate conda environment
+## Activate conda environment
 
 ## run code
 ... ...
 
 conda deactivate 
-## exit conda environment 
+## Exit conda environment 
 
-=======
-## Activate conda environment
->>>>>>> 8f596876f99f5678b8927a182c6753ec52181ebc
 ```
 
 Checkout demos in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start...
