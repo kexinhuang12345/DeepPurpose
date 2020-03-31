@@ -19,13 +19,15 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
 	- support cold target, cold drug settings for robust model evaluations and support single-target high throughput sequencing assay data setup.
 	- many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing. 
+	- many pretraining checkpoints for popular existing published models.
 	- label unit conversion for skewed label distribution such as Kd.
 	- time reference for computational expensive encoding.
 	- easy monitoring of training process with detailed training metrics output also support early stopping.
 	- detailed output records such as rank list for repurposing result.
 	- various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.
-	- easily load pretrained models 
-
+	- PyTorch based, support CPU, GPU, Multi-GPUs.
+	
+	
 ## Example
 
 ```python
@@ -88,8 +90,9 @@ Drug 24180719   predicted to NOT have interaction with the target P61075 with in
 '''
 ```
 
-## Install
+## Install & Usage
 ```bash
+# -- First Time -- #
 git clone git@github.com:kexinhuang12345/DeepPurpose.git
 # Download code repository
 
@@ -97,17 +100,29 @@ cd DeepPurpose
 # Change directory to DeepPurpose
 
 conda env create -f environ.yml  
-## Build virtual environment using conda
+## Build virtual environment with all packages installed using conda
 
 conda activate deeppurpose
 ## Activate conda environment
 
-## run code
+## run our code
 ... ...
 
 conda deactivate 
 ## Exit conda environment 
 
+# -- In the future -- #
+cd DeepPurpose
+# Change directory to DeepPurpose
+
+conda activate deeppurpose
+## Activate conda environment
+
+## run our code
+... ...
+
+conda deactivate 
+## Exit conda environment 
 ```
 
 Checkout demos in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start...
