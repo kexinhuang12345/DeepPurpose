@@ -89,7 +89,7 @@ Drug 24180719   predicted to NOT have interaction with the target P61075 with in
 ```
 
 ## Install
-```
+```bash
 git clone git@github.com:kexinhuang12345/DeepPurpose.git
 # Download code repository
 
