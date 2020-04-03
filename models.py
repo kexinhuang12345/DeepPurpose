@@ -450,7 +450,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 			for i in range(target.shape[0]):
 				if model.binary:
 					if y_pred[i] > 0.5:
-						string_lst = [drug_names[i], target_names, "YES", "{0:.2f}".format(y_pred[i])]						
+						string_lst = [drug_names[i], target_names[i], "YES", "{0:.2f}".format(y_pred[i])]						
 						'''
 						string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target '\
 							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
@@ -459,7 +459,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 						fout.write(string + "\n")
 						'''
 					else:
-						string_lst = [drug_names[i], target_names, "NO", "{0:.2f}".format(y_pred[i])]
+						string_lst = [drug_names[i], target_names[i], "NO", "{0:.2f}".format(y_pred[i])]
 						'''
 						string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' \
 							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
@@ -470,7 +470,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 							
 				else:
 					### regression 
-					string_lst = [drug_names[i], target_names, "{0:.2f}".format(y_pred[i])]
+					string_lst = [drug_names[i], target_names[i], "{0:.2f}".format(y_pred[i])]
 					'''
 					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
 						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
@@ -502,6 +502,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 		lines = fin.readlines()
 		for line in lines:
 			print(line, end = '')
+	print()
 
 	return y_pred
 
