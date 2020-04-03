@@ -606,6 +606,7 @@ class DBTA:
 	def train(self, train, val, test = None):
 		if len(train.Label.unique()) == 2:
 			self.binary = True
+			self.config['binary'] = True
 
 		lr = self.config['LR']
 		BATCH_SIZE = self.config['batch_size']
@@ -765,7 +766,7 @@ class DBTA:
 
 		if self.binary:
 			score = self.test_(generator, self.model, repurposing_mode = True)
-			score = np.asarray([1 if i else 0 for i in (np.asarray(score) >= 0.5)])
+			#score = np.asarray([1 if i else 0 for i in (np.asarray(score) >= 0.5)])
 		else:
 			score = self.test_(generator, self.model, repurposing_mode = True)
 		return score
@@ -776,4 +777,5 @@ class DBTA:
 
 	def load_pretrained(self, path):
 		self.model.load_state_dict(torch.load(path))
+		self.binary = self.config['binary']
 

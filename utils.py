@@ -229,7 +229,7 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'MPNN':
-		print(pd.Series(df_data['SMILES'].unique()))
+		#print(pd.Series(df_data['SMILES'].unique()))
 		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]	
@@ -383,7 +383,8 @@ def generate_config(drug_encoding, target_encoding,
 					'LR': LR,
 					'drug_encoding': drug_encoding,
 					'target_encoding': target_encoding, 
-					'result_folder': result_folder, 
+					'result_folder': result_folder,
+					'binary': False
 	}
 	if not os.path.exists(base_config['result_folder']):
 		os.makedirs(base_config['result_folder'])
@@ -420,7 +421,7 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	elif drug_encoding == 'MPNN':
 		base_config['hidden_dim_drug'] = 50
-		base_config['batch_size'] = 7 
+		base_config['batch_size'] = batch_size 
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
