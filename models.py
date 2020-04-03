@@ -404,6 +404,8 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 		lines = fin.readlines()
 		for line in lines:
 			print(line, end = '')
+		print()
+
 		'''
 		for lst in print_list:
 			print(lst)
@@ -587,6 +589,9 @@ class DBTA:
 				return y_pred
 			## ROC-AUC curve 
 			roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
+			roc_curve(y_pred, y_label, roc_auc_file)
+
+			'''
 			y_pred0 = np.array(y_pred).reshape(-1,1)
 			y_pred2 = np.array([1-i for i in y_pred]).reshape(-1,1)
 			y_prediction = np.concatenate([y_pred0, y_pred2], 1)
@@ -597,6 +602,7 @@ class DBTA:
 			pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
 			skplt.metrics.plot_precision_recall(y_label, y_prediction)
 			plt.savefig(pr_auc_file)
+			''' 
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
 			if repurposing_mode:
