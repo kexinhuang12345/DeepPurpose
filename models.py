@@ -341,8 +341,7 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 	# X_repurpose: a list of SMILES string
 	# target: one target 
 	fo = os.path.join(result_folder, "repurposing.txt")
-	if not model.binary:
-		print_list = []
+	print_list = []
 	with open(fo, 'w') as fout:
 		print('repurposing...')
 		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'repurposing')
@@ -357,7 +356,9 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 		if model.binary:
 			table_header = ["Rank", "Drug Name", "Target Name", "Interaction", "Probability"]
 		else:
+			### regression 
 			table_header = ["Rank", "Drug Name", "Target Name", "Binding Score"]
+		table = PrettyTable(table_header)
 
 		if drug_names is not None:
 			f_d = max([len(o) for o in drug_names]) + 1
@@ -365,27 +366,29 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 				if model.binary:
 					if y_pred[i] > 0.5:
 						string_lst = [drug_names[i], target_name, "YES", "{0:.2f}".format(y_pred[i])]
-						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+						'''print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 							' predicted to have interaction with the target' + \
 							' with interaction probability of ' + "{0:4f}".format(y_pred[i]))
 						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 							' predicted to have interaction with the target' \
 							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i]) + '\n')	
+						''' 
 					else:
 						string_lst = [drug_names[i], target_name, "NO", "{0:.2f}".format(y_pred[i])]
-						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to NOT have interaction with the target' \
-							+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]))	
-						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to NOT have interaction with the target' \
-							+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]) + '\n')								
+						#print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+						#	' predicted to NOT have interaction with the target' \
+						#	+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]))	
+						#fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+						#	' predicted to NOT have interaction with the target' \
+						#	+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]) + '\n')								
 				else:
 					#### regression 
 					#### Rank, Drug Name, Target Name, binding score 
-					string_lst = [drug_names[i], target_names, "{0:.2f}".format(y_pred[i])]
+					string_lst = [drug_names[i], target_name, "{0:.2f}".format(y_pred[i])]
 					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i])
-					print_list.append((string, y_pred[i]))
+					#print_list.append((string, y_pred[i]))
+				print_list.append((string_lst, y_pred[i]))
 		
 		if convert_y:
 			print_list.sort(key = lambda x:x[1])
@@ -393,9 +396,18 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 			print_list.sort(key = lambda x:x[1], reverse = True)
 
 		print_list = [i[0] for i in print_list]
+		for idx, lst in enumerate(print_list):
+			lst = [str(idx + 1)] + lst 
+			table.add_row(lst)
+		fout.write(table.get_string())
+	with open(fo, 'r') as fin:
+		lines = fin.readlines()
+		for line in lines:
+			print(line, end = '')
+		'''
 		for lst in print_list:
+			print(lst)
 			fout.write(lst + "\n")
-
 		for idx, lst in enumerate(print_list):
 			print(lst)
 			if idx == output_num_max:
@@ -404,15 +416,24 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 				print('---------------')
 				print('Note: Adjust the output list length through output_num_max parameter.')
 				break
-
+		'''
 	return y_pred
 
 def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/", convert_y = False, output_num_max = 10):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
 	fo = os.path.join(result_folder, "virtual_screening.txt")
-	if not model.binary:
-		print_list = []
+	#if not model.binary:
+	#	print_list = []
+	print_list = []
+
+	if model.binary:
+		table_header = ["Rank", "Drug Name", "Target Name", "Interaction", "Probability"]
+	else:
+		### regression 
+		table_header = ["Rank", "Drug Name", "Target Name", "Binding Score"]
+	table = PrettyTable(table_header)
+
 	with open(fo,'w') as fout:
 		print('virtual screening...')
 		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
@@ -429,27 +450,42 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 			for i in range(target.shape[0]):
 				if model.binary:
 					if y_pred[i] > 0.5:
+						string_lst = [drug_names[i], target_names, "YES", "{0:.2f}".format(y_pred[i])]						
+						'''
 						string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target '\
 							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
 							 + ' with interaction probability of ' + "{0:4f}".format(y_pred[i])
 						print(string)
 						fout.write(string + "\n")
-
+						'''
 					else:
+						string_lst = [drug_names[i], target_names, "NO", "{0:.2f}".format(y_pred[i])]
+						'''
 						string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' \
 							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
 							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i])
 						print(string)
 						fout.write(string + "\n")
+						'''
 							
 				else:
+					### regression 
+					string_lst = [drug_names[i], target_names, "{0:.2f}".format(y_pred[i])]
+					'''
 					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
 						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
 						+ "{0:.2f}".format(y_pred[i])
 					print_list.append((string, y_pred[i]))
+					'''
+				print_list.append((string_lst, y_pred[i]))
 		print_list.sort(key = lambda x:x[1], reverse = True)
 		print_list = [i[0] for i in print_list]
+		for idx, lst in enumerate(print_list):
+			lst = [str(idx+1)] + lst
+			table.add_row(lst)
+		fout.write(table.get_string())
 
+		'''
 		for lst in print_list:
 			fout.write(lst + "\n")
 
@@ -461,6 +497,11 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 				print('---------------')
 				print('Note: Adjust the output list length through output_num_max parameter.')
 				break
+		'''
+	with open(fo, 'r') as fin:
+		lines = fin.readlines()
+		for line in lines:
+			print(line, end = '')
 
 	return y_pred
 
