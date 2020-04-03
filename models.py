@@ -354,11 +354,17 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 		print('---------------')
 		if target_name is not None:
 			print('Drug Repurposing Result for '+target_name)
+		if model.binary:
+			table_header = ["Rank", "Drug Name", "Target Name", "Interaction", "Probability"]
+		else:
+			table_header = ["Rank", "Drug Name", "Target Name", "Binding Score"]
+
 		if drug_names is not None:
 			f_d = max([len(o) for o in drug_names]) + 1
 			for i in range(len(X_repurpose)):
 				if model.binary:
 					if y_pred[i] > 0.5:
+						string_lst = [drug_names[i], target_name, "YES", "{0:.2f}".format(y_pred[i])]
 						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 							' predicted to have interaction with the target' + \
 							' with interaction probability of ' + "{0:4f}".format(y_pred[i]))
@@ -366,6 +372,7 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 							' predicted to have interaction with the target' \
 							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i]) + '\n')	
 					else:
+						string_lst = [drug_names[i], target_name, "NO", "{0:.2f}".format(y_pred[i])]
 						print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 							' predicted to NOT have interaction with the target' \
 							+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]))	
@@ -373,6 +380,9 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 							' predicted to NOT have interaction with the target' \
 							+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]) + '\n')								
 				else:
+					#### regression 
+					#### Rank, Drug Name, Target Name, binding score 
+					string_lst = [drug_names[i], target_names, "{0:.2f}".format(y_pred[i])]
 					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
 						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i])
 					print_list.append((string, y_pred[i]))
