@@ -30,6 +30,17 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	
 ## Example
 
+### Use Case 1:
+Given a new target sequence (e.g. SARS-CoV 3CL Protease), retrieve a list of repurposing drugs.
+
+```python
+import DeepPurpose.oneliner as oneliner
+oneliner.repurpose(load_SARS_CoV_Protease_3CL())
+
+
+```
+
+
 ```python
 import DeepPurpose.models as models
 from DeepPurpose.utils import *
