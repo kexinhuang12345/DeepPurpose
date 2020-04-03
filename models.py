@@ -245,11 +245,40 @@ class MPNN(nn.Sequential):
 		self.W_o = nn.Linear(ATOM_FDIM + self.mpnn_hidden_size, self.mpnn_hidden_size)
 
 	def forward(self, feature):
-		fatoms, fbonds, agraph, bgraph = feature 
-		fatoms = fatoms.squeeze(0)
-		fbonds = fbonds.squeeze(0)
-		agraph = agraph.squeeze(0)
-		bgraph = bgraph.squeeze(0)
+		''' 
+			batch_size == 1 
+			feature: utils.smiles2mpnnfeature 
+		'''
+		fatoms, fbonds, agraph, bgraph, atoms_bonds = feature
+		agraph = agraph.long()
+		bgraph = bgraph.long()
+		#print(fatoms.shape, fbonds.shape, agraph.shape, bgraph.shape, atoms_bonds.shape)
+		atoms_bonds = atoms_bonds.long()
+		batch_size = atoms_bonds.shape[0]
+		N_atoms, N_bonds = 0, 0 
+		embeddings = []
+		for i in range(batch_size):
+			n_a = atoms_bonds[i,0].item()
+			n_b = atoms_bonds[i,1].item()
+			sub_fatoms = fatoms[N_atoms:N_atoms+n_a,:]
+			sub_fbonds = fbonds[N_bonds:N_bonds+n_b,:]
+			sub_agraph = agraph[N_atoms:N_atoms+n_a,:]
+			sub_bgraph = bgraph[N_bonds:N_bonds+n_b,:]
+			embed = self.single_molecule_forward(sub_fatoms, sub_fbonds, sub_agraph, sub_bgraph)
+			embeddings.append(embed)
+			N_atoms += n_a
+			N_bonds += n_b
+		embeddings = torch.cat(embeddings, 0)
+		return embeddings
+
+
+	def single_molecule_forward(self, fatoms, fbonds, agraph, bgraph):
+		'''
+			fatoms: (x, 39)
+			fbonds: (y, 50)
+			agraph: (x, 6)
+			bgraph: (y,6)
+		'''
 		fatoms = create_var(fatoms)
 		fbonds = create_var(fbonds)
 		agraph = create_var(agraph)
@@ -425,6 +454,22 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 	return y_pred
 
+## x is a list, len(x)=batch_size, x[i] is tuple, len(x[0])=5  
+def mpnn_feature_collate_func(x): 
+	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
+
+def mpnn_collate_func(x):
+	#print("len(x) is ", len(x)) ## batch_size 
+	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader.__getitem__ 
+	mpnn_feature = [i[0] for i in x]
+	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
+	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
+	from torch.utils.data.dataloader import default_collate
+	x_remain = [[i[1], i[2]] for i in x]
+	x_remain_collated = default_collate(x_remain)
+	return [mpnn_feature] + x_remain_collated
+## used in dataloader 
+
 
 class DBTA:
 	def __init__(self, **config):
@@ -532,6 +577,8 @@ class DBTA:
 	    		'num_workers': 0,
 	    		'drop_last': False}
 
+		if (self.drug_encoding == "MPNN"):
+			params['collate_fn'] = mpnn_collate_func
 
 		training_generator = data.DataLoader(data_process_loader(train.index.values, train.Label.values, train, **self.config), **params)
 		validation_generator = data.DataLoader(data_process_loader(val.index.values, val.Label.values, val, **self.config), **params)
@@ -657,6 +704,10 @@ class DBTA:
 				'num_workers': 0,
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
+
+		if (self.drug_encoding == "MPNN"):
+			params['collate_fn'] = mpnn_collate_func
+
 
 		generator = data.DataLoader(info, **params)
 
