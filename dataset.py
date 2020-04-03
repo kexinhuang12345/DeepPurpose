@@ -44,10 +44,9 @@ def download_DrugTargetCommons(path):
 	return path 
 
 
-def process_BindingDB(path, df = None, y = 'Kd', binary = False, convert_to_log = True, threshold = 30):
+def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_to_log = True, threshold = 30):
 	if df is not None:
 		print('Loading Dataset from the pandas input...')
-		pass
 	else:
 		print('Loading Dataset from path...')
 		df = pd.read_csv(path, sep = '\t', error_bad_lines=False)
