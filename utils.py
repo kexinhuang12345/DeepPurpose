@@ -88,6 +88,7 @@ def smiles2daylight(s):
 		features = np.ones((2048, ))
 	return np.array(features)
 
+
 def smiles2mpnnfeature(smiles):
 	## mpn.py::tensorize  
 	#try: 
@@ -132,8 +133,10 @@ def smiles2mpnnfeature(smiles):
 				bgraph[b1,i] = b2
 	#except: 
 	#fatoms, fbonds, agraph, bgraph = [], [], [], [] 
-
-	return (fatoms, fbonds, agraph, bgraph)  
+	#print(fatoms.shape, fbonds.shape, agraph.shape, bgraph.shape)
+	Natom, Nbond = fatoms.shape[0], fbonds.shape[0]
+	shape_tensor = torch.Tensor([Natom, Nbond]).view(1,-1)
+	return [fatoms.float(), fbonds.float(), agraph.float(), bgraph.float(), shape_tensor.float()]
 
 
 
@@ -226,6 +229,7 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'MPNN':
+		print(pd.Series(df_data['SMILES'].unique()))
 		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]	
@@ -416,7 +420,7 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	elif drug_encoding == 'MPNN':
 		base_config['hidden_dim_drug'] = 50
-		base_config['batch_size'] = batch_size
+		base_config['batch_size'] = 7 
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
