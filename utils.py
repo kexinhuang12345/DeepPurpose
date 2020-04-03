@@ -383,7 +383,8 @@ def generate_config(drug_encoding, target_encoding,
 					'LR': LR,
 					'drug_encoding': drug_encoding,
 					'target_encoding': target_encoding, 
-					'result_folder': result_folder, 
+					'result_folder': result_folder,
+					'binary': False
 	}
 	if not os.path.exists(base_config['result_folder']):
 		os.makedirs(base_config['result_folder'])
