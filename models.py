@@ -65,26 +65,26 @@ class CNN(nn.Sequential):
 	def __init__(self, encoding, **config):
 		super(CNN, self).__init__()
 		if encoding == 'drug':
-			in_ch = [51] + config['cnn_drug_filters']
+			in_ch = [63] + config['cnn_drug_filters']
 			kernels = config['cnn_drug_kernels']
 			layer_size = len(config['cnn_drug_filters'])
 			self.conv = nn.ModuleList([nn.Conv1d(in_channels = in_ch[i], 
 													out_channels = in_ch[i+1], 
 													kernel_size = kernels[i]) for i in range(layer_size)])
 			self.conv = self.conv.double()
-			n_size_d = self._get_conv_output((51, 100))
+			n_size_d = self._get_conv_output((63, 100))
 			#n_size_d = 1000
 			self.fc1 = nn.Linear(n_size_d, config['hidden_dim_drug'])
 
 		if encoding == 'protein':
-			in_ch = [21] + config['cnn_target_filters']
+			in_ch = [26] + config['cnn_target_filters']
 			kernels = config['cnn_target_kernels']
 			layer_size = len(config['cnn_target_filters'])
 			self.conv = nn.ModuleList([nn.Conv1d(in_channels = in_ch[i], 
 													out_channels = in_ch[i+1], 
 													kernel_size = kernels[i]) for i in range(layer_size)])
 			self.conv = self.conv.double()
-			n_size_p = self._get_conv_output((21, 1000))
+			n_size_p = self._get_conv_output((26, 1000))
 
 			self.fc1 = nn.Linear(n_size_p, config['hidden_dim_protein'])
 
@@ -112,7 +112,7 @@ class CNN_RNN(nn.Sequential):
 	def __init__(self, encoding, **config):
 		super(CNN_RNN, self).__init__()
 		if encoding == 'drug':
-			in_ch = [51] + config['cnn_drug_filters']
+			in_ch = [63] + config['cnn_drug_filters']
 			self.in_ch = in_ch[-1]
 			kernels = config['cnn_drug_kernels']
 			layer_size = len(config['cnn_drug_filters'])
@@ -120,7 +120,7 @@ class CNN_RNN(nn.Sequential):
 													out_channels = in_ch[i+1], 
 													kernel_size = kernels[i]) for i in range(layer_size)])
 			self.conv = self.conv.double()
-			n_size_d = self._get_conv_output((51, 100)) # auto get the seq_len of CNN output
+			n_size_d = self._get_conv_output((63, 100)) # auto get the seq_len of CNN output
 
 			if config['rnn_Use_GRU_LSTM_drug'] == 'LSTM':
 				self.rnn = nn.LSTM(input_size = in_ch[-1], 
@@ -141,7 +141,7 @@ class CNN_RNN(nn.Sequential):
 			self.fc1 = nn.Linear(config['rnn_drug_hid_dim'] * config['rnn_drug_n_layers'] * n_size_d, config['hidden_dim_drug'])
 
 		if encoding == 'protein':
-			in_ch = [21] + config['cnn_target_filters']
+			in_ch = [26] + config['cnn_target_filters']
 			self.in_ch = in_ch[-1]
 			kernels = config['cnn_target_kernels']
 			layer_size = len(config['cnn_target_filters'])
@@ -149,7 +149,7 @@ class CNN_RNN(nn.Sequential):
 													out_channels = in_ch[i+1], 
 													kernel_size = kernels[i]) for i in range(layer_size)])
 			self.conv = self.conv.double()
-			n_size_p = self._get_conv_output((21, 1000))
+			n_size_p = self._get_conv_output((26, 1000))
 
 			if config['rnn_Use_GRU_LSTM_target'] == 'LSTM':
 				self.rnn = nn.LSTM(input_size = in_ch[-1], 
