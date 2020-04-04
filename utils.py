@@ -551,11 +551,14 @@ def drug2emb_encoder(x):
     return i, np.asarray(input_mask)
 
 # '?' padding
-amino_char = ['?', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y']
-smiles_char = ['?', ' ', '#', '%', '(', ')', '+', ',', '-', '.', '/', '0', '1', '2',
-		'3', '4', '5', '6', '7', '8', '9', ':', '=', '@', 'A', 'B', 'C',
-		'F', 'H', 'I', 'N', 'O', 'P', 'R', 'S', 'V','[', '\\', ']', 'a',
-		'b', 'c', 'e', 'i', 'l', 'n', 'o', 'r', 's', 'u', '|']
+amino_char = ['?', 'A', 'C', 'B', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'O',
+       'N', 'Q', 'P', 'S', 'R', 'U', 'T', 'W', 'V', 'Y', 'X', 'Z']
+
+smiles_char = ['?', '#', '%', ')', '(', '+', '-', '.', '1', '0', '3', '2', '5', '4',
+       '7', '6', '9', '8', '=', 'A', 'C', 'B', 'E', 'D', 'G', 'F', 'I',
+       'H', 'K', 'M', 'L', 'O', 'N', 'P', 'S', 'R', 'U', 'T', 'W', 'V',
+       'Y', '[', 'Z', ']', '_', 'a', 'c', 'b', 'e', 'd', 'g', 'f', 'i',
+       'h', 'm', 'l', 'o', 'n', 's', 'r', 'u', 't', 'y']
 
 from sklearn.preprocessing import OneHotEncoder
 enc_protein = OneHotEncoder().fit(np.array(amino_char).reshape(-1, 1))
