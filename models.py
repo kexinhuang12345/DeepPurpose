@@ -668,7 +668,7 @@ class DBTA:
 					score = self.model(v_d, v_p.float().to(self.device))
 				else:
 					score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
-				label = Variable(torch.from_numpy(np.array(label)).float())
+				label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
 
 				if self.binary:
 					loss_fct = torch.nn.BCELoss()
