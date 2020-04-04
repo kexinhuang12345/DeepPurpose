@@ -513,7 +513,7 @@ class DBTA:
 		self.binary = False
 
 
-	def test_(self, data_generator, model, repurposing_mode = False):
+	def test_(self, data_generator, model, repurposing_mode = False, test = False):
 		y_pred = []
 		y_label = []
 		model.eval()
@@ -535,13 +535,15 @@ class DBTA:
 		if self.binary:
 			if repurposing_mode:
 				return y_pred
-			## ROC-AUC curve 
-			roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
-			roc_curve(y_pred, y_label, roc_auc_file)
-			pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
-			prauc_curve(y_pred, y_label, pr_auc_file)
-			
-		
+			## ROC-AUC curve
+			if test:
+				roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
+				plt.figure(0)
+				roc_curve(y_pred, y_label, roc_auc_file)
+				plt.figure(1)
+				pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
+				prauc_curve(y_pred, y_label, pr_auc_file)
+
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
 			if repurposing_mode:
@@ -657,7 +659,7 @@ class DBTA:
 		if test is not None:
 			print('--- Go for Testing ---')
 			if self.binary:
-				auc, auprc, f1, logits = self.test_(testing_generator, model_max)
+				auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True)
 				test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
 				test_table.add_row(list(map(float2str, [auc, auprc, f1])))
 				print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
@@ -680,6 +682,7 @@ class DBTA:
 		### 2. learning curve 
 		fontsize = 16
 		iter_num = list(range(1,len(loss_history)+1))
+		plt.figure(3)
 		plt.plot(iter_num, loss_history, "bo-")
 		plt.xlabel("iteration", fontsize = fontsize)
 		plt.ylabel("loss value", fontsize = fontsize)
