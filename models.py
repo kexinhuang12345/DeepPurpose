@@ -229,7 +229,7 @@ class MLP(nn.Sequential):
 		# predict
 		v = v.float().to(device)
 		for i, l in enumerate(self.predictor):
-			v = l(v)
+			v = F.relu(l(v))
 		return v  
 
 class MPNN(nn.Sequential):
@@ -310,6 +310,8 @@ class Classifier(nn.Sequential):
 		self.model_drug = model_drug
 		self.model_protein = model_protein
 
+		self.dropout = nn.Dropout(0.1)
+
 		self.hidden_dims = config['cls_hidden_dims']
 		layer_size = len(self.hidden_dims) + 1
 		dims = [self.input_dim_drug + self.input_dim_protein] + self.hidden_dims + [1]
@@ -323,8 +325,10 @@ class Classifier(nn.Sequential):
 		# concatenate and classify
 		v_f = torch.cat((v_D, v_P), 1)
 		for i, l in enumerate(self.predictor):
-			v_f = l(v_f)
-
+			if i==(len(self.predictor)-1):
+				v_f = l(v_f)
+			else:
+				v_f = F.relu(self.dropout(l(v_f)))
 		return v_f    
 
 def model_initialize(**config):
