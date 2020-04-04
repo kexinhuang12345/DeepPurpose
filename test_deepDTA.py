@@ -1,7 +1,6 @@
-import DeepPurpose.models as models
-from DeepPurpose.utils import *
-from DeepPurpose.dataset import *
-import os
+import models 
+from utils import *
+from dataset import *
 
 X_drug, X_target, y = load_process_DAVIS('./data/', binary=True)
 
