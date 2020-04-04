@@ -370,21 +370,9 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 				if model.binary:
 					if y_pred[i] > 0.5:
 						string_lst = [drug_names[i], target_name, "YES", "{0:.2f}".format(y_pred[i])]
-						'''print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to have interaction with the target' + \
-							' with interaction probability of ' + "{0:4f}".format(y_pred[i]))
-						fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-							' predicted to have interaction with the target' \
-							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i]) + '\n')	
-						''' 
+						
 					else:
 						string_lst = [drug_names[i], target_name, "NO", "{0:.2f}".format(y_pred[i])]
-						#print('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-						#	' predicted to NOT have interaction with the target' \
-						#	+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]))	
-						#fout.write('Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
-						#	' predicted to NOT have interaction with the target' \
-						#	+ ' with interaction probability of '+ "{0:4f}".format(y_pred[i]) + '\n')								
 				else:
 					#### regression 
 					#### Rank, Drug Name, Target Name, binding score 
@@ -409,20 +397,6 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 		for line in lines:
 			print(line, end = '')
 		print()
-
-		'''
-		for lst in print_list:
-			print(lst)
-			fout.write(lst + "\n")
-		for idx, lst in enumerate(print_list):
-			print(lst)
-			if idx == output_num_max:
-				print('---------------')
-				print('Top '+str(int(output_num_max)) +' is printed here. Please see the full list in the output folder!')
-				print('---------------')
-				print('Note: Adjust the output list length through output_num_max parameter.')
-				break
-		'''
 	return y_pred
 
 def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/", convert_y = False, output_num_max = 10):
@@ -457,32 +431,14 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 				if model.binary:
 					if y_pred[i] > 0.5:
 						string_lst = [drug_names[i], target_names[i], "YES", "{0:.2f}".format(y_pred[i])]						
-						'''
-						string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to have interaction with the target '\
-							 + '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
-							 + ' with interaction probability of ' + "{0:4f}".format(y_pred[i])
-						print(string)
-						fout.write(string + "\n")
-						'''
+						
 					else:
 						string_lst = [drug_names[i], target_names[i], "NO", "{0:.2f}".format(y_pred[i])]
-						'''
-						string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' predicted to NOT have interaction with the target ' \
-							+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) \
-							+ ' with interaction probability of ' + "{0:4f}".format(y_pred[i])
-						print(string)
-						fout.write(string + "\n")
-						'''
-							
+						
 				else:
 					### regression 
 					string_lst = [drug_names[i], target_names[i], "{0:.2f}".format(y_pred[i])]
-					'''
-					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + ' and target ' \
-						+ '{:<{f_p}}'.format(target_names[i], f_p =f_p) + ' predicted to have binding affinity score ' \
-						+ "{0:.2f}".format(y_pred[i])
-					print_list.append((string, y_pred[i]))
-					'''
+					
 				print_list.append((string_lst, y_pred[i]))
 		print_list.sort(key = lambda x:x[1], reverse = True)
 		print_list = [i[0] for i in print_list]
@@ -491,18 +447,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 			table.add_row(lst)
 		fout.write(table.get_string())
 
-		'''
-		for lst in print_list:
-			fout.write(lst + "\n")
-		for idx, lst in enumerate(print_list):
-			print(lst)
-			if idx == output_num_max:
-				print('---------------')
-				print('Top '+str(int(output_num_max)) +' is printed here. Please see the full list in the output folder!')
-				print('---------------')
-				print('Note: Adjust the output list length through output_num_max parameter.')
-				break
-		'''
+		
 	with open(fo, 'r') as fin:
 		lines = fin.readlines()
 		for line in lines:
@@ -596,18 +541,7 @@ class DBTA:
 			pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
 			prauc_curve(y_pred, y_label, pr_auc_file)
 			
-			'''
-			y_pred0 = np.array(y_pred).reshape(-1,1)
-			y_pred2 = np.array([1-i for i in y_pred]).reshape(-1,1)
-			y_prediction = np.concatenate([y_pred0, y_pred2], 1)
-			skplt.metrics.plot_roc_curve(y_label, y_prediction)
-			plt.savefig(roc_auc_file)
-			plt.clf()
-			## PR-AUC curve
-			pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
-			skplt.metrics.plot_precision_recall(y_label, y_prediction)
-			plt.savefig(pr_auc_file)
-			''' 
+		
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
 			if repurposing_mode:
