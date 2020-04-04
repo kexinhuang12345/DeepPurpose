@@ -66,14 +66,38 @@ def roc_curve(y_pred, y_label, figure_file):
 	plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
 	plt.xlim([0.0, 1.0])
 	plt.ylim([0.0, 1.05])
-	plt.xlabel('False Positive Rate')
-	plt.ylabel('True Positive Rate')
+	fontsize = 14
+	plt.xlabel('False Positive Rate', fontsize = fontsize)
+	plt.ylabel('True Positive Rate', fontsize = fontsize)
 	plt.title('Receiver operating characteristic example')
 	plt.legend(loc="lower right")
 	plt.savefig(figure_file)
 	return 
 
+def prauc_curve(y_pred, y_label, figure_file):
+	'''
+		y_pred is a list of length n.  (0,1)
+		y_label is a list of same length. 0/1
 
+	'''	
+	import numpy as np
+	import matplotlib.pyplot as plt
+	from sklearn.metrics import roc_curve, auc
+	from sklearn.metrics import roc_auc_score
+	from sklearn.metrics import precision_recall_curve
+	from sklearn.metrics import f1_score
+	from sklearn.metrics import auc		
+
+	lr_precision, lr_recall, _ = precision_recall_curve(y_label, y_pred)
+	no_skill = sum(y_label) * 1.0 / len(y_label)
+	#plt.plot([0,1], [no_skill, no_skill], linestyle='--', label='No Skill')
+	#plt.plot(lr_recall, lr_precision, marker='.', label='Logistic')
+	fontsize = 14
+	plt.xlabel('Recall', fontsize = fontsize)
+	plt.ylabel('Precision', fontsize = fontsize)
+	plt.legend()
+	plt.savefig(figure_file)
+	return 
 
 
 def length_func(list_or_tensor):

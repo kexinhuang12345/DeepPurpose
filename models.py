@@ -494,7 +494,6 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 		'''
 		for lst in print_list:
 			fout.write(lst + "\n")
-
 		for idx, lst in enumerate(print_list):
 			print(lst)
 			if idx == output_num_max:
@@ -594,7 +593,9 @@ class DBTA:
 			## ROC-AUC curve 
 			roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
 			roc_curve(y_pred, y_label, roc_auc_file)
-
+			pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
+			prauc_curve(y_pred, y_label, pr_auc_file)
+			
 			'''
 			y_pred0 = np.array(y_pred).reshape(-1,1)
 			y_pred2 = np.array([1-i for i in y_pred]).reshape(-1,1)
@@ -788,4 +789,5 @@ class DBTA:
 	def load_pretrained(self, path):
 		self.model.load_state_dict(torch.load(path))
 		self.binary = self.config['binary']
+
 
