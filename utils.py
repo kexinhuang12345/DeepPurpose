@@ -78,7 +78,8 @@ def prauc_curve(y_pred, y_label, figure_file):
 	'''
 		y_pred is a list of length n.  (0,1)
 		y_label is a list of same length. 0/1
-
+		reference: 
+			https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-classification-in-python/
 	'''	
 	import numpy as np
 	import matplotlib.pyplot as plt
