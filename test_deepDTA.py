@@ -2,7 +2,7 @@ import models
 from utils import *
 from dataset import *
 
-X_drug, X_target, y = load_process_DAVIS('./data/', binary=True)
+X_drug, X_target, y = load_process_DAVIS('./data/', binary=False)
 
 drug_encoding = 'CNN'
 target_encoding = 'CNN'
