@@ -42,6 +42,39 @@ def create_var(tensor, requires_grad=None):
     else:
         return Variable(tensor, requires_grad=requires_grad)
 
+def roc_curve(y_pred, y_label, figure_file):
+	'''
+		y_pred is a list of length n.  (0,1)
+		y_label is a list of same length. 0/1
+		https://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html#sphx-glr-auto-examples-model-selection-plot-roc-py  
+	'''
+	import numpy as np
+	import matplotlib.pyplot as plt
+	from sklearn.metrics import roc_curve, auc
+	from sklearn.metrics import roc_auc_score
+	y_label = np.array(y_label)
+	y_pred = np.array(y_pred)	
+	fpr = dict()
+	tpr = dict() 
+	roc_auc = dict()
+	fpr[0], tpr[0], _ = roc_curve(y_label, y_pred)
+	roc_auc[0] = auc(fpr[0], tpr[0])
+	plt.figure()
+	lw = 2
+	plt.plot(fpr[0], tpr[0], color='darkorange',
+         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[0])
+	plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+	plt.xlim([0.0, 1.0])
+	plt.ylim([0.0, 1.05])
+	plt.xlabel('False Positive Rate')
+	plt.ylabel('True Positive Rate')
+	plt.title('Receiver operating characteristic example')
+	plt.legend(loc="lower right")
+	plt.savefig(figure_file)
+	return 
+
+
+
 
 def length_func(list_or_tensor):
 	if type(list_or_tensor)==list:
