@@ -48,7 +48,6 @@ def roc_curve(y_pred, y_label, figure_file):
 		y_label is a list of same length. 0/1
 		https://scikit-learn.org/stable/auto_examples/model_selection/plot_roc.html#sphx-glr-auto-examples-model-selection-plot-roc-py  
 	'''
-	import numpy as np
 	import matplotlib.pyplot as plt
 	from sklearn.metrics import roc_curve, auc
 	from sklearn.metrics import roc_auc_score
@@ -69,7 +68,7 @@ def roc_curve(y_pred, y_label, figure_file):
 	fontsize = 14
 	plt.xlabel('False Positive Rate', fontsize = fontsize)
 	plt.ylabel('True Positive Rate', fontsize = fontsize)
-	plt.title('Receiver operating characteristic example')
+	plt.title('Receiver Operating Characteristic Curve')
 	plt.legend(loc="lower right")
 	plt.savefig(figure_file)
 	return 
@@ -81,10 +80,7 @@ def prauc_curve(y_pred, y_label, figure_file):
 		reference: 
 			https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-classification-in-python/
 	'''	
-	import numpy as np
 	import matplotlib.pyplot as plt
-	from sklearn.metrics import roc_curve, auc
-	from sklearn.metrics import roc_auc_score
 	from sklearn.metrics import precision_recall_curve
 	from sklearn.metrics import f1_score
 	from sklearn.metrics import auc		
@@ -96,6 +92,7 @@ def prauc_curve(y_pred, y_label, figure_file):
 	fontsize = 14
 	plt.xlabel('Recall', fontsize = fontsize)
 	plt.ylabel('Precision', fontsize = fontsize)
+	plt.title('Precision Recall Curve')
 	plt.legend()
 	plt.savefig(figure_file)
 	return 
