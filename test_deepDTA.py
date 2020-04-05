@@ -2,7 +2,10 @@ import models
 from utils import *
 from dataset import *
 
-X_drug, X_target, y = load_process_DAVIS('./data/', binary=True)
+X_drug, X_target, y  = process_BindingDB(download_BindingDB('./data/'),
+                                         y = 'Kd', 
+                                         binary = False, 
+                                         convert_to_log = True)
 
 drug_encoding = 'CNN'
 target_encoding = 'CNN'
@@ -23,4 +26,4 @@ config = generate_config(drug_encoding = drug_encoding,
                         )
 model = models.model_initialize(**config)
 model.train(train, val, test)
-model.save_model('./model_DeepConv_DTI'
+model.save_model('./model_DeepDTA')
