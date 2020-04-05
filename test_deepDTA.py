@@ -2,7 +2,7 @@ import models
 from utils import *
 from dataset import *
 
-X_drug, X_target, y  = process_BindingDB('./data/BindingDB_all.tsv',
+X_drug, X_target, y  = process_BindingDB(download_BindingDB('./data/'),
                                          y = 'Kd', 
                                          binary = False, 
                                          convert_to_log = True)
