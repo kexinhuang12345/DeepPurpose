@@ -341,7 +341,7 @@ def model_pretrained(path_dir):
 	model.load_pretrained(path_dir + '/model.pt')
 	return model
 
-def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/", convert_y = False, output_num_max = 10):
+def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
 	# X_repurpose: a list of SMILES string
 	# target: one target 
 	fo = os.path.join(result_folder, "repurposing.txt")
@@ -356,7 +356,8 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 
 		print('---------------')
 		if target_name is not None:
-			print('Drug Repurposing Result for '+target_name)
+			if verbose:
+				print('Drug Repurposing Result for '+target_name)
 		if model.binary:
 			table_header = ["Rank", "Drug Name", "Target Name", "Interaction", "Probability"]
 		else:
@@ -392,14 +393,18 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 			lst = [str(idx + 1)] + lst 
 			table.add_row(lst)
 		fout.write(table.get_string())
-	with open(fo, 'r') as fin:
-		lines = fin.readlines()
-		for line in lines:
-			print(line, end = '')
-		print()
+	if verbose:
+		with open(fo, 'r') as fin:
+			lines = fin.readlines()
+			for idx, line in enumerate(lines):
+				if idx < 11:
+					print(line, end = '')
+				else:
+					print('checkout ' + fo + ' for the whole list')
+					break
 	return y_pred
 
-def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/", convert_y = False, output_num_max = 10):
+def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
 	fo = os.path.join(result_folder, "virtual_screening.txt")
@@ -424,7 +429,8 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 		print('---------------')
 		if drug_names is not None and target_names is not None:
-			print('Virtual Screening Result')
+			if verbose:
+				print('Virtual Screening Result')
 			f_d = max([len(o) for o in drug_names]) + 1
 			f_p = max([len(o) for o in target_names]) + 1
 			for i in range(target.shape[0]):
@@ -447,12 +453,16 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 			table.add_row(lst)
 		fout.write(table.get_string())
 
-		
-	with open(fo, 'r') as fin:
-		lines = fin.readlines()
-		for line in lines:
-			print(line, end = '')
-	print()
+	if verbose:
+		with open(fo, 'r') as fin:
+			lines = fin.readlines()
+			for idx, line in enumerate(lines):
+				if idx < 11:
+					print(line, end = '')
+				else:
+					print('checkout ' + fo + ' for the whole list')
+					break
+		print()
 
 	return y_pred
 
@@ -550,7 +560,7 @@ class DBTA:
 				return y_pred
 			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
-	def train(self, train, val, test = None):
+	def train(self, train, val, test = None, verbose = True):
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 			self.config['binary'] = True
@@ -626,8 +636,9 @@ class DBTA:
 				loss.backward()
 				opt.step()
 
-				if (i % 100 == 0):
-					print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + ' with loss ' + str(loss.cpu().detach().numpy()))
+				if verbose:
+					if (i % 100 == 0):
+						print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + ' with loss ' + str(loss.cpu().detach().numpy()))
 
 			with torch.set_grad_enabled(False):
 				if self.binary:  
@@ -712,11 +723,7 @@ class DBTA:
 
 		generator = data.DataLoader(info, **params)
 
-		if self.binary:
-			score = self.test_(generator, self.model, repurposing_mode = True)
-			#score = np.asarray([1 if i else 0 for i in (np.asarray(score) >= 0.5)])
-		else:
-			score = self.test_(generator, self.model, repurposing_mode = True)
+		score = self.test_(generator, self.model, repurposing_mode = True)
 		return score
 
 	def save_model(self, path_dir):
