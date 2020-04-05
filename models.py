@@ -397,7 +397,7 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 		with open(fo, 'r') as fin:
 			lines = fin.readlines()
 			for idx, line in enumerate(lines):
-				if idx < 11:
+				if idx < 13:
 					print(line, end = '')
 				else:
 					print('checkout ' + fo + ' for the whole list')
@@ -457,7 +457,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 		with open(fo, 'r') as fin:
 			lines = fin.readlines()
 			for idx, line in enumerate(lines):
-				if idx < 11:
+				if idx < 13:
 					print(line, end = '')
 				else:
 					print('checkout ' + fo + ' for the whole list')
