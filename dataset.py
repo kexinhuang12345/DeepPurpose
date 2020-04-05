@@ -4,7 +4,7 @@ import wget
 from zipfile import ZipFile 
 from utils import convert_y_unit
 import json
-
+import os 
 '''
 Acknowledgement:
 The BindingDB dataset is hosted in https://www.bindingdb.org/bind/index.jsp.
@@ -101,6 +101,9 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_
 
 def load_process_DAVIS(path, binary = False, convert_to_log = True, threshold = 30):
 	print('Beginning Processing...')
+
+	if not os.path.exists(path):
+		os.makedirs(path)
 
 	url = 'https://drive.google.com/uc?export=download&id=14h-0YyHN8lxuc0KV3whsaSaA-4KSmiVN'
 	saved_path = wget.download(url, path)
