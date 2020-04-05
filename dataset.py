@@ -5,6 +5,7 @@ from zipfile import ZipFile
 from utils import convert_y_unit
 import json
 import os 
+
 '''
 Acknowledgement:
 The BindingDB dataset is hosted in https://www.bindingdb.org/bind/index.jsp.
@@ -24,6 +25,10 @@ We use the SMILES, protein sequence from DeepDTA github repo: https://github.com
 def download_BindingDB(path):
 
 	print('Beginning to download dataset...')
+
+	if not os.path.exists(path):
+	    os.makedirs(path)
+
 	url = 'https://www.bindingdb.org/bind/downloads/BindingDB_All_2020m2.tsv.zip'
 	saved_path = wget.download(url, path)
 
@@ -38,6 +43,10 @@ def download_BindingDB(path):
 def download_DrugTargetCommons(path):
 
 	print('Beginning to download dataset...')
+
+	if not os.path.exists(path):
+	    os.makedirs(path)
+
 	url = 'https://drugtargetcommons.fimm.fi/static/Excell_files/DTC_data.csv'
 	saved_path = wget.download(url, path)
 	path = path + '/DtcDrugTargetInteractions.csv'
@@ -45,6 +54,9 @@ def download_DrugTargetCommons(path):
 
 
 def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_to_log = True, threshold = 30):
+	if not os.path.exists(path):
+	    os.makedirs(path)
+
 	if df is not None:
 		print('Loading Dataset from the pandas input...')
 	else:
@@ -103,7 +115,7 @@ def load_process_DAVIS(path, binary = False, convert_to_log = True, threshold = 
 	print('Beginning Processing...')
 
 	if not os.path.exists(path):
-		os.makedirs(path)
+	    os.makedirs(path)
 
 	url = 'https://drive.google.com/uc?export=download&id=14h-0YyHN8lxuc0KV3whsaSaA-4KSmiVN'
 	saved_path = wget.download(url, path)
@@ -148,6 +160,10 @@ def load_process_DAVIS(path, binary = False, convert_to_log = True, threshold = 
 def load_process_KIBA(path, binary = False, threshold = 9):
 	print('Beginning Processing...')
 
+
+	if not os.path.exists(path):
+	    os.makedirs(path)
+
 	url = 'https://drive.google.com/uc?export=download&id=1fb3ZI-3_865OuRMWNMzLPnbLm9CktM44'
 	saved_path = wget.download(url, path)
 
@@ -189,6 +205,10 @@ def load_process_KIBA(path, binary = False, threshold = 9):
 
 def load_AID1706_SARS_CoV_3CL(path, binary = False, threshold = 15):
 	print('Beginning Processing...')
+
+	if not os.path.exists(path):
+		os.makedirs(path)
+
 	target = 'SGFKKLVSPSSAVEKCIVSVSYRGNNLNGLWLGDSIYCPRHVLGKFSGDQWGDVLNLANNHEFEVVTQNGVTLNVVSRRLKGAVLILQTAVANAETPKYKFVKANCGDSFTIACSYGGTVIGLYPVTMRSNGTIRASFLAGACGSVGFNIEKGVVNFFYMHHLELPNALHTGTDLMGEFYGGYVDEEVAQRVPPDNLVTNNIVAWLYAAIISVKESSFSQPKWLESTTVSIEDYNRWASDNGFTPFSTSTAITKLSAITGVDVCKLLRTIMVKSAQWGSDPILGQYNFEDELTPESVFNQVGGVRLQ'
 	url = 'https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?query=download&record_type=datatable&actvty=all&response_type=save&aid=1706'
 	saved_path_data = wget.download(url, path)
@@ -214,6 +234,8 @@ def load_AID1706_SARS_CoV_3CL(path, binary = False, threshold = 15):
 
 def load_broad_repurposing_hub(path):
 	url = 'https://drive.google.com/uc?export=download&id=1A4HbHMZvhgDjx5ZjS-uVrCGBaVmvU8wd'
+	if not os.path.exists(path):
+	    os.makedirs(path)
 	saved_path_data = wget.download(url, path)
 	df = pd.read_csv(saved_path_data)
 	df = df.fillna('UNK')
