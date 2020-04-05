@@ -152,7 +152,7 @@ def repurpose(target, save_dir, target_name = None,
 	with open(fo, 'r') as fin:
 		lines = fin.readlines()
 		for idx, line in enumerate(lines):
-			if idx < 11:
+			if idx < 13:
 				print(line, end = '')
 			else:
 				print('checkout ' + fo + ' for the whole list')
