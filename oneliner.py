@@ -69,7 +69,7 @@ def repurpose(target, save_dir, target_name = None,
 			if not os.path.exists(result_folder_path):
 				os.mkdir(result_folder_path)
 
-			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = True, result_folder = result_folder_path)
+			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = True, result_folder = result_folder_path, verbose = False)
 			y_preds_models.append(y_pred)
 			print('Predictions from model ' + str(idx) + ' with drug encoding ' + model_name[0] + ' and target encoding ' + model_name[1] + 'are done...')
 	else:
@@ -98,7 +98,63 @@ def repurpose(target, save_dir, target_name = None,
 			model.train(train, val, test)
 
 			print('model training finished, now repurposing')
-			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = True, result_folder = result_folder_path)
+			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = True, result_folder = result_folder_path, verbose = False)
 			y_preds_models.append(y_pred)
 			print('Predictions from model ' + str(idx) + ' with drug encoding ' + model_name[0] + ' and target encoding ' + model_name[1] + 'are done...')
 	
+	result_folder_path = os.path.join(save_dir, 'results_aggregation')
+
+	if not os.path.exists(result_folder_path):
+		os.mkdir(result_folder_path)
+
+	print('models prediction finished...')
+	print('aggregating results...')
+
+	y_pred = np.mean(y_preds_models, axis = 1)
+
+	fo = os.path.join(result_folder_path, "repurposing.txt")
+	print_list = []
+	with open(fo, 'w') as fout:		
+		
+		print('---------------')
+		if target_name is not None:
+			print('Drug Repurposing Result for '+target_name)
+		if model.binary:
+			table_header = ["Rank", "Drug Name", "Target Name", "Interaction", "Probability"]
+		else:
+			### regression 
+			table_header = ["Rank", "Drug Name", "Target Name", "Binding Score"]
+		table = PrettyTable(table_header)
+
+		if drug_names is not None:
+			f_d = max([len(o) for o in drug_names]) + 1
+			for i in range(len(y_pred)):
+				if model.binary:
+					if y_pred[i] > 0.5:
+						string_lst = [drug_names[i], target_name, "YES", "{0:.2f}".format(y_pred[i])]
+						
+					else:
+						string_lst = [drug_names[i], target_name, "NO", "{0:.2f}".format(y_pred[i])]
+				else:
+					#### regression 
+					#### Rank, Drug Name, Target Name, binding score 
+					string_lst = [drug_names[i], target_name, "{0:.2f}".format(y_pred[i])]
+					string = 'Drug ' + '{:<{f_d}}'.format(drug_names[i], f_d =f_d) + \
+						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i])
+					#print_list.append((string, y_pred[i]))
+				print_list.append((string_lst, y_pred[i]))
+		
+		print_list = [i[0] for i in print_list]
+		for idx, lst in enumerate(print_list):
+			lst = [str(idx + 1)] + lst 
+			table.add_row(lst)
+		fout.write(table.get_string())
+	with open(fo, 'r') as fin:
+		lines = fin.readlines()
+		for idx, line in enumerate(lines):
+			if idx < 11:
+				print(line, end = '')
+			else:
+				print('checkout ' + fo + ' for the whole list')
+				break
+		print()
