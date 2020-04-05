@@ -58,7 +58,6 @@ def roc_curve(y_pred, y_label, figure_file):
 	roc_auc = dict()
 	fpr[0], tpr[0], _ = roc_curve(y_label, y_pred)
 	roc_auc[0] = auc(fpr[0], tpr[0])
-	plt.figure()
 	lw = 2
 	plt.plot(fpr[0], tpr[0], color='darkorange',
          lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[0])
@@ -81,14 +80,12 @@ def prauc_curve(y_pred, y_label, figure_file):
 			https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-classification-in-python/
 	'''	
 	import matplotlib.pyplot as plt
-	from sklearn.metrics import precision_recall_curve
+	from sklearn.metrics import precision_recall_curve, average_precision_score
 	from sklearn.metrics import f1_score
-	from sklearn.metrics import auc		
-
-	lr_precision, lr_recall, _ = precision_recall_curve(y_label, y_pred)
-	no_skill = sum(y_label) * 1.0 / len(y_label)
-	#plt.plot([0,1], [no_skill, no_skill], linestyle='--', label='No Skill')
-	#plt.plot(lr_recall, lr_precision, marker='.', label='Logistic')
+	from sklearn.metrics import auc
+	lr_precision, lr_recall, _ = precision_recall_curve(y_label, y_pred)    
+#	plt.plot([0,1], [no_skill, no_skill], linestyle='--')
+	plt.plot(lr_recall, lr_precision, color='darkorange', lw = 2, label='PR curve (area = %0.2f)' % average_precision_score(y_label, y_pred))
 	fontsize = 14
 	plt.xlabel('Recall', fontsize = fontsize)
 	plt.ylabel('Precision', fontsize = fontsize)
