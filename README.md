@@ -30,7 +30,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	
 ## Example
 
-### Use Case 1:
+### Case Study 1:
 Given a new target sequence (e.g. SARS-CoV 3CL Protease), retrieve a list of repurposing drugs. Results aggregated from six pretrained model!
 
 ```python
@@ -38,7 +38,7 @@ import DeepPurpose.oneliner as oneliner
 oneliner.repurpose(load_SARS_CoV_Protease_3CL())
 ```
 
-### Use Case 2:
+### Case Study 2:
 Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs. The model is finetuned from the pretraining checkpoint!
 
 
@@ -47,7 +47,8 @@ import DeepPurpose.oneliner as oneliner
 oneliner.repurpose(load_SARS_CoV_Protease_3CL(), load_AID1706_SARS_CoV_3CL())
 ```
 
-### Case Study 3: Main functionalities demonstration, for method people:
+### Case Study 3: 
+Under the hood of one model from scratch, a flexible framework for method researchers:
 
 ```python
 import DeepPurpose.models as models
@@ -79,8 +80,8 @@ net = models.model_initialize(**config)
 # Detailed output including a tidy table storing validation loss, metrics, AUC curves figures and etc. are stored in the ./result folder.
 net.train(train, val, test)
 
-# or simply load pretrained model from a model directory path
-net = models.model_pretrained(MODEL_PATH_DIR)
+# or simply load pretrained model from a model directory path or reproduced model name such as DeepDTA
+net = models.model_pretrained(MODEL_PATH_DIR or MODEL_NAME)
 
 # Repurpose using the trained model or pre-trained model
 # In this example, loading repurposing dataset using Broad Repurposing Hub and SARS-CoV 3CL Protease Target.
@@ -96,7 +97,7 @@ Output:
 '''
 
 # Virtual screening using the trained model or pre-trained model 
-# In this example, model is trained with binary outcome and customized input is provided. 
+# In this example, model is trained with binary outcome and customized input is given. 
 X_repurpose, drug_name, target, target_name = ['CCCCCCCOc1cccc(c1)C([O-])=O', ...], ['16007391', ...], ['MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...', ...], ['P36896', 'P00374']
 
 _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
