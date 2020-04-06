@@ -6,14 +6,14 @@
 <p> A Drug Repurposing and Virtual Screening Toolkit with State-of-the-Art Deep Learning Methods
 </h3>
 
-This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows extremely easy usage (only ten lines of codes) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning while facilitating deep learning method research in this field by providing a flexible framework and baseline. 
+This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows extremely easy usage (only one line of code!) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning while facilitating deep learning method research in this field by providing a flexible framework (less than 10 lines of codes!) and baselines. 
 
 
 ### Features
 
-- 10 lines of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning and machine learning researchers to push forward the frontiers of DTI prediction. 
+- For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from six pretrained models!
 
-- 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network. Most of the combinations of the encodings are not yet in existing works. Switching encoding is as simple as changing the encoding names!
+- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network, with 50+ models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
@@ -30,16 +30,25 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	
 ## Example
 
-### Use Case 1:
-Given a new target sequence (e.g. SARS-CoV 3CL Protease), retrieve a list of repurposing drugs.
+### Case Study 1:
+Given a new target sequence (e.g. SARS-CoV 3CL Protease), retrieve a list of repurposing drugs. Results aggregated from six pretrained model!
 
 ```python
 import DeepPurpose.oneliner as oneliner
 oneliner.repurpose(load_SARS_CoV_Protease_3CL())
-
-
 ```
 
+### Case Study 2:
+Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs. The model is finetuned from the pretraining checkpoint!
+
+
+```python
+import DeepPurpose.oneliner as oneliner
+oneliner.repurpose(load_SARS_CoV_Protease_3CL(), load_AID1706_SARS_CoV_3CL())
+```
+
+### Case Study 3: 
+Under the hood of one model from scratch, a flexible framework for method researchers:
 
 ```python
 import DeepPurpose.models as models
@@ -71,8 +80,8 @@ net = models.model_initialize(**config)
 # Detailed output including a tidy table storing validation loss, metrics, AUC curves figures and etc. are stored in the ./result folder.
 net.train(train, val, test)
 
-# or simply load pretrained model from a model directory path
-net = models.model_pretrained(MODEL_PATH_DIR)
+# or simply load pretrained model from a model directory path or reproduced model name such as DeepDTA
+net = models.model_pretrained(MODEL_PATH_DIR or MODEL_NAME)
 
 # Repurpose using the trained model or pre-trained model
 # In this example, loading repurposing dataset using Broad Repurposing Hub and SARS-CoV 3CL Protease Target.
@@ -83,15 +92,12 @@ _ = models.repurpose(X_repurpose, target, net, drug_name, target_name)
 '''
 Output:
 ------------------
-Drug Repurposing Result for SARS-CoV 3CL Protease
-Drug Rufloxacin     predicted to have binding affinity score 4.87
-Drug Sparfloxacin   predicted to have binding affinity score 5.39
-Drug Cefoperazone   predicted to have binding affinity score 4.70
+
 ...
 '''
 
 # Virtual screening using the trained model or pre-trained model 
-# In this example, model is trained with binary outcome and customized input is provided. 
+# In this example, model is trained with binary outcome and customized input is given. 
 X_repurpose, drug_name, target, target_name = ['CCCCCCCOc1cccc(c1)C([O-])=O', ...], ['16007391', ...], ['MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...', ...], ['P36896', 'P00374']
 
 _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
@@ -99,9 +105,7 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 Output:
 ------------------
 Virtual Screening Result
-Drug 16007391   predicted to NOT have interaction with the target P36896 with interaction probablity of 0.23
-Drug 44355753   predicted to have interaction with the target P00374 with interaction probablity of 0.71
-Drug 24180719   predicted to NOT have interaction with the target P61075 with interaction probablity of 0.31
+
 '''
 ```
 
