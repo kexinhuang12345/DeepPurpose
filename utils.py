@@ -472,7 +472,7 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
 	elif drug_encoding == 'MPNN':
-		base_config['hidden_dim_drug'] = 50
+		base_config['hidden_dim_drug'] = hidden_dim_drug
 		base_config['batch_size'] = batch_size 
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
