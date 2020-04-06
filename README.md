@@ -6,14 +6,14 @@
 <p> A Drug Repurposing and Virtual Screening Toolkit with State-of-the-Art Deep Learning Methods
 </h3>
 
-This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows extremely easy usage (only ten lines of codes) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning while facilitating deep learning method research in this field by providing a flexible framework and baseline. 
+This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows extremely easy usage (only one line of code!) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning while facilitating deep learning method research in this field by providing a flexible framework (less than 10 lines of codes!) and baselines. 
 
 
 ### Features
 
 - For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from six pretrained models!
 
-- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network! Most of the combinations of the encodings are not yet in existing works. Switching encoding is as simple as changing the encoding names! A new framework with less than 10 lines but maximal flexibility!
+- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network, with 50+ models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
