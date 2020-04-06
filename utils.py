@@ -143,47 +143,57 @@ def smiles2daylight(s):
 
 def smiles2mpnnfeature(smiles):
 	## mpn.py::tensorize  
-	#try: 
-	padding = torch.zeros(ATOM_FDIM + BOND_FDIM)
-	fatoms, fbonds = [], [padding] 
-	in_bonds,all_bonds = [], [(-1,-1)] 
-	mol = get_mol(smiles)
-	n_atoms = mol.GetNumAtoms()
-	for atom in mol.GetAtoms():
-		fatoms.append( atom_features(atom))
-		in_bonds.append([])
+	'''
+		data-flow:   
+			data_process(): apply(smiles2mpnnfeature)
+			DBTA: train(): data.DataLoader(data_process_loader())
+			mpnn_collate_func()
+	'''
+	try: 
+		padding = torch.zeros(ATOM_FDIM + BOND_FDIM)
+		fatoms, fbonds = [], [padding] 
+		in_bonds,all_bonds = [], [(-1,-1)] 
+		mol = get_mol(smiles)
+		n_atoms = mol.GetNumAtoms()
+		for atom in mol.GetAtoms():
+			fatoms.append( atom_features(atom))
+			in_bonds.append([])
 
-	for bond in mol.GetBonds():
-		a1 = bond.GetBeginAtom()
-		a2 = bond.GetEndAtom()
-		x = a1.GetIdx() 
-		y = a2.GetIdx()
+		for bond in mol.GetBonds():
+			a1 = bond.GetBeginAtom()
+			a2 = bond.GetEndAtom()
+			x = a1.GetIdx() 
+			y = a2.GetIdx()
 
-		b = len(all_bonds)
-		all_bonds.append((x,y))
-		fbonds.append( torch.cat([fatoms[x], bond_features(bond)], 0) )
-		in_bonds[y].append(b)
+			b = len(all_bonds)
+			all_bonds.append((x,y))
+			fbonds.append( torch.cat([fatoms[x], bond_features(bond)], 0) )
+			in_bonds[y].append(b)
 
-		b = len(all_bonds)
-		all_bonds.append((y,x))
-		fbonds.append( torch.cat([fatoms[y], bond_features(bond)], 0) )
-		in_bonds[x].append(b)
+			b = len(all_bonds)
+			all_bonds.append((y,x))
+			fbonds.append( torch.cat([fatoms[y], bond_features(bond)], 0) )
+			in_bonds[x].append(b)
 
-	total_bonds = len(all_bonds)
-	fatoms = torch.stack(fatoms, 0) 
-	fbonds = torch.stack(fbonds, 0) 
-	agraph = torch.zeros(n_atoms,MAX_NB).long()
-	bgraph = torch.zeros(total_bonds,MAX_NB).long()
-	for a in range(n_atoms):
-		for i,b in enumerate(in_bonds[a]):
-			agraph[a,i] = b
+		total_bonds = len(all_bonds)
+		fatoms = torch.stack(fatoms, 0) 
+		fbonds = torch.stack(fbonds, 0) 
+		agraph = torch.zeros(n_atoms,MAX_NB).long()
+		bgraph = torch.zeros(total_bonds,MAX_NB).long()
+		for a in range(n_atoms):
+			for i,b in enumerate(in_bonds[a]):
+				agraph[a,i] = b
 
-	for b1 in range(1, total_bonds):
-		x,y = all_bonds[b1]
-		for i,b2 in enumerate(in_bonds[x]):
-			if all_bonds[b2][0] != y:
-				bgraph[b1,i] = b2
-	#except: 
+		for b1 in range(1, total_bonds):
+			x,y = all_bonds[b1]
+			for i,b2 in enumerate(in_bonds[x]):
+				if all_bonds[b2][0] != y:
+					bgraph[b1,i] = b2
+	except: 
+		fatoms = torch.zeros(0,39)
+		fbonds = torch.zeros(0,50)
+		agraph = torch.zeros(0,6)
+		bgraph = torch.zeros(0,6) 
 	#fatoms, fbonds, agraph, bgraph = [], [], [], [] 
 	#print(fatoms.shape, fbonds.shape, agraph.shape, bgraph.shape)
 	Natom, Nbond = fatoms.shape[0], fbonds.shape[0]

@@ -260,6 +260,10 @@ class MPNN(nn.Sequential):
 		for i in range(batch_size):
 			n_a = atoms_bonds[i,0].item()
 			n_b = atoms_bonds[i,1].item()
+			if (n_a == 0):
+				embed = create_var(torch.zeros(1, self.mpnn_hidden_size))
+				embeddings.append(embed)
+				continue 
 			sub_fatoms = fatoms[N_atoms:N_atoms+n_a,:]
 			sub_fbonds = fbonds[N_bonds:N_bonds+n_b,:]
 			sub_agraph = agraph[N_atoms:N_atoms+n_a,:]
