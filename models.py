@@ -727,10 +727,14 @@ class DBTA:
 		return score
 
 	def save_model(self, path_dir):
+		if not os.path.exists(path):
+			os.makedirs(path)
 		torch.save(self.model.state_dict(), path_dir + '/model.pt')
 		save_dict(path_dir, self.config)
 
 	def load_pretrained(self, path):
+		if not os.path.exists(path):
+			os.makedirs(path)
 		self.model.load_state_dict(torch.load(path))
 		self.binary = self.config['binary']
 
