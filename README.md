@@ -11,9 +11,9 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 ### Features
 
-- 10 lines of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning and machine learning researchers to push forward the frontiers of DTI prediction. 
+- For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from six pretrained models!
 
-- 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network. Most of the combinations of the encodings are not yet in existing works. Switching encoding is as simple as changing the encoding names!
+- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network! Most of the combinations of the encodings are not yet in existing works. Switching encoding is as simple as changing the encoding names! A new framework with less than 10 lines but maximal flexibility!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
@@ -31,15 +31,23 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 ## Example
 
 ### Use Case 1:
-Given a new target sequence (e.g. SARS-CoV 3CL Protease), retrieve a list of repurposing drugs.
+Given a new target sequence (e.g. SARS-CoV 3CL Protease), retrieve a list of repurposing drugs. Results aggregated from six pretrained model!
 
 ```python
 import DeepPurpose.oneliner as oneliner
 oneliner.repurpose(load_SARS_CoV_Protease_3CL())
-
-
 ```
 
+### Use Case 2:
+Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs. The model is finetuned from the pretraining checkpoint!
+
+
+```python
+import DeepPurpose.oneliner as oneliner
+oneliner.repurpose(load_SARS_CoV_Protease_3CL(), load_AID1706_SARS_CoV_3CL())
+```
+
+### Case Study 3: Main functionalities demonstration, for method people:
 
 ```python
 import DeepPurpose.models as models
@@ -83,10 +91,7 @@ _ = models.repurpose(X_repurpose, target, net, drug_name, target_name)
 '''
 Output:
 ------------------
-Drug Repurposing Result for SARS-CoV 3CL Protease
-Drug Rufloxacin     predicted to have binding affinity score 4.87
-Drug Sparfloxacin   predicted to have binding affinity score 5.39
-Drug Cefoperazone   predicted to have binding affinity score 4.70
+
 ...
 '''
 
@@ -99,9 +104,7 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 Output:
 ------------------
 Virtual Screening Result
-Drug 16007391   predicted to NOT have interaction with the target P36896 with interaction probablity of 0.23
-Drug 44355753   predicted to have interaction with the target P00374 with interaction probablity of 0.71
-Drug 24180719   predicted to NOT have interaction with the target P61075 with interaction probablity of 0.31
+
 '''
 ```
 
