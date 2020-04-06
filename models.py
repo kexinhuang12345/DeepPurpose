@@ -727,8 +727,8 @@ class DBTA:
 		return score
 
 	def save_model(self, path_dir):
-		if not os.path.exists(path):
-			os.makedirs(path)
+		if not os.path.exists(path_dir):
+			os.makedirs(path_dir)
 		torch.save(self.model.state_dict(), path_dir + '/model.pt')
 		save_dict(path_dir, self.config)
 
