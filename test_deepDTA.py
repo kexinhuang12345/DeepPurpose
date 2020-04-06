@@ -3,7 +3,7 @@ from utils import *
 from dataset import *
 
 X_drug, X_target, y  = process_BindingDB(download_BindingDB('./data/'),
-                                         y = 'Kd', 
+                                         y = 'IC50', 
                                          binary = False, 
                                          convert_to_log = True)
 
