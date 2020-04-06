@@ -7,7 +7,7 @@ X_drug, X_target, y  = process_BindingDB(download_BindingDB('./data/'),
                                          binary = False, 
                                          convert_to_log = True)
 
-drug_encoding = 'CNN'
+drug_encoding = 'Morgan'
 target_encoding = 'CNN'
 train, val, test = data_process(X_drug, X_target, y, 
                                 drug_encoding, target_encoding, 
@@ -26,4 +26,4 @@ config = generate_config(drug_encoding = drug_encoding,
                         )
 model = models.model_initialize(**config)
 model.train(train, val, test)
-model.save_model('./model_DeepDTA')
+model.save_model('./model_Morgan_CNN')
