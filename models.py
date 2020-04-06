@@ -275,7 +275,7 @@ class MPNN(nn.Sequential):
 		try:
 			embeddings = torch.cat(embeddings, 0)
 		except:
-			embeddings = torch.cat(embeddings, 0)
+			#embeddings = torch.cat(embeddings, 0)
 			print(embeddings)
 		return embeddings
 
