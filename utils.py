@@ -193,8 +193,8 @@ def smiles2mpnnfeature(smiles):
 		print('Molecules not found and change to zero vectors..')
 		fatoms = torch.zeros(0,39)
 		fbonds = torch.zeros(0,50)
-		agraph = torch.zeros(0,6).long()
-		bgraph = torch.zeros(0,6).long()
+		agraph = torch.zeros(0,6)
+		bgraph = torch.zeros(0,6)
 	#fatoms, fbonds, agraph, bgraph = [], [], [], [] 
 	#print(fatoms.shape, fbonds.shape, agraph.shape, bgraph.shape)
 	Natom, Nbond = fatoms.shape[0], fbonds.shape[0]
