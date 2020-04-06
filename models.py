@@ -269,7 +269,7 @@ class MPNN(nn.Sequential):
 			sub_agraph = agraph[N_atoms:N_atoms+n_a,:]
 			sub_bgraph = bgraph[N_bonds:N_bonds+n_b,:]
 			embed = self.single_molecule_forward(sub_fatoms, sub_fbonds, sub_agraph, sub_bgraph)
-			embeddings.append(embed)
+			embeddings.append(embed.to(device))
 			N_atoms += n_a
 			N_bonds += n_b
 		embeddings = torch.cat(embeddings, 0)
