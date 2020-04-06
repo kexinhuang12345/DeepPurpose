@@ -272,7 +272,10 @@ class MPNN(nn.Sequential):
 			embeddings.append(embed.to(device))
 			N_atoms += n_a
 			N_bonds += n_b
-		embeddings = torch.cat(embeddings, 0)
+		try:
+			embeddings = torch.cat(embeddings.to(device), 0)
+		except:
+			print(embeddings)
 		return embeddings
 
 
