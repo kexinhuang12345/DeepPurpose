@@ -264,10 +264,10 @@ class MPNN(nn.Sequential):
 				embed = create_var(torch.zeros(1, self.mpnn_hidden_size))
 				embeddings.append(embed)
 				continue 
-			sub_fatoms = fatoms[N_atoms:N_atoms+n_a,:]
-			sub_fbonds = fbonds[N_bonds:N_bonds+n_b,:]
-			sub_agraph = agraph[N_atoms:N_atoms+n_a,:]
-			sub_bgraph = bgraph[N_bonds:N_bonds+n_b,:]
+			sub_fatoms = fatoms[N_atoms:N_atoms+n_a,:].to(device)
+			sub_fbonds = fbonds[N_bonds:N_bonds+n_b,:].to(device)
+			sub_agraph = agraph[N_atoms:N_atoms+n_a,:].to(device)
+			sub_bgraph = bgraph[N_bonds:N_bonds+n_b,:].to(device)
 			embed = self.single_molecule_forward(sub_fatoms, sub_fbonds, sub_agraph, sub_bgraph)
 			embeddings.append(embed.to(device))
 			N_atoms += n_a
@@ -304,7 +304,7 @@ class MPNN(nn.Sequential):
 		nei_message = nei_message.sum(dim=1)
 		ainput = torch.cat([fatoms, nei_message], dim=1)
 		atom_hiddens = F.relu(self.W_o(ainput))
-		return torch.mean(atom_hiddens, 0).view(1,-1) 
+		return torch.mean(atom_hiddens, 0).view(1,-1).to(device)
 
 
 
