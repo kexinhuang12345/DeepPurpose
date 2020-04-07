@@ -428,12 +428,12 @@ def generate_config(drug_encoding, target_encoding,
 					cnn_target_kernels = [4,8,12],
 					rnn_Use_GRU_LSTM_drug = 'LSTM',
 					rnn_drug_hid_dim = 64,
-					rnn_drug_n_layers = 2,
-					rnn_drug_bidirectional = True,
+					rnn_drug_n_layers = 1,
+					rnn_drug_bidirectional = False,
 					rnn_Use_GRU_LSTM_target = 'LSTM',
 					rnn_target_hid_dim = 64,
-					rnn_target_n_layers = 2,
-					rnn_target_bidirectional = True
+					rnn_target_n_layers = 1,
+					rnn_target_bidirectional = False
 					):
 
 	base_config = {'input_dim_drug': input_dim_drug,
