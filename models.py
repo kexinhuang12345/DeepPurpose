@@ -550,6 +550,7 @@ class DBTA:
 			y_label = y_label + label_ids.flatten().tolist()
 			y_pred = y_pred + logits.flatten().tolist()
 			outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
+		model.train()
 		if self.binary:
 			if repurposing_mode:
 				return y_pred
