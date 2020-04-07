@@ -427,11 +427,11 @@ def generate_config(drug_encoding, target_encoding,
 					cnn_target_filters = [32,64,96],
 					cnn_target_kernels = [4,8,12],
 					rnn_Use_GRU_LSTM_drug = 'GRU',
-					rnn_drug_hid_dim = 128,
+					rnn_drug_hid_dim = 64,
 					rnn_drug_n_layers = 2,
 					rnn_drug_bidirectional = True,
 					rnn_Use_GRU_LSTM_target = 'GRU',
-					rnn_target_hid_dim = 128,
+					rnn_target_hid_dim = 64,
 					rnn_target_n_layers = 2,
 					rnn_target_bidirectional = True
 					):
