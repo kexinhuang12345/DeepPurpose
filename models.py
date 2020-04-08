@@ -193,24 +193,24 @@ class CNN_RNN(nn.Sequential):
 		if self.encoding == 'protein':
 			if self.config['rnn_Use_GRU_LSTM_target'] == 'LSTM':
 				direction = 2 if self.config['rnn_target_bidirectional'] else 1
-				h0 = torch.randn(self.config['rnn_target_n_layers'] * direction, batch_size, self.config['rnn_target_hid_dim'])
-				c0 = torch.randn(self.config['rnn_target_n_layers'] * direction, batch_size, self.config['rnn_target_hid_dim'])
+				h0 = torch.randn(self.config['rnn_target_n_layers'] * direction, batch_size, self.config['rnn_target_hid_dim']).to(device)
+				c0 = torch.randn(self.config['rnn_target_n_layers'] * direction, batch_size, self.config['rnn_target_hid_dim']).to(device)
 				v, (hn, cn) = self.rnn(v.double(), (h0.double(), c0.double()))
 			else:
 				# GRU
 				direction = 2 if self.config['rnn_target_bidirectional'] else 1
-				h0 = torch.randn(self.config['rnn_target_n_layers'] * direction, batch_size, self.config['rnn_target_hid_dim'])
+				h0 = torch.randn(self.config['rnn_target_n_layers'] * direction, batch_size, self.config['rnn_target_hid_dim']).to(device)
 				v, hn = self.rnn(v.double(), h0.double())
 		else:
 			if self.config['rnn_Use_GRU_LSTM_drug'] == 'LSTM':
 				direction = 2 if self.config['rnn_drug_bidirectional'] else 1
-				h0 = torch.randn(self.config['rnn_drug_n_layers'] * direction, batch_size, self.config['rnn_drug_hid_dim'])
-				c0 = torch.randn(self.config['rnn_drug_n_layers'] * direction, batch_size, self.config['rnn_drug_hid_dim'])
+				h0 = torch.randn(self.config['rnn_drug_n_layers'] * direction, batch_size, self.config['rnn_drug_hid_dim']).to(device)
+				c0 = torch.randn(self.config['rnn_drug_n_layers'] * direction, batch_size, self.config['rnn_drug_hid_dim']).to(device)
 				v, (hn, cn) = self.rnn(v.double(), (h0.double(), c0.double()))
 			else:
 				# GRU
 				direction = 2 if self.config['rnn_drug_bidirectional'] else 1
-				h0 = torch.randn(self.config['rnn_drug_n_layers'] * direction, batch_size, self.config['rnn_drug_hid_dim'])
+				h0 = torch.randn(self.config['rnn_drug_n_layers'] * direction, batch_size, self.config['rnn_drug_hid_dim']).to(device)
 				v, hn = self.rnn(v.double(), h0.double())
 		v = torch.flatten(v, 1)
 		v = self.fc1(v.float())
@@ -550,6 +550,7 @@ class DBTA:
 			y_label = y_label + label_ids.flatten().tolist()
 			y_pred = y_pred + logits.flatten().tolist()
 			outputs = np.asarray([1 if i else 0 for i in (np.asarray(y_pred) >= 0.5)])
+		model.train()
 		if self.binary:
 			if repurposing_mode:
 				return y_pred
