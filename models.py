@@ -262,14 +262,15 @@ class MPNN(nn.Sequential):
 			n_b = atoms_bonds[i,1].item()
 			if (n_a == 0):
 				embed = create_var(torch.zeros(1, self.mpnn_hidden_size))
-				embeddings.append(embed)
+				embeddings.append(embed.to(device))
 				continue 
 			sub_fatoms = fatoms[N_atoms:N_atoms+n_a,:].to(device)
 			sub_fbonds = fbonds[N_bonds:N_bonds+n_b,:].to(device)
 			sub_agraph = agraph[N_atoms:N_atoms+n_a,:].to(device)
 			sub_bgraph = bgraph[N_bonds:N_bonds+n_b,:].to(device)
 			embed = self.single_molecule_forward(sub_fatoms, sub_fbonds, sub_agraph, sub_bgraph)
-			embeddings.append(embed.to(device))
+			embed = embed.to(device)            
+			embeddings.append(embed)
 			N_atoms += n_a
 			N_bonds += n_b
 		try:
