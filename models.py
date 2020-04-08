@@ -537,11 +537,16 @@ class DBTA:
 		y_label = []
 		model.eval()
 		for i, (v_d, v_p, label) in enumerate(data_generator):
-			if self.drug_encoding == "MPNN":
-				score = self.model(v_d, v_p.float().to(self.device))
+			if self.drug_encoding == "MPNN" or self.drug_encoding == 'Transformer':
+				v_d = v_d
 			else:
-				score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
-			#score = model(v_d, v_p)
+				v_d = v_d.float().to(self.device)                
+				score = self.model(v_d, v_p.float().to(self.device))
+			if self.target_encoding == 'Transformer':
+				v_p = v_p
+			else:
+				v_p = v_p.float().to(self.device)                
+			score = self.model(v_d, v_p)
 			if self.binary:
 				m = torch.nn.Sigmoid()
 				logits = torch.squeeze(m(score)).detach().cpu().numpy()
@@ -594,7 +599,7 @@ class DBTA:
 
 		params = {'batch_size': BATCH_SIZE,
 	    		'shuffle': True,
-	    		'num_workers': 0,
+	    		'num_workers': 4,
 	    		'drop_last': False}
 
 		if (self.drug_encoding == "MPNN"):
@@ -625,10 +630,16 @@ class DBTA:
 		print('--- Go for Training ---')
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				if (self.drug_encoding == "MPNN"):
-					score = self.model(v_d, v_p.float().to(self.device))
+				if self.drug_encoding == "MPNN" or self.drug_encoding == 'Transformer':
+					v_d = v_d
 				else:
-					score = self.model(v_d.float().to(self.device), v_p.float().to(self.device))
+					v_d = v_d.float().to(self.device)                
+					score = self.model(v_d, v_p.float().to(self.device))
+				if self.target_encoding == 'Transformer':
+					v_p = v_p
+				else:
+					v_p = v_p.float().to(self.device)                
+				score = self.model(v_d, v_p)
 				label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
 
 				if self.binary:
@@ -723,7 +734,7 @@ class DBTA:
 		
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
-				'num_workers': 0,
+				'num_workers': 4,
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
 
