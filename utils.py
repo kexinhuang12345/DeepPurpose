@@ -413,10 +413,10 @@ def generate_config(drug_encoding, target_encoding,
 					transformer_intermediate_size_drug = 512,
 					transformer_num_attention_heads_drug = 8,
 					transformer_n_layer_drug = 8,
-					transformer_emb_size_target = 256,
-					transformer_intermediate_size_target = 1024,
-					transformer_num_attention_heads_target = 4,
-					transformer_n_layer_target = 1,
+					transformer_emb_size_target = 128,
+					transformer_intermediate_size_target = 512,
+					transformer_num_attention_heads_target = 8,
+					transformer_n_layer_target = 4,
 					transformer_dropout_rate = 0.1,
 					transformer_attention_probs_dropout = 0.1,
 					transformer_hidden_dropout_rate = 0.1,
@@ -482,6 +482,7 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_dropout_rate'] = transformer_dropout_rate
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
+		base_config['hidden_dim_drug'] = transformer_emb_size_drug
 	elif drug_encoding == 'MPNN':
 		base_config['hidden_dim_drug'] = hidden_dim_drug
 		base_config['batch_size'] = batch_size 
@@ -521,6 +522,7 @@ def generate_config(drug_encoding, target_encoding,
 		base_config['transformer_dropout_rate'] = transformer_dropout_rate
 		base_config['transformer_attention_probs_dropout'] = transformer_attention_probs_dropout
 		base_config['transformer_hidden_dropout_rate'] = transformer_hidden_dropout_rate
+		base_config['hidden_dim_protein'] = transformer_emb_size_target
 	else:
 		raise AttributeError("Please use the correct protein encoding available!")
 
