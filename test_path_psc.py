@@ -7,7 +7,7 @@ X_drug, X_target, y  = process_BindingDB('./data/BindingDB_All.tsv',
                                          binary = False, 
                                          convert_to_log = True)
 
-drug_encoding = 'rdkit_2d_normalized'
+drug_encoding = 'Daylight'
 target_encoding = 'AAC'
 train, val, test = data_process(X_drug, X_target, y, 
                                 drug_encoding, target_encoding, 
@@ -16,7 +16,7 @@ train, val, test = data_process(X_drug, X_target, y,
 config = generate_config(drug_encoding = drug_encoding, 
                          target_encoding = target_encoding, 
                          cls_hidden_dims = [1024,1024,512], 
-                         train_epoch = 1, 
+                         train_epoch = 100, 
                          LR = 0.001, 
                          batch_size = 16,
                          cnn_target_filters = [32,64,96],
@@ -26,4 +26,4 @@ config = generate_config(drug_encoding = drug_encoding,
                         )
 model = models.model_initialize(**config)
 model.train(train, val, test)
-model.save_model('./model_rdkit_AAC')
+model.save_model('./model_Daylight_AAC')

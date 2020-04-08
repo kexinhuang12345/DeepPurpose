@@ -32,7 +32,7 @@ def repurpose(target, save_dir, target_name = None,
 		X_repurpose, _, drug_names = load_broad_repurposing_hub(data_path)
 		# default repurposing hub dataset is broad repurposing hub
 
-	pretrained_model_names = [['MPNN', 'CNN'], ['CNN','CNN'], ['Morgan', 'CNN'], ['CNN_RNN', 'CNN_RNN'], ['MPNN', 'Transformer'], ['rdkit_2d_normalized', 'PSC']]
+	pretrained_model_names = [['MPNN', 'CNN'], ['CNN','CNN'], ['Morgan', 'CNN'], ['CNN_RNN', 'CNN_RNN'], ['MPNN', 'Transformer'], ['rdkit_2d_normalized', 'AAC']]
 
 	y_preds_models = []
 
