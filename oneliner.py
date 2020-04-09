@@ -170,7 +170,7 @@ def repurpose(target, target_name = None,
 
 def virtual_screening(X_drugs = None, 
 					drug_names = None,
-					target, target_name = None, 
+					target = None, target_name = None, 
 					train_drug = None, 
 					train_target = None, 
 					train_y = None, 
