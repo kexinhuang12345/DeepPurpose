@@ -245,7 +245,7 @@ def create_fold_setting_cold_drug(df, fold_seed, frac):
 
 #TODO: add one target, drug folding
 
-def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=None, split_method = 'random', frac = [0.7, 0.1, 0.2]):
+def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=None, split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1):
 	if split_method == 'repurposing_VS':
 		y = [-1]*len(X_drug) # create temp y for compatitibility
 
@@ -335,13 +335,17 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 		raise AttributeError("Please use the correct protein encoding available!")
 
 	print('protein encoding finished...')
-	print('splitting dataset...')
+	if split_method == 'repurposing_VS':
+		pass
+	else:
+		print('splitting dataset...')
+
 	if split_method == 'random': 
-		train, val, test = create_fold(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
+		train, val, test = create_fold(df_data, random_seed, frac)
 	elif split_method == 'cold_drug':
-		train, val, test = create_fold_setting_cold_drug(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
+		train, val, test = create_fold_setting_cold_drug(df_data, random_seed, frac)
 	elif split_method == 'cold_protein':
-		train, val, test = create_fold_setting_cold_protein(df_data, np.random.choice(list(range(1000)), 1)[0], frac)
+		train, val, test = create_fold_setting_cold_protein(df_data, random_seed, frac)
 	elif split_method == 'repurposing_VS':
 		train = df_data
 		val = df_data

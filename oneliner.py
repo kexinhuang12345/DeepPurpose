@@ -1,28 +1,31 @@
-import DeepPurpose.models as models
-from DeepPurpose.utils import *
-from DeepPurpose.dataset import *
+import models as models
+from utils import *
+from dataset import *
+from prettytable import PrettyTable
+import wget
+from zipfile import ZipFile 
 
-def repurpose(target, save_dir, target_name = None, 
-					X_repurpose = None, 
-					drug_names = None,
+def repurpose(target, target_name = None, 
 					train_drug = None, 
 					train_target = None, 
 					train_y = None, 
+					save_dir = './save_folder', 
+					X_repurpose = None, 
+					drug_names = None,
 					pretrained_dir = None,
 					finetune_epochs = 10,
 					finetune_LR = 0.001,
 					finetune_batch_size = 32):
 	
 	if target_name is None:
-		target_name = ['New Target']
+		target_name = 'New Target'
 
 	if X_repurpose is not None:
 		if drug_names is None:
 			drug_names = ['Drug ' + str(i) for i in list(range(len(X_repurpose)))]
 	else:
 		if not os.path.exists(save_dir):
-
-			print('Save path not found and set to default: './save_folder/'. ')
+			print('Save path not found or given and set to default: \'./save_folder/\'. ')
 			os.mkdir('save_folder')
 			save_dir = './save_folder'
 		if not os.path.exists(os.path.join(save_dir, 'data')):
@@ -32,37 +35,39 @@ def repurpose(target, save_dir, target_name = None,
 		X_repurpose, _, drug_names = load_broad_repurposing_hub(data_path)
 		# default repurposing hub dataset is broad repurposing hub
 
-	pretrained_model_names = [['MPNN', 'CNN'], ['CNN','CNN'], ['Morgan', 'CNN'], ['CNN_RNN', 'CNN_RNN'], ['MPNN', 'Transformer'], ['rdkit_2d_normalized', 'AAC']]
+	pretrained_model_names = [['MPNN', 'CNN'], ['CNN','CNN'], ['Morgan', 'CNN'], ['Morgan', 'AAC'], ['Daylight', 'AAC'], ['Transformer', 'CNN']]
 
 	y_preds_models = []
 
 	if pretrained_dir is None:
 		# load 6 pretrained model
 		print('Beginning Downloading Pretrained Model...')
-		print('Note: if you have already download the pretrained model before, please stop the program and set the input parameter 'pretrained_dir' to the path')
-		url = 'https://drive.google.com/uc?export=download&id=1fb3ZI-3_865OuRMWNMzLPnbLm9CktM44'
-		
+		print('Note: if you have already download the pretrained model before, please stop the program and set the input parameter \'pretrained_dir\' to the path')
+		url = 'https://deeppurpose.s3.amazonaws.com/pretrained_models.zip'
 		if not os.path.exists(os.path.join(save_dir, 'pretrained_models')):
 			os.mkdir(os.path.join(save_dir, 'pretrained_models'))
 
 		pretrained_dir = os.path.join(save_dir, 'pretrained_models')
-		pretrained_dir = wget.download(url, pretrained_dir)
+		pretrained_dir_ = wget.download(url, pretrained_dir)
 
-		print('Beginning to extract zip file...')
-		with ZipFile(pretrained_dir, 'r') as zip: 
+		print('Downloading finished... Beginning to extract zip file...')
+		with ZipFile(pretrained_dir_, 'r') as zip: 
 		    zip.extractall(path = pretrained_dir)
-		print('Pretrained Models Successfully Downloaded...') 
+		print('Pretrained Models Successfully Downloaded...')
+		pretrained_dir = os.path.join(pretrained_dir, 'DeepPurpose_BindingDB')
 	else:
 		print('Checking if pretrained directory is valid...')
 		if not os.path.exists(pretrained_dir):
-			print('The directory to pretrained model is not found. Please double check, or download it again by setting the input parameter 'pretrained_dir' to be 'None'')
-	
+			print('The directory to pretrained model is not found. Please double check, or download it again by setting the input parameter \'pretrained_dir\' to be \'None\'')
+		else:
+			print('Beginning to load the pretrained models...')
+
 	if train_drug is None:
 		
 		print('Using pretrained model and making predictions...')
 
 		for idx, model_name in enumerate(pretrained_model_names):
-			model_path = os.path.join(pretrained_dir, model_name[0] + '_' + model_name[1])
+			model_path = os.path.join(pretrained_dir, 'model_' + model_name[0] + '_' + model_name[1])
 			model = models.model_pretrained(model_path)
 			result_folder_path = os.path.join(save_dir, 'results_'+model_name[0] + '_' + model_name[1])
 
@@ -71,7 +76,8 @@ def repurpose(target, save_dir, target_name = None,
 
 			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = True, result_folder = result_folder_path, verbose = False)
 			y_preds_models.append(y_pred)
-			print('Predictions from model ' + str(idx) + ' with drug encoding ' + model_name[0] + ' and target encoding ' + model_name[1] + 'are done...')
+			print('Predictions from model ' + str(idx + 1) + ' with drug encoding ' + model_name[0] + ' and target encoding ' + model_name[1] + ' are done...')
+			print('-------------')
 	else:
 		# customized training data
 		print('Finetuning on your own customized data...')
@@ -110,7 +116,7 @@ def repurpose(target, save_dir, target_name = None,
 	print('models prediction finished...')
 	print('aggregating results...')
 
-	y_pred = np.mean(y_preds_models, axis = 1)
+	y_pred = np.mean(y_preds_models, axis = 0)
 
 	fo = os.path.join(result_folder_path, "repurposing.txt")
 	print_list = []
@@ -143,7 +149,8 @@ def repurpose(target, save_dir, target_name = None,
 						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i])
 					#print_list.append((string, y_pred[i]))
 				print_list.append((string_lst, y_pred[i]))
-		
+
+		print_list.sort(key = lambda x:x[1])
 		print_list = [i[0] for i in print_list]
 		for idx, lst in enumerate(print_list):
 			lst = [str(idx + 1)] + lst 
