@@ -496,7 +496,10 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 					string_lst = [drug_names[i], target_names[i], "{0:.2f}".format(y_pred[i])]
 					
 				print_list.append((string_lst, y_pred[i]))
-		print_list.sort(key = lambda x:x[1], reverse = True)
+		if convert_y:
+			print_list.sort(key = lambda x:x[1])
+		else:
+			print_list.sort(key = lambda x:x[1], reverse = True)
 		print_list = [i[0] for i in print_list]
 		for idx, lst in enumerate(print_list):
 			lst = [str(idx+1)] + lst
