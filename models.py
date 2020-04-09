@@ -751,7 +751,7 @@ class DBTA:
 						t_now = time()
 						print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
 							' with loss ' + str(loss.cpu().detach().numpy()) +\
-							" total time " + str(t_now - t_start) + " seconds") 
+							". Total time " + str(int(t_now - t_start)/3600) + " hours") 
 			with torch.set_grad_enabled(False):
 				if self.binary:  
 					## binary: ROC-AUC, PR-AUC, F1  
