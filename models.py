@@ -676,10 +676,13 @@ class DBTA:
 		self.model = self.model.to(self.device)
 
 		# support multiple GPUs
-		if torch.cuda.device_count() >= 1:
-			print("Let's use " + str(torch.cuda.device_count()) + " GPU/s!")
-			self.model = nn.DataParallel(self.model, dim = 0)
-
+        if torch.cuda.device_count() > 1:
+            print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
+            self.model = nn.DataParallel(self.model, dim = 0)
+        elif torch.cuda.device_count() == 1:
+            print("Let's use " + str(torch.cuda.device_count()) + " GPU!")
+        else:
+            print("Let's use CPU/s!")
 		# Future TODO: support multiple optimizers with parameters
 		opt = torch.optim.Adam(self.model.parameters(), lr = lr)
 
@@ -847,7 +850,24 @@ class DBTA:
 	def load_pretrained(self, path):
 		if not os.path.exists(path):
 			os.makedirs(path)
-		self.model.load_state_dict(torch.load(path))
+
+		if self.device == 'cuda':
+            state_dict = torch.load(path)
+        else:
+            state_dict = torch.load(path, map_location = torch.device('cpu'))
+        # to support training from multi-gpus data-parallel:
+        
+        if next(iter(state_dict))[:7] == 'module.':
+            # the pretrained model is from data-parallel module
+            from collections import OrderedDict
+            new_state_dict = OrderedDict()
+            for k, v in state_dict.items():
+                name = k[7:] # remove `module.`
+                new_state_dict[name] = v
+            state_dict = new_state_dict
+
+        self.model.load_state_dict(state_dict)
+
 		self.binary = self.config['binary']
 
 
