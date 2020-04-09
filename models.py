@@ -676,13 +676,13 @@ class DBTA:
 		self.model = self.model.to(self.device)
 
 		# support multiple GPUs
-        if torch.cuda.device_count() > 1:
-            print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
-            self.model = nn.DataParallel(self.model, dim = 0)
-        elif torch.cuda.device_count() == 1:
-            print("Let's use " + str(torch.cuda.device_count()) + " GPU!")
-        else:
-            print("Let's use CPU/s!")
+		if torch.cuda.device_count() > 1:
+			print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
+			self.model = nn.DataParallel(self.model, dim = 0)
+		elif torch.cuda.device_count() == 1:
+			print("Let's use " + str(torch.cuda.device_count()) + " GPU!")
+		else:
+			print("Let's use CPU/s!")
 		# Future TODO: support multiple optimizers with parameters
 		opt = torch.optim.Adam(self.model.parameters(), lr = lr)
 
