@@ -852,21 +852,21 @@ class DBTA:
 			os.makedirs(path)
 
 		if self.device == 'cuda':
-            state_dict = torch.load(path)
-        else:
-            state_dict = torch.load(path, map_location = torch.device('cpu'))
-        # to support training from multi-gpus data-parallel:
+			state_dict = torch.load(path)
+		else:
+			state_dict = torch.load(path, map_location = torch.device('cpu'))
+		# to support training from multi-gpus data-parallel:
         
-        if next(iter(state_dict))[:7] == 'module.':
-            # the pretrained model is from data-parallel module
-            from collections import OrderedDict
-            new_state_dict = OrderedDict()
-            for k, v in state_dict.items():
-                name = k[7:] # remove `module.`
-                new_state_dict[name] = v
-            state_dict = new_state_dict
+		if next(iter(state_dict))[:7] == 'module.':
+			# the pretrained model is from data-parallel module
+			from collections import OrderedDict
+			new_state_dict = OrderedDict()
+			for k, v in state_dict.items():
+				name = k[7:] # remove `module.`
+				new_state_dict[name] = v
+			state_dict = new_state_dict
 
-        self.model.load_state_dict(state_dict)
+		self.model.load_state_dict(state_dict)
 
 		self.binary = self.config['binary']
 
