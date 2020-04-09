@@ -351,7 +351,6 @@ class MPNN(nn.Sequential):
 	"""
 
 
-
 class Classifier(nn.Sequential):
 	def __init__(self, model_drug, model_protein, **config):
 		super(Classifier, self).__init__()
@@ -717,6 +716,7 @@ class DBTA:
 		float2str = lambda x:'%0.4f'%x
 
 		print('--- Go for Training ---')
+		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
 				if self.drug_encoding == "MPNN" or self.drug_encoding == 'Transformer':
@@ -748,8 +748,10 @@ class DBTA:
 
 				if verbose:
 					if (i % 100 == 0):
-						print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + ' with loss ' + str(loss.cpu().detach().numpy()))
-
+						t_now = time()
+						print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
+							' with loss ' + str(loss.cpu().detach().numpy()) +\
+							" total time " + str(t_now - t_start) + " seconds") 
 			with torch.set_grad_enabled(False):
 				if self.binary:  
 					## binary: ROC-AUC, PR-AUC, F1  
