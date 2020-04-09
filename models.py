@@ -244,6 +244,8 @@ class MPNN(nn.Sequential):
 		self.W_h = nn.Linear(self.mpnn_hidden_size, self.mpnn_hidden_size, bias=False)
 		self.W_o = nn.Linear(ATOM_FDIM + self.mpnn_hidden_size, self.mpnn_hidden_size)
 
+	
+	### first version, forward single molecule sequentially. 
 	def forward(self, feature):
 		''' 
 			batch_size == 1 
@@ -279,6 +281,7 @@ class MPNN(nn.Sequential):
 			#embeddings = torch.cat(embeddings, 0)
 			print(embeddings)
 		return embeddings
+	
 
 
 	def single_molecule_forward(self, fatoms, fbonds, agraph, bgraph):
@@ -307,6 +310,45 @@ class MPNN(nn.Sequential):
 		ainput = torch.cat([fatoms, nei_message], dim=1)
 		atom_hiddens = F.relu(self.W_o(ainput))
 		return torch.mean(atom_hiddens, 0).view(1,-1).to(device)
+
+	"""
+	def forward(self, feature):
+		'''
+			mpnn_feature_collate_func 
+		'''
+		fatoms, fbonds, agraph, bgraph, scope = feature
+		agraph = agraph.long()
+		bgraph = bgraph.long()
+
+		fatoms = create_var(fatoms)
+		fbonds = create_var(fbonds)
+		agraph = create_var(agraph)
+		bgraph = create_var(bgraph)
+
+		binput = self.W_i(fbonds)
+		message = F.relu(binput)
+
+		for i in range(self.mpnn_depth - 1):
+			nei_message = index_select_ND(message, 0, bgraph)
+			nei_message = nei_message.sum(dim=1)
+			nei_message = self.W_h(nei_message)
+			message = F.relu(binput + nei_message)
+
+		nei_message = index_select_ND(message, 0, agraph)
+		nei_message = nei_message.sum(dim=1)
+		ainput = torch.cat([fatoms, nei_message], dim=1)
+		atom_hiddens = F.relu(self.W_o(ainput))
+
+		max_len = max([x for _,x in scope])
+		batch_vecs = []
+		for st,le in scope:
+			cur_vecs = atom_hiddens[st : st + le]
+			cur_vecs = F.pad( cur_vecs, (0,0,0,max_len-le) )
+			batch_vecs.append( cur_vecs )
+
+		mol_vecs = torch.stack(batch_vecs, dim=0)
+		return mol_vecs 
+	"""
 
 
 
@@ -477,7 +519,54 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 ## x is a list, len(x)=batch_size, x[i] is tuple, len(x[0])=5  
 def mpnn_feature_collate_func(x): 
+	## first version 
 	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
+
+
+"""
+def mpnn_feature_collate_func(x):
+	## second version with modify on MPNN::forward 
+	# x is a list, each list is a tuple 
+	## [fatoms.float(), fbonds.float(), agraph.float(), bgraph.float(), shape_tensor.float()] -> torch.Tensor  
+	## output from utils.smiles2mpnnfeature
+	fatoms_lst = [i[0] for i in x]
+	fbonds_lst = [i[1] for i in x]
+	agraph_lst = [i[2] for i in x]
+	bgraph_lst = [i[3] for i in x]
+	shape_tensor_lst = [i[4] for i in x]
+	scope = []
+	batch_size = len(shape_tensor_lst)
+	total_atom = 0 
+	total_bond = 0
+	##print(agraph_lst[0])
+	##print(bgraph_lst[0])
+	for i,v in enumerate(shape_tensor_lst):
+		if i!=0:
+			agraph = agraph_lst[i]
+			bgraph = bgraph_lst[i]
+			for j in range(len(agraph)):
+				for k in range(6):
+					if agraph[j][k]!=0:
+						agraph[j][k] += total_atom 
+			for j in range(len(bgraph)):
+				for k in range(6):
+					if bgraph[j][k]!=0:
+						bgraph[j][k] += total_atom 
+			agraph_lst[i] = agraph 
+			bgraph_lst[i] = bgraph
+
+		scope.append((total_atom, v[0][0].item()))
+		total_atom += v[0][0].item()
+		total_bond += v[0][1].item()
+	print("agraph_lst", agraph_lst)
+
+	fatoms = torch.cat(fatoms_lst, 0)
+	fbonds = torch.cat(fbonds_lst, 0)
+	agraph = torch.cat(agraph_lst, 0)
+	bgraph = torch.cat(bgraph_lst, 0)
+	return [fatoms, fbonds, agraph, bgraph, scope]
+"""
+
 
 def mpnn_collate_func(x):
 	#print("len(x) is ", len(x)) ## batch_size 
