@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'doct'
+project = 'DeepPurpose'
 copyright = '2020, Kexin Huang, Tianfan Fu'
 author = 'Kexin Huang, Tianfan Fu'
 
@@ -35,6 +35,12 @@ extensions = [
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+
+source_parsers = {
+'.md' : 'recommonmark.parser.CommonMarkParser'
+}
+source_suffix = ['.rst', '.md']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
