@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>DeepPurpose documentation! &#8212; doct 0.0.1 documentation</title>
+    <title>DeepPurpose documentation! &#8212; DeepPurpose 0.0.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,19 +32,116 @@
             
   <div class="section" id="deeppurpose-documentation">
 <h1>DeepPurpose documentation!<a class="headerlink" href="#deeppurpose-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="guide">
-<h2>Guide<a class="headerlink" href="#guide" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
+<p>Welcome! This is the documentation for DeepPurpose, a PyTorch-based deep learning library for Drug Target Interaction.
+The Github repository is located <a class="reference external" href="https://github.com/kexinhuang12345/DeepPurpose">here</a>.</p>
+<div class="section" id="how-to-start">
+<h2>1 How to Start<a class="headerlink" href="#how-to-start" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download">
+<h3>1.1 Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:kexinhuang12345/DeepPurpose.git
+$ <span class="nb">cd</span> DeepPurpose
+</pre></div>
+</div>
+</div>
+<div class="section" id="installation">
+<h3>1.2 Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda env create -f env.yml
+$ conda activate DeepPurpose
+
+$ conda deactivate <span class="c1">### exit</span>
+</pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
+<div class="section" id="run">
+<h2>2 Run<a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="documentation">
+<h2>3 Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="encoder-models">
+<h3>3.1 Encoder Models<a class="headerlink" href="#encoder-models" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://www.analyticsvidhya.com/blog/2019/06/understanding-transformers-nlp-state-of-the-art-models/">Transformer</a> can be used to encode drug represented as SMILES.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;drug&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">emb</span> <span class="o">=</span> <span class="n">Embeddings</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;input_dim_drug&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_emb_size_drug&#39;</span><span class="p">],</span> <span class="mi">50</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_dropout_rate&#39;</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder_MultipleLayers</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_n_layer_drug&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_emb_size_drug&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_intermediate_size_drug&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_num_attention_heads_drug&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_attention_probs_dropout&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_hidden_dropout_rate&#39;</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;protein&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">emb</span> <span class="o">=</span> <span class="n">Embeddings</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;input_dim_protein&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_emb_size_target&#39;</span><span class="p">],</span> <span class="mi">545</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_dropout_rate&#39;</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder_MultipleLayers</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_n_layer_target&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_emb_size_target&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_intermediate_size_target&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_num_attention_heads_target&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_attention_probs_dropout&#39;</span><span class="p">],</span>
+                                                                                                        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;transformer_hidden_dropout_rate&#39;</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">e_mask</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">ex_e_mask</span> <span class="o">=</span> <span class="n">e_mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">ex_e_mask</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ex_e_mask</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mf">10000.0</span>
+
+                <span class="n">emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">encoded_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">emb</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">ex_e_mask</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+                <span class="k">return</span> <span class="n">encoded_layers</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Convolutional_neural_network">CNN (Convolutional Neural Network)</a> can be used to encode drug.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">):</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">CNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;drug&#39;</span><span class="p">:</span>
+                        <span class="n">in_ch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">63</span><span class="p">]</span> <span class="o">+</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;cnn_drug_filters&#39;</span><span class="p">]</span>
+                        <span class="n">kernels</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;cnn_drug_kernels&#39;</span><span class="p">]</span>
+                        <span class="n">layer_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cnn_drug_filters&#39;</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_ch</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                                                        <span class="n">out_channels</span> <span class="o">=</span> <span class="n">in_ch</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                                                                                                        <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layer_size</span><span class="p">)])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+                        <span class="n">n_size_d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_conv_output</span><span class="p">((</span><span class="mi">63</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+                        <span class="c1">#n_size_d = 1000</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_size_d</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hidden_dim_drug&#39;</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">encoding</span> <span class="o">==</span> <span class="s1">&#39;protein&#39;</span><span class="p">:</span>
+                        <span class="n">in_ch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">+</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;cnn_target_filters&#39;</span><span class="p">]</span>
+                        <span class="n">kernels</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;cnn_target_kernels&#39;</span><span class="p">]</span>
+                        <span class="n">layer_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;cnn_target_filters&#39;</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv1d</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_ch</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                                                        <span class="n">out_channels</span> <span class="o">=</span> <span class="n">in_ch</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                                                                                                        <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">kernels</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layer_size</span><span class="p">)])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">double</span><span class="p">()</span>
+                        <span class="n">n_size_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_conv_output</span><span class="p">((</span><span class="mi">26</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_size_p</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hidden_dim_protein&#39;</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">_get_conv_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+                <span class="n">bs</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="nb">input</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="o">*</span><span class="n">shape</span><span class="p">))</span>
+                <span class="n">output_feat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_features</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">double</span><span class="p">())</span>
+                <span class="n">n_size</span> <span class="o">=</span> <span class="n">output_feat</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">n_size</span>
+
+        <span class="k">def</span> <span class="nf">_forward_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">l</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">adaptive_max_pool1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">output_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">x</span>
+
+        <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_features</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">double</span><span class="p">())</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+                <span class="k">return</span> <span class="n">v</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -54,7 +151,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">doct</a></h1>
+<h1 class="logo"><a href="#">DeepPurpose</a></h1>
 
 
 
