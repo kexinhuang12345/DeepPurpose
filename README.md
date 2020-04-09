@@ -27,7 +27,9 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	- various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.
 	- PyTorch based, support CPU, GPU, Multi-GPUs.
 	
+Note: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](kexinhuang@hsph.harvard.edu).
 	
+
 ## Example
 
 ### Case Study 1:
@@ -143,8 +145,16 @@ conda activate deeppurpose
 conda deactivate 
 ## Exit conda environment 
 ```
+We are currently in the testing release stage with active changing based on user feedback. After testing (few months), we will upload to conda for easier installation.
 
-Checkout demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start...
+Checkout demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start:
+
+| Name | Description |
+|-----------------|-------------|
+| oneliner_repurpose_DEMO.ipynb | Repurposing for LCK target using oneline mode |
+| DeepDTA_Reproduce.ipynb| Reproduce [DeepDTA](https://arxiv.org/abs/1801.10193) with DAVIS dataset|
+| CNN-Binary-Example-DAVIS.ipynb| Binary Classification for DAVIS dataset using CNN encodings|
+
 
 ## Encodings
 Currently, we support the following encodings:
