@@ -20,7 +20,7 @@ import copy
 from prettytable import PrettyTable
 import scikitplot as skplt
 
-import os
+import os!
 
 if os.getcwd()[-7:] != 'Purpose':
 	os.chdir('./DeepPurpose/')
@@ -218,10 +218,16 @@ class CNN_RNN(nn.Sequential):
 
 
 class MLP(nn.Sequential):
-	def __init__(self, input_dim, hidden_dim, hidden_dims):
+	def __init__(self, input_dim, output_dim, hidden_dims_lst):
+		'''
+			input_dim (int)
+			output_dim (int)
+			hidden_dims_lst (list, each element is a integer, indicating the hidden size)
+
+		'''
 		super(MLP, self).__init__()
-		layer_size = len(hidden_dims) + 1
-		dims = [input_dim] + hidden_dims + [hidden_dim]
+		layer_size = len(hidden_dims_lst) + 1
+		dims = [input_dim] + hidden_dims_lst + [output_dim]
 
 		self.predictor = nn.ModuleList([nn.Linear(dims[i], dims[i+1]) for i in range(layer_size)])
 
