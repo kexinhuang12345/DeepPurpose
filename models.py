@@ -50,6 +50,7 @@ class transformer(nn.Sequential):
 													config['transformer_attention_probs_dropout'],
 													config['transformer_hidden_dropout_rate'])
 
+	### parameter v is from utils.drug2emb_encoder 
 	def forward(self, v):
 		e = v[0].long().to(device)
 		e_mask = v[1].long().to(device)
