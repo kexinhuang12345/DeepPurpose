@@ -1,6 +1,5 @@
-<h1 align="center">
-<p>DeepPurpose
-</h1>
+<p align="center"><img src="https://github.com/kexinhuang12345/DeepPurpose/blob/master/docs/figs/logo_deeppurpose_horizontal.pdf?raw=true" alt="logo" width="400px" /></p>
+
 
 <h3 align="center">
 <p> A Drug Repurposing and Virtual Screening Toolkit with State-of-the-Art Deep Learning Methods

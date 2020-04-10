@@ -42,7 +42,7 @@ def create_var(tensor, requires_grad=None):
     else:
         return Variable(tensor, requires_grad=requires_grad)
 
-def roc_curve(y_pred, y_label, figure_file):
+def roc_curve(y_pred, y_label, figure_file, method_name):
 	'''
 		y_pred is a list of length n.  (0,1)
 		y_label is a list of same length. 0/1
@@ -59,8 +59,8 @@ def roc_curve(y_pred, y_label, figure_file):
 	fpr[0], tpr[0], _ = roc_curve(y_label, y_pred)
 	roc_auc[0] = auc(fpr[0], tpr[0])
 	lw = 2
-	plt.plot(fpr[0], tpr[0], color='darkorange',
-         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[0])
+	plt.plot(fpr[0], tpr[0],
+         lw=lw, label= method_name + ' (area = %0.2f)' % roc_auc[0])
 	plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
 	plt.xlim([0.0, 1.0])
 	plt.ylim([0.0, 1.05])
@@ -72,7 +72,7 @@ def roc_curve(y_pred, y_label, figure_file):
 	plt.savefig(figure_file)
 	return 
 
-def prauc_curve(y_pred, y_label, figure_file):
+def prauc_curve(y_pred, y_label, figure_file, method_name):
 	'''
 		y_pred is a list of length n.  (0,1)
 		y_label is a list of same length. 0/1
@@ -85,7 +85,7 @@ def prauc_curve(y_pred, y_label, figure_file):
 	from sklearn.metrics import auc
 	lr_precision, lr_recall, _ = precision_recall_curve(y_label, y_pred)    
 #	plt.plot([0,1], [no_skill, no_skill], linestyle='--')
-	plt.plot(lr_recall, lr_precision, color='darkorange', lw = 2, label='PR curve (area = %0.2f)' % average_precision_score(y_label, y_pred))
+	plt.plot(lr_recall, lr_precision, lw = 2, label= method_name + ' (area = %0.2f)' % average_precision_score(y_label, y_pred))
 	fontsize = 14
 	plt.xlabel('Recall', fontsize = fontsize)
 	plt.ylabel('Precision', fontsize = fontsize)

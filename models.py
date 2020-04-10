@@ -592,7 +592,11 @@ def mpnn_collate_func(x):
 class DBTA:
 	'''
 		Drug Target Binding Affinity 
+<<<<<<< HEAD
+        
+=======
 
+>>>>>>> f06305bda6d3c42f8a99c797c0a26cd305030689
 	'''
 
 	def __init__(self, **config):
@@ -631,6 +635,8 @@ class DBTA:
 		self.drug_encoding = drug_encoding
 		self.target_encoding = target_encoding
 		self.result_folder = config['result_folder']
+		if not os.path.exists(self.result_folder):
+			os.mkdir(self.result_folder)            
 		self.binary = False
 
 
@@ -666,10 +672,10 @@ class DBTA:
 			if test:
 				roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
 				plt.figure(0)
-				roc_curve(y_pred, y_label, roc_auc_file)
+				roc_curve(y_pred, y_label, roc_auc_file, self.drug_encoding + '_' + self.target_encoding)
 				plt.figure(1)
 				pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
-				prauc_curve(y_pred, y_label, pr_auc_file)
+				prauc_curve(y_pred, y_label, pr_auc_file, self.drug_encoding + '_' + self.target_encoding)
 
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
@@ -706,7 +712,6 @@ class DBTA:
 	    		'shuffle': True,
 	    		'num_workers': 4,
 	    		'drop_last': False}
-
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
 
@@ -714,7 +719,16 @@ class DBTA:
 		validation_generator = data.DataLoader(data_process_loader(val.index.values, val.Label.values, val, **self.config), **params)
 		
 		if test is not None:
-			testing_generator = data.DataLoader(data_process_loader(test.index.values, test.Label.values, test, **self.config), **params)
+			info = data_process_loader(test.index.values, test.Label.values, test, **self.config)
+			params_test = {'batch_size': BATCH_SIZE,
+					'shuffle': False,
+					'num_workers': 4,
+					'drop_last': False,
+					'sampler':SequentialSampler(info)}
+        
+			if (self.drug_encoding == "MPNN"):
+				params_test['collate_fn'] = mpnn_collate_func
+			testing_generator = data.DataLoader(data_process_loader(test.index.values, test.Label.values, test, **self.config), **params_test)
 
 		# early stopping
 		if self.binary:
@@ -808,6 +822,7 @@ class DBTA:
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
 				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+			np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) + '_logits.npy'), np.array(logits))                
 		# load early stopped model
 		self.model = model_max
 
@@ -834,7 +849,7 @@ class DBTA:
 		plt.savefig(fig_file)
 
 		print('--- Training Finished ---')
-
+          
 
 	def predict(self, df_data):
 		print('predicting...')
