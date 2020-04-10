@@ -62,7 +62,7 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 ```
 
 ### Case Study 2:
-Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model is finetuned from the pretraining checkpoint!
+Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model can be trained from scratch or finetuned from the pretraining checkpoint!
 
 ```python
 from DeepPurpose import oneliner
