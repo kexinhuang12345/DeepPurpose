@@ -5,7 +5,7 @@ from dataset import *
 X_drug, X_target, y  = process_BindingDB('./data/BindingDB_All.tsv',
                                          y = 'Kd', 
                                          binary = False, 
-                                         convert_to_log = True)
+                                         convert_to_log = False)
 
 drug_encoding = 'rdkit_2d_normalized'
 target_encoding = 'AAC'

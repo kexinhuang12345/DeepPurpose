@@ -828,7 +828,7 @@ class DBTA:
 	def predict(self, df_data):
 		print('predicting...')
 		info = data_process_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
-		
+		self.model.to(device)
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
 				'num_workers': 4,
