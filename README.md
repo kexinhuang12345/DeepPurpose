@@ -38,6 +38,7 @@ Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of re
 ```python
 import DeepPurpose.oneliner as oneliner
 oneliner.repurpose(load_SARS_CoV2_Protease_3CL())
+```
 ----output----
 Drug Repurposing Result for SARS-CoV2 3CL Protease
 +------+----------------------+------------------------+---------------+
@@ -57,7 +58,7 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 |  12  |    Fosamprenavir     | SARS-CoV2 3CL Protease |     487.45    |
 |  13  |      Ritonavir       | SARS-CoV2 3CL Protease |     492.19    |
 ....
-```
+
 
 ### Case Study 2:
 Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model is finetuned from the pretraining checkpoint!
@@ -68,7 +69,7 @@ from DeepPurpose.dataset import *
 
 oneliner.repurpose(load_SARS_CoV_Protease_3CL(), load_AID1706_SARS_CoV_3CL(), load_antiviral_drugs(), 
 		split='HTS', convert_y = False, frac=[0.8,0.1,0.1], pretrained = False, agg = 'max_effect')
-
+```
 ----output----
 Drug Repurposing Result for SARS-CoV 3CL Protease
 +------+----------------------+-----------------------+-------------+-------------+
@@ -88,7 +89,7 @@ Drug Repurposing Result for SARS-CoV 3CL Protease
 |  12  |      Indinavir       | SARS-CoV 3CL Protease |     YES     |     0.62    |
 |  13  |   Podophyllotoxin    | SARS-CoV 3CL Protease |     YES     |     0.60    |
 ....
-```
+
 
 ### Case Study 3: 
 Under the hood of one model from scratch, a flexible framework for method researchers:
