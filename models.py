@@ -691,6 +691,7 @@ class DBTA:
 		lr = self.config['LR']
 		BATCH_SIZE = self.config['batch_size']
 		train_epoch = self.config['train_epoch']
+		test_every_X_epoch = self.config['test_every_X_epoch']
 		loss_history = []
 
 		self.model = self.model.to(self.device)
@@ -807,6 +808,23 @@ class DBTA:
 					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: '\
 						 + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			table.add_row(lst)
+
+			##### test the best model every XX epoches 
+			if epo % test_every_X_epoch == 0 and test is not None:
+				print('--- Go for Testing ---')
+				if self.binary:
+					auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True)
+					test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
+					test_table.add_row(list(map(float2str, [auc, auprc, f1])))
+					print("Up to Epoch " + str(epo), end = " ")
+					print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
+				else:
+					mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
+					test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
+					test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
+					print("Up to Epoch " + str(epo), end = " ")
+					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+				np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) + '_logits.npy'), np.array(logits))			
 
 
 
