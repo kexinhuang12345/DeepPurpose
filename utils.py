@@ -245,13 +245,14 @@ def create_fold_setting_cold_drug(df, fold_seed, frac):
 
 #TODO: add one target, drug folding
 
-def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=None, split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1):
+def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=None, split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1, sample_frac = 1):
 	if split_method == 'repurposing_VS':
 		y = [-1]*len(X_drug) # create temp y for compatitibility
-
+	if isinstance(X_target, str):
+		X_target = [X_target]
 	if len(X_target) == 1:
 		# one target high throughput screening setting
-		X_target = np.tile(target, (length_func(X_drug), ))
+		X_target = np.tile(X_target, (length_func(X_drug), ))
 
 	df_data = pd.DataFrame(zip(X_drug, X_target, y))
 	df_data.rename(columns={0:'SMILES',
@@ -260,7 +261,11 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 							inplace=True)
 
 	print('in total: ' + str(len(df_data)) + ' drug-target pairs')
-
+    
+	if sample_frac != 1:
+		df_data = df_data.sample(frac = sample_frac).reset_index(drop = True)
+		print('after subsample: ' + str(len(df_data)) + ' drug-target pairs')        
+        
 	print('encoding drug...')
 	print('unique drugs: ' + str(len(df_data['SMILES'].unique())))
 
@@ -344,6 +349,10 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 		train, val, test = create_fold(df_data, random_seed, frac)
 	elif split_method == 'cold_drug':
 		train, val, test = create_fold_setting_cold_drug(df_data, random_seed, frac)
+	elif split_method == 'HTS':
+		train, val, test = create_fold_setting_cold_drug(df_data, random_seed, frac)
+		val = pd.concat([val[val.Label == 1].drop_duplicates(subset = 'SMILES'), val[val.Label == 0]])
+		test = pd.concat([test[test.Label == 1].drop_duplicates(subset = 'SMILES'), test[test.Label == 0]])        
 	elif split_method == 'cold_protein':
 		train, val, test = create_fold_setting_cold_protein(df_data, random_seed, frac)
 	elif split_method == 'repurposing_VS':

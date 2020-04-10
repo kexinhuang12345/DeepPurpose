@@ -14,9 +14,15 @@ def repurpose(target, target_name = None,
 					drug_names = None,
 					pretrained_dir = None,
 					finetune_epochs = 10,
-					finetune_LR = 0.001,
-					finetune_batch_size = 32):
-	
+					finetune_LR = 0.01,
+					finetune_batch_size = 32,
+					convert_y = True,
+					subsample_frac = 1,
+					pretrained = True,
+					split = 'random',
+					frac = [0.7,0.1,0.2],
+					agg = 'max_effect'):
+           
 	if not os.path.exists(save_dir):
 		print('Save path not found or given and set to default: \'./save_folder/\'. ')
 		os.mkdir('save_folder')
@@ -28,6 +34,7 @@ def repurpose(target, target_name = None,
 	if X_repurpose is not None:
 		if drug_names is None:
 			drug_names = ['Drug ' + str(i) for i in list(range(len(X_repurpose)))]
+		print("Loading customized repurposing dataset...")            
 	else:
 		if not os.path.exists(os.path.join(save_dir, 'data')):
 			os.mkdir(os.path.join(save_dir, 'data'))
@@ -36,11 +43,11 @@ def repurpose(target, target_name = None,
 		X_repurpose, _, drug_names = load_broad_repurposing_hub(data_path)
 		# default repurposing hub dataset is broad repurposing hub
 
-	pretrained_model_names = [['MPNN', 'CNN'], ['CNN','CNN'], ['Morgan', 'CNN'], ['Morgan', 'AAC'], ['Daylight', 'AAC'], ['Transformer', 'CNN']]
+	pretrained_model_names = [['MPNN', 'CNN'], ['CNN','CNN'], ['Morgan', 'CNN'], ['Morgan', 'AAC'], ['Daylight', 'AAC']]
 
 	y_preds_models = []
 
-	if pretrained_dir is None:
+	if (pretrained_dir is None) & pretrained:
 		# load 6 pretrained model
 		print('Beginning Downloading Pretrained Model...')
 		print('Note: if you have already download the pretrained model before, please stop the program and set the input parameter \'pretrained_dir\' to the path')
@@ -56,6 +63,20 @@ def repurpose(target, target_name = None,
 		    zip.extractall(path = pretrained_dir)
 		print('Pretrained Models Successfully Downloaded...')
 		pretrained_dir = os.path.join(pretrained_dir, 'DeepPurpose_BindingDB')
+	elif pretrained == False:
+		print('Beginning Downloading Configs Files for training from scratch...')
+		url = 'https://deeppurpose.s3.amazonaws.com/models_configs.zip'
+		if not os.path.exists(os.path.join(save_dir, 'models_configs')):
+			os.mkdir(os.path.join(save_dir, 'models_configs'))
+
+		pretrained_dir = os.path.join(save_dir, 'models_configs')
+		pretrained_dir_ = wget.download(url, pretrained_dir)
+
+		print('Downloading finished... Beginning to extract zip file...')
+		with ZipFile(pretrained_dir_, 'r') as zip: 
+		    zip.extractall(path = pretrained_dir)
+		print('Configs Models Successfully Downloaded...')
+		pretrained_dir = os.path.join(pretrained_dir, 'models_configs')      
 	else:
 		print('Checking if pretrained directory is valid...')
 		if not os.path.exists(pretrained_dir):
@@ -75,22 +96,32 @@ def repurpose(target, target_name = None,
 			if not os.path.exists(result_folder_path):
 				os.mkdir(result_folder_path)
 
-			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = True, result_folder = result_folder_path, verbose = False)
+			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = convert_y, result_folder = result_folder_path, verbose = False)
 			y_preds_models.append(y_pred)
 			print('Predictions from model ' + str(idx + 1) + ' with drug encoding ' + model_name[0] + ' and target encoding ' + model_name[1] + ' are done...')
 			print('-------------')
 	else:
 		# customized training data
-		print('Finetuning on your own customized data...')
-
+		print('Training on your own customized data...') 
+		if not os.path.exists(os.path.join(save_dir, 'new_trained_models')):
+			os.mkdir(os.path.join(save_dir, 'new_trained_models'))
+		new_trained_models_dir = os.path.join(save_dir, 'new_trained_models')            
+		if isinstance(train_target, str):
+			train_target = [train_target] 
 		for idx, model_name in enumerate(pretrained_model_names):
 			drug_encoding = model_name[0]
 			target_encoding = model_name[1]
 			train, val, test = data_process(train_drug, train_target, train_y, 
                                 drug_encoding, target_encoding, 
-                                split_method='random',frac=[0.7,0.1,0.2])
+                                split_method=split,frac=frac, sample_frac = subsample_frac)
 			model_path = os.path.join(pretrained_dir, 'model_' + model_name[0] + '_' + model_name[1])
-			model = models.model_pretrained(model_path)
+			if pretrained:
+				model = models.model_pretrained(model_path)
+				print('Use pretrained model...')
+			else:
+				config = load_dict(model_path)
+				model = models.model_initialize(**config)
+				print('Training from scrtach...')
 			print('Begin to train model ' + str(idx) + ' with drug encoding ' + drug_encoding + ' and target encoding ' + target_encoding)
 			model.config['train_epoch'] = finetune_epochs
 			model.config['LR'] = finetune_LR
@@ -105,10 +136,10 @@ def repurpose(target, target_name = None,
 			model.train(train, val, test)
 
 			print('model training finished, now repurposing')
-			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = True, result_folder = result_folder_path, verbose = False)
+			y_pred = models.repurpose(X_repurpose, target, model, drug_names, target_name, convert_y = convert_y, result_folder = result_folder_path, verbose = False)
 			y_preds_models.append(y_pred)
-			print('Predictions from model ' + str(idx) + ' with drug encoding ' + model_name[0] + ' and target encoding ' + model_name[1] + 'are done...')
-	
+			print('Predictions from model ' + str(idx) + ' with drug encoding ' + model_name[0] + ' and target encoding ' + model_name[1] + ' are done...')
+			model.save_model(os.path.join(new_trained_models_dir, 'model_' + model_name[0] + '_' + model_name[1]))
 	result_folder_path = os.path.join(save_dir, 'results_aggregation')
 
 	if not os.path.exists(result_folder_path):
@@ -117,8 +148,14 @@ def repurpose(target, target_name = None,
 	print('models prediction finished...')
 	print('aggregating results...')
 
-	y_pred = np.mean(y_preds_models, axis = 0)
-
+	if agg == 'mean':
+		y_pred = np.mean(y_preds_models, axis = 0)
+	elif agg == 'max_effect':
+		if convert_y:        
+			y_pred = np.min(y_preds_models, axis = 0)
+		else:
+			y_pred = np.max(y_preds_models, axis = 0)
+            
 	fo = os.path.join(result_folder_path, "repurposing.txt")
 	print_list = []
 	with open(fo, 'w') as fout:		
@@ -150,8 +187,10 @@ def repurpose(target, target_name = None,
 						' predicted to have binding affinity score ' + "{0:.2f}".format(y_pred[i])
 					#print_list.append((string, y_pred[i]))
 				print_list.append((string_lst, y_pred[i]))
-
-		print_list.sort(key = lambda x:x[1])
+		if convert_y:
+			print_list.sort(key = lambda x:x[1])
+		else:
+			print_list.sort(key = lambda x:x[1], reverse = True)
 		print_list = [i[0] for i in print_list]
 		for idx, lst in enumerate(print_list):
 			lst = [str(idx + 1)] + lst 
@@ -250,7 +289,7 @@ def virtual_screening(X_drugs = None,
 			target_encoding = model_name[1]
 			train, val, test = data_process(train_drug, train_target, train_y, 
                                 drug_encoding, target_encoding, 
-                                split_method='random',frac=[0.7,0.1,0.2])
+                                split_method=split,frac=[0.7,0.1,0.2])
 			model_path = os.path.join(pretrained_dir, 'model_' + model_name[0] + '_' + model_name[1])
 			model = models.model_pretrained(model_path)
 			print('Begin to train model ' + str(idx) + ' with drug encoding ' + drug_encoding + ' and target encoding ' + target_encoding)
