@@ -783,6 +783,9 @@ class DBTA:
 						print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
 							' with loss ' + str(loss.cpu().detach().numpy()) +\
 							". Total time " + str(int(t_now - t_start)/3600) + " hours") 
+						### record total run time
+
+			##### validate, select the best model up to now 
 			with torch.set_grad_enabled(False):
 				if self.binary:  
 					## binary: ROC-AUC, PR-AUC, F1  
@@ -804,6 +807,10 @@ class DBTA:
 					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: '\
 						 + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			table.add_row(lst)
+
+
+
+		#### after training 
 		prettytable_file = os.path.join(self.result_folder, "valid_markdowntable.txt")
 		with open(prettytable_file, 'w') as fp:
 			fp.write(table.get_string())
