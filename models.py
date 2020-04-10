@@ -590,6 +590,11 @@ def mpnn_collate_func(x):
 
 
 class DBTA:
+	'''
+		Drug Target Binding Affinity 
+
+	'''
+
 	def __init__(self, **config):
 		drug_encoding = config['drug_encoding']
 		target_encoding = config['target_encoding']
