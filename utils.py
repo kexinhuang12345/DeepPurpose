@@ -578,6 +578,7 @@ def protein2emb_encoder(x):
     return i, np.asarray(input_mask)
 
 def drug2emb_encoder(x):
+
     max_d = 50
     t1 = dbpe.process_line(x).split()  # split
     try:
@@ -596,6 +597,10 @@ def drug2emb_encoder(x):
         input_mask = [1] * max_d
 
     return i, np.asarray(input_mask)
+    '''
+		the returned tuple is fed into models.transformer.forward() 
+    '''
+
 
 # '?' padding
 amino_char = ['?', 'A', 'C', 'B', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'O',
