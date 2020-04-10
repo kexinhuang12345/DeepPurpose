@@ -11,14 +11,14 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 ### Features
 
-- For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from six pretrained models!
+- For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained models in few minutes!
 
-- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN-RNN, transformers to message passing graph neural network, with 50+ models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
+- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
 	- support cold target, cold drug settings for robust model evaluations and support single-target high throughput sequencing assay data setup.
-	- many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing. 
+	- many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing, including antiviral, COVID19 targets, ...
 	- many pretraining checkpoints for popular existing published models.
 	- label unit conversion for skewed label distribution such as Kd.
 	- time reference for computational expensive encoding.
@@ -27,26 +27,67 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	- various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.
 	- PyTorch based, support CPU, GPU, Multi-GPUs.
 	
-Note: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](kexinhuang@hsph.harvard.edu).
+NOTE: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](kexinhuang@hsph.harvard.edu).
 	
 
 ## Example
 
 ### Case Study 1:
-Given a new target sequence (e.g. SARS-CoV 3CL Protease), retrieve a list of repurposing drugs. Results aggregated from six pretrained model!
+Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs. Results aggregated from five pretrained model!
 
 ```python
 import DeepPurpose.oneliner as oneliner
-oneliner.repurpose(load_SARS_CoV_Protease_3CL())
+oneliner.repurpose(load_SARS_CoV2_Protease_3CL())
+----output----
+Drug Repurposing Result for SARS-CoV2 3CL Protease
++------+----------------------+------------------------+---------------+
+| Rank |      Drug Name       |      Target Name       | Binding Score |
++------+----------------------+------------------------+---------------+
+|  1   |      Sofosbuvir      | SARS-CoV2 3CL Protease |     190.25    |
+|  2   |     Daclatasvir      | SARS-CoV2 3CL Protease |     214.58    |
+|  3   |      Vicriviroc      | SARS-CoV2 3CL Protease |     315.70    |
+|  4   |      Simeprevir      | SARS-CoV2 3CL Protease |     396.53    |
+|  5   |      Etravirine      | SARS-CoV2 3CL Protease |     409.34    |
+|  6   |      Amantadine      | SARS-CoV2 3CL Protease |     419.76    |
+|  7   |      Letermovir      | SARS-CoV2 3CL Protease |     460.28    |
+|  8   |     Rilpivirine      | SARS-CoV2 3CL Protease |     470.79    |
+|  9   |      Darunavir       | SARS-CoV2 3CL Protease |     472.24    |
+|  10  |      Lopinavir       | SARS-CoV2 3CL Protease |     473.01    |
+|  11  |      Maraviroc       | SARS-CoV2 3CL Protease |     474.86    |
+|  12  |    Fosamprenavir     | SARS-CoV2 3CL Protease |     487.45    |
+|  13  |      Ritonavir       | SARS-CoV2 3CL Protease |     492.19    |
+....
 ```
 
 ### Case Study 2:
-Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs. The model is finetuned from the pretraining checkpoint!
-
+Given a new target sequence (e.g. SARS-CoV 3CL Protease), but training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model is finetuned from the pretraining checkpoint!
 
 ```python
-import DeepPurpose.oneliner as oneliner
-oneliner.repurpose(load_SARS_CoV_Protease_3CL(), load_AID1706_SARS_CoV_3CL())
+from DeepPurpose import oneliner
+from DeepPurpose.dataset import *
+
+oneliner.repurpose(load_SARS_CoV_Protease_3CL(), load_AID1706_SARS_CoV_3CL(), load_antiviral_drugs(), 
+		split='HTS', convert_y = False, frac=[0.8,0.1,0.1], pretrained = False, agg = 'max_effect')
+
+----output----
+Drug Repurposing Result for SARS-CoV 3CL Protease
++------+----------------------+-----------------------+-------------+-------------+
+| Rank |      Drug Name       |      Target Name      | Interaction | Probability |
++------+----------------------+-----------------------+-------------+-------------+
+|  1   |      Remdesivir      | SARS-CoV 3CL Protease |     YES     |     0.99    |
+|  2   |      Efavirenz       | SARS-CoV 3CL Protease |     YES     |     0.98    |
+|  3   |      Vicriviroc      | SARS-CoV 3CL Protease |     YES     |     0.98    |
+|  4   |      Tipranavir      | SARS-CoV 3CL Protease |     YES     |     0.96    |
+|  5   |     Methisazone      | SARS-CoV 3CL Protease |     YES     |     0.94    |
+|  6   |      Letermovir      | SARS-CoV 3CL Protease |     YES     |     0.88    |
+|  7   |     Idoxuridine      | SARS-CoV 3CL Protease |     YES     |     0.77    |
+|  8   |       Loviride       | SARS-CoV 3CL Protease |     YES     |     0.76    |
+|  9   |      Baloxavir       | SARS-CoV 3CL Protease |     YES     |     0.74    |
+|  10  |     Ibacitabine      | SARS-CoV 3CL Protease |     YES     |     0.70    |
+|  11  |     Taribavirin      | SARS-CoV 3CL Protease |     YES     |     0.65    |
+|  12  |      Indinavir       | SARS-CoV 3CL Protease |     YES     |     0.62    |
+|  13  |   Podophyllotoxin    | SARS-CoV 3CL Protease |     YES     |     0.60    |
+....
 ```
 
 ### Case Study 3: 
@@ -75,7 +116,7 @@ train, val, test = data_process(X_drug, X_target, y,
                                 frac=[0.7,0.1,0.2])
 
 # Generate new model using default values; also allow model tuning via input parameters.
-config = generate_config(drug_encoding, target_encoding, transformer_n_layer_target = 3)
+config = generate_config(drug_encoding, target_encoding, transformer_n_layer_target = 8)
 net = models.model_initialize(**config)
 
 # Train the new model.
@@ -91,24 +132,13 @@ X_repurpose, drug_name, drug_cid = load_broad_repurposing_hub(SAVE_PATH)
 target, target_name = load_SARS_CoV_Protease_3CL()
 
 _ = models.repurpose(X_repurpose, target, net, drug_name, target_name)
-'''
-Output:
-------------------
-
-...
-'''
 
 # Virtual screening using the trained model or pre-trained model 
 # In this example, model is trained with binary outcome and customized input is given. 
 X_repurpose, drug_name, target, target_name = ['CCCCCCCOc1cccc(c1)C([O-])=O', ...], ['16007391', ...], ['MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...', ...], ['P36896', 'P00374']
 
 _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
-'''
-Output:
-------------------
-Virtual Screening Result
 
-'''
 ```
 
 ## Install & Usage
