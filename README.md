@@ -19,10 +19,10 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
 	- support cold target, cold drug settings for robust model evaluations and support single-target high throughput sequencing assay data setup.
 	- many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing, including antiviral, COVID19 targets, ...
-	- many pretraining checkpoints for popular existing published models.
+	- many pretrained checkpoints.
 	- label unit conversion for skewed label distribution such as Kd.
 	- time reference for computational expensive encoding.
-	- easy monitoring of training process with detailed training metrics output also support early stopping.
+	- easy monitoring of training process with detailed training metrics output such as test set figures (AUCs) and tables, also support early stopping.
 	- detailed output records such as rank list for repurposing result.
 	- various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.
 	- PyTorch based, support CPU, GPU, Multi-GPUs.
@@ -226,5 +226,7 @@ Please cite [arxiv]():
 ## Contact
 Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
 
+## Disclaimer
+The output list should be inspected manually by experts before proceeding to the wet-lab validation, and our work is still in active developement with limitations, please do not directly use the drugs.
 
 
