@@ -4,6 +4,7 @@
 <h3 align="center">
 <p> A Drug Repurposing and Virtual Screening Toolkit with State-of-the-Art Deep Learning Methods
 </h3>
+----
 
 This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows extremely easy usage (only one line of code!) for any non-computational domain researchers to be able to obtain a list of potential drugs using state-of-the-art deep learning while facilitating deep learning method research in this field by providing a flexible framework (less than 10 lines of codes!) and baselines. 
 
