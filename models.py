@@ -20,7 +20,7 @@ import copy
 from prettytable import PrettyTable
 import scikitplot as skplt
 
-import os!
+import os
 
 if os.getcwd()[-7:] != 'Purpose':
 	os.chdir('./DeepPurpose/')
@@ -810,7 +810,7 @@ class DBTA:
 			table.add_row(lst)
 
 			##### test the best model every XX epoches 
-			if epo % test_every_X_epoch == 0 and test is not None:
+			if epo > 0 and epo % test_every_X_epoch == 0 and test is not None:
 				print('--- Go for Testing ---')
 				if self.binary:
 					auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True)
