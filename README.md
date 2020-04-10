@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/kexinhuang12345/DeepPurpose/blob/master/docs/figs/logo_deeppurpose_horizontal.png?raw=true" alt="logo" width="400px" /></p>
+<p align="center"><img src="https://github.com/kexinhuang12345/DeepPurpose/tree/master/figs/logo_deeppurpose_horizontal.png" alt="logo" width="400px" /></p>
 
 
 <h3 align="center">
