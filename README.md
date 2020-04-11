@@ -32,7 +32,7 @@ NOTE: We are actively looking for constructive advices/user feedbacks/experience
 
 ## Example
 
-### Case Study 1 (a):
+### Case Study 1 (a): Antiviral Drugs Repurposing for SARS-CoV2 3CLPro, using One Line.
 Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
 
 ```python
@@ -62,7 +62,7 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 ```
 
 
-### Case Study 1 (b):
+### Case Study 1 (b): New Target Repurposing using Broad Drug Repurposing Hub, with One Line.
 Given a new target sequence (e.g. MMP9), retrieve a list of repurposing drugs from Broad Drug Repurposing Hub, which is the default. Results also aggregated from five pretrained model! Note the drug name here is the Pubchem CID since some drug names in Broad is too long.
 
 ```python
@@ -90,7 +90,7 @@ Drug Repurposing Result for MMP9
 |  13  |  73707512.0 |     MMP9    |     26.83     |
 ```
 
-### Case Study 2:
+### Case Study 2: Repurposing using Customized training data, with One Line.
 Given a new target sequence (e.g. SARS-CoV 3CL Pro), training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model can be trained from scratch or finetuned from the pretraining checkpoint!
 
 ```python
@@ -122,11 +122,11 @@ Drug Repurposing Result for SARS-CoV 3CL Protease
 ....
 ```
 
-### Case Study 3: 
+### Case Study 3: A Framework for Drug Target Interaction Prediction, with less than 10 lines of codes.
 Under the hood of one model from scratch, a flexible framework for method researchers:
 
 ```python
-import DeepPurpose.models as models
+from DeepPurpose import models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
