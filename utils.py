@@ -289,10 +289,14 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 		except:
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
 	elif drug_encoding == 'CNN':
-		pass
+		unique = pd.Series(df_data['SMILES'].unique()).apply(trans_drug)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
 	elif drug_encoding == 'CNN_RNN':
-		pass
+		unique = pd.Series(df_data['SMILES'].unique()).apply(trans_drug)
+		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
+		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'Transformer':
 		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
@@ -329,10 +333,14 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
 		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	elif target_encoding == 'CNN':
-		pass		
+		AA = pd.Series(df_data['Target Sequence'].unique()).apply(trans_protein)
+		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
+		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
 	elif target_encoding == 'CNN_RNN':
-		pass
+		AA = pd.Series(df_data['Target Sequence'].unique()).apply(trans_protein)
+		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
+		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	elif target_encoding == 'Transformer':
 		AA = pd.Series(df_data['Target Sequence'].unique()).apply(protein2emb_encoder)
 		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
@@ -396,17 +404,12 @@ class data_process_loader(data.Dataset):
 	def __getitem__(self, index):
 		'Generates one sample of data'
 		index = self.list_IDs[index]
+		v_d = self.df.iloc[index]['drug_encoding']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
-			v_d = self.df.iloc[index]['SMILES']
-			v_d = trans_drug(v_d)
-		else:
-			v_d = self.df.iloc[index]['drug_encoding']
-
+			v_d = drug_2_embed(v_d)
+		v_p = self.df.iloc[index]['target_encoding']
 		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
-			v_p = self.df.iloc[index]['Target Sequence']
-			v_p = trans_protein(v_p)
-		else:
-			v_p = self.df.iloc[index]['target_encoding']
+			v_p = protein_2_embed(v_p)
 		y = self.labels[index]
 		return v_d, v_p, y
 
@@ -627,7 +630,10 @@ def trans_protein(x):
 		temp = temp + ['?'] * (MAX_SEQ_PROTEIN-len(temp))
 	else:
 		temp = temp [:MAX_SEQ_PROTEIN]
-	return enc_protein.transform(np.array(temp).reshape(-1,1)).toarray().T
+	return temp
+
+def protein_2_embed(x):
+	return enc_protein.transform(np.array(x).reshape(-1,1)).toarray().T
 
 def trans_drug(x):
 	temp = list(x)
@@ -636,8 +642,10 @@ def trans_drug(x):
 		temp = temp + ['?'] * (MAX_SEQ_DRUG-len(temp))
 	else:
 		temp = temp [:MAX_SEQ_DRUG]
-	return enc_drug.transform(np.array(temp).reshape(-1,1)).toarray().T
+	return temp
 
+def drug_2_embed(x):
+	return enc_drug.transform(np.array(x).reshape(-1,1)).toarray().T    
 
 def save_dict(path, obj):
 	with open(path + '/config.pkl', 'wb') as f:
