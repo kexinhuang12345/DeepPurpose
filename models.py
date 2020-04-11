@@ -593,11 +593,6 @@ def mpnn_collate_func(x):
 class DBTA:
 	'''
 		Drug Target Binding Affinity 
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> f06305bda6d3c42f8a99c797c0a26cd305030689
 	'''
 
 	def __init__(self, **config):
