@@ -50,7 +50,7 @@ class transformer(nn.Sequential):
 													config['transformer_attention_probs_dropout'],
 													config['transformer_hidden_dropout_rate'])
 
-	### parameter v is from utils.drug2emb_encoder 
+	### parameter v (tuple of length 2) is from utils.drug2emb_encoder 
 	def forward(self, v):
 		e = v[0].long().to(device)
 		e_mask = v[1].long().to(device)
@@ -878,6 +878,10 @@ class DBTA:
           
 
 	def predict(self, df_data):
+		'''
+			utils.data_process_repurpose_virtual_screening 
+			pd.DataFrame
+		'''
 		print('predicting...')
 		info = data_process_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		self.model.to(device)

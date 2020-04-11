@@ -290,6 +290,7 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
 	elif drug_encoding == 'CNN':
 		pass
+		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
 	elif drug_encoding == 'CNN_RNN':
 		pass
 	elif drug_encoding == 'Transformer':
