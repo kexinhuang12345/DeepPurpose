@@ -33,7 +33,7 @@ NOTE: We are actively looking for constructive advices/user feedbacks/experience
 ## Example
 
 ### Case Study 1 (a):
-Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated antiviral drug library. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
+Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
 
 ```python
 import DeepPurpose.oneliner as oneliner
@@ -41,7 +41,7 @@ oneliner.repurpose(*load_SARS_CoV2_Protease_3CL(), *load_antiviral_drugs())
 ```
 ```
 ----output----
-Drug Repurposing Result for SARS-CoV 3CL Protease
+Drug Repurposing Result for SARS-CoV2 3CL Protease
 +------+----------------------+------------------------+---------------+
 | Rank |      Drug Name       |      Target Name       | Binding Score |
 +------+----------------------+------------------------+---------------+
