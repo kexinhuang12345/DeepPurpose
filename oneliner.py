@@ -215,7 +215,7 @@ def repurpose(target, target_name = None,
 		pickle.dump(print_list, f, pickle.HIGHEST_PROTOCOL)
         
         
-def virtual_screening(target, X_repurpose = None,target_name = None, 
+def virtual_screening(target, X_repurpose = None,
 					target_name = None, 
 					drug_names = None,
 					train_drug = None, 
