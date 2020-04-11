@@ -11,7 +11,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 ### Features
 
-- For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained models in few minutes!
+- For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained deep learning models!
 
 - For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
 
