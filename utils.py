@@ -646,3 +646,22 @@ def save_dict(path, obj):
 def load_dict(path):
 	with open(path + '/config.pkl', 'rb') as f:
 		return pickle.load(f)
+
+def download_pretrained_model(model_name, save_dir = './save_folder'):
+	if model_name == 'DeepDTA':
+		print('Beginning Downloading DeepDTA Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/pretrained_DeepDTA.zip'
+		if not os.path.exists(save_dir):
+			os.mkdir(save_dir)
+		if not os.path.exists(os.path.join(save_dir, 'pretrained_DeepDTA')):
+			os.mkdir(os.path.join(save_dir, 'pretrained_DeepDTA'))
+
+		pretrained_dir = os.path.join(save_dir, 'pretrained_DeepDTA')
+		pretrained_dir_ = wget.download(url, pretrained_dir)
+
+		print('Downloading finished... Beginning to extract zip file...')
+		with ZipFile(pretrained_dir_, 'r') as zip: 
+		    zip.extractall(path = pretrained_dir)
+		print('pretrained_DeepDTA Successfully Downloaded...')
+		pretrained_dir = os.path.join(pretrained_dir, 'pretrained_DeepDTA')
+		return pretrained_dir        
