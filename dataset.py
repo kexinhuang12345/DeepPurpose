@@ -258,6 +258,14 @@ def load_antiviral_drugs(path = './data', no_cid = False):
 	else:
 		return df.SMILES.values, df[' Name'].values, df['Pubchem CID'].values
 
+def load_IC50_Not_Pretrained(path = './data', n=500): 
+	url = 'https://deeppurpose.s3.amazonaws.com/IC50_not_Kd.csv'
+	if not os.path.exists(path):
+	    os.makedirs(path)
+	saved_path_data = wget.download(url, path)
+	df = pd.read_csv(saved_path_data).sample(n = n, replace = False).reset_index(drop = True)
+	return df['Target Sequence'].values, df['SMILES'].values
+
 def load_SARS_CoV_Protease_3CL():
 	target = 'SGFKKLVSPSSAVEKCIVSVSYRGNNLNGLWLGDSIYCPRHVLGKFSGDQWGDVLNLANNHEFEVVTQNGVTLNVVSRRLKGAVLILQTAVANAETPKYKFVKANCGDSFTIACSYGGTVIGLYPVTMRSNGTIRASFLAGACGSVGFNIEKGVVNFFYMHHLELPNALHTGTDLMGEFYGGYVDEEVAQRVPPDNLVTNNIVAWLYAAIISVKESSFSQPKWLESTTVSIEDYNRWASDNGFTPFSTSTAITKLSAITGVDVCKLLRTIMVKSAQWGSDPILGQYNFEDELTPESVFNQVGGVRLQ'
 	target_name = 'SARS-CoV 3CL Protease'
