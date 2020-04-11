@@ -111,7 +111,7 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_
 
 	return df_want.SMILES.values, df_want['Target Sequence'].values, np.array(y)
 
-def load_process_DAVIS(path, binary = False, convert_to_log = True, threshold = 30):
+def load_process_DAVIS(path = './data', binary = False, convert_to_log = True, threshold = 30):
 	print('Beginning Processing...')
 
 	if not os.path.exists(path):
@@ -157,7 +157,7 @@ def load_process_DAVIS(path, binary = False, convert_to_log = True, threshold = 
 	print('Done!')
 	return np.array(SMILES), np.array(Target_seq), np.array(y)
 
-def load_process_KIBA(path, binary = False, threshold = 9):
+def load_process_KIBA(path = './data', binary = False, threshold = 9):
 	print('Beginning Processing...')
 
 
@@ -203,7 +203,7 @@ def load_process_KIBA(path, binary = False, threshold = 9):
 	print('Done!')
 	return np.array(SMILES), np.array(Target_seq), np.array(y)
 
-def load_AID1706_SARS_CoV_3CL(path, binary = True, threshold = 15, balanced = True, oversample_num = 30, seed = 1):
+def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, balanced = True, oversample_num = 30, seed = 1):
 	print('Beginning Processing...')
 
 	if not os.path.exists(path):
@@ -238,7 +238,7 @@ def load_AID1706_SARS_CoV_3CL(path, binary = True, threshold = 15, balanced = Tr
 	print('Done!')
 	return np.array(X_drug), target, np.array(y)
 
-def load_broad_repurposing_hub(path):
+def load_broad_repurposing_hub(path = './data'):
 	url = 'https://drive.google.com/uc?export=download&id=1A4HbHMZvhgDjx5ZjS-uVrCGBaVmvU8wd'
 	if not os.path.exists(path):
 	    os.makedirs(path)
@@ -247,13 +247,16 @@ def load_broad_repurposing_hub(path):
 	df = df.fillna('UNK')
 	return df.smiles.values, df.title.values, df.cid.values.astype(str)
 
-def load_antiviral_drugs(path):
+def load_antiviral_drugs(path = './data', no_cid = False):
 	url = 'https://deeppurpose.s3.amazonaws.com/antiviral_drugs.csv'
 	if not os.path.exists(path):
 		os.mkdirs(path)
 	saved_path_data = wget.download(url, path)
 	df = pd.read_csv(saved_path_data)
-	return df.SMILES.values, df[' Name'].values, df['Pubchem CID'].values
+	if no_cid:
+		return df.SMILES.values, df[' Name'].values
+	else:
+		return df.SMILES.values, df[' Name'].values, df['Pubchem CID'].values
 
 def load_SARS_CoV_Protease_3CL():
 	target = 'SGFKKLVSPSSAVEKCIVSVSYRGNNLNGLWLGDSIYCPRHVLGKFSGDQWGDVLNLANNHEFEVVTQNGVTLNVVSRRLKGAVLILQTAVANAETPKYKFVKANCGDSFTIACSYGGTVIGLYPVTMRSNGTIRASFLAGACGSVGFNIEKGVVNFFYMHHLELPNALHTGTDLMGEFYGGYVDEEVAQRVPPDNLVTNNIVAWLYAAIISVKESSFSQPKWLESTTVSIEDYNRWASDNGFTPFSTSTAITKLSAITGVDVCKLLRTIMVKSAQWGSDPILGQYNFEDELTPESVFNQVGGVRLQ'
@@ -295,3 +298,12 @@ def load_SARS_CoV2_2_O_ribose_methyltransferase():
 	target_name = 'SARS_CoV2_2_O_ribose_methyltransferase'
 	return target, target_name
 
+def load_SLC6A2():
+	target = 'MLLARMNPQVQPENNGADTGPEQPLRARKTAELLVVKERNGVQCLLAPRDGDAQPRETWGKKIDFLLSVVGFAVDLANVWRFPYLCYKNGGGAFLIPYTLFLIIAGMPLFYMELALGQYNREGAATVWKICPFFKGVGYAVILIALYVGFYYNVIIAWSLYYLFSSFTLNLPWTDCGHTWNSPNCTDPKLLNGSVLGNHTKYSKYKFTPAAEFYERGVLHLHESSGIHDIGLPQWQLLLCLMVVVIVLYFSLWKGVKTSGKVVWITATLPYFVLFVLLVHGVTLPGASNGINAYLHIDFYRLKEATVWIDAATQIFFSLGAGFGVLIAFASYNKFDNNCYRDALLTSSINCITSFVSGFAIFSILGYMAHEHKVNIEDVATEGAGLVFILYPEAISTLSGSTFWAVVFFVMLLALGLDSSMGGMEAVITGLADDFQVLKRHRKLFTFGVTFSTFLLALFCITKGGIYVLTLLDTFAAGTSILFAVLMEAIGVSWFYGVDRFSNDIQQMMGFRPGLYWRLCWKFVSPAFLLFVVVVSIINFKPLTYDDYIFPPWANWVGWGIALSSMVLVPIYVIYKFLSTQGSLWERLAYGITPENEHHLVAQRDIRQFQLQHWLAI'
+	target_name = 'SLC6A2'
+	return target, target_name
+
+def load_MMP9():
+	target = 'MSLWQPLVLVLLVLGCCFAAPRQRQSTLVLFPGDLRTNLTDRQLAEEYLYRYGYTRVAEMRGESKSLGPALLLLQKQLSLPETGELDSATLKAMRTPRCGVPDLGRFQTFEGDLKWHHHNITYWIQNYSEDLPRAVIDDAFARAFALWSAVTPLTFTRVYSRDADIVIQFGVAEHGDGYPFDGKDGLLAHAFPPGPGIQGDAHFDDDELWSLGKGVVVPTRFGNADGAACHFPFIFEGRSYSACTTDGRSDGLPWCSTTANYDTDDRFGFCPSERLYTQDGNADGKPCQFPFIFQGQSYSACTTDGRSDGYRWCATTANYDRDKLFGFCPTRADSTVMGGNSAGELCVFPFTFLGKEYSTCTSEGRGDGRLWCATTSNFDSDKKWGFCPDQGYSLFLVAAHEFGHALGLDHSSVPEALMYPMYRFTEGPPLHKDDVNGIRHLYGPRPEPEPRPPTTTTPQPTAPPTVCPTGPPTVHPSERPTAGPTGPPSAGPTGPPTAGPSTATTVPLSPVDDACNVNIFDAIAEIGNQLYLFKDGKYWRFSEGRGSRPQGPFLIADKWPALPRKLDSVFEERLSKKLFFFSGRQVWVYTGASVLGPRRLDKLGLGADVAQVTGALRSGRGKMLLFSGRRLWRFDVKAQMVDPRSASEVDRMFPGVPLDTHDVFQYREKAYFCQDRFYWRVSSRSELNQVDQVGYVTYDILQCPED'
+	target_name = 'MMP9'
+	return target, target_name
