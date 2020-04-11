@@ -17,7 +17,7 @@ The Github repository is located `here <https://github.com/kexinhuang12345/DeepP
 
 
 1.1 Download
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
@@ -301,9 +301,8 @@ Classifier is make the prediction for DBTA, it serve as a basic component of cla
 
 
 
-**Calling functions** 
+**Calling functions** implement the feedforward procedure of Classifier.
 
-block-quotes::
 
 .. code-block:: python
 
@@ -334,8 +333,11 @@ name of function: **constructor** create DBTA model.
 	__init__(self, **config)
 
 
-* **config** (kwargs, keyword arguments) - specify the parameter of classifier.  
-
+* **config** (kwargs, keyword arguments) - specify the parameter of DBTA.  
+	* **drug_encoding** (str) - Encoder mode for drug. It can be "transformer", "MPNN", "CNN", "CNN_RNN" ...,
+	* **target_encoding** (str) - Encoder mode for protein. It can be "transformer", "CNN", "CNN_RNN" ..., 
+	* **result_folder** (str) - directory that store the learning log/results. 
+	* **concrete parameter for encoder model** (repeated)
 
 
 name of function: **test_** include all the inference procedure. 
@@ -345,10 +347,10 @@ name of function: **test_** include all the inference procedure.
 
 	test_(self, data_generator, model, repurposing_mode = False, test = False):
 
-* **data_generator** - 
-* **model** - 
-* **repurposing_mode** (bool) - 
-* **test** (bool) - 
+* **data_generator** (iterator) - iterator of torch.utils.data.DataLoader. It can be test data or validation data. 
+* **model** (DeepPurpose.models.Classifier) - model of DBTA. 
+* **repurposing_mode** (bool) - If repurposing_mode is True, then do repurposing. Otherwise, do compute the accuracy (including AUC score). 
+* **test** (bool) - If test is True, plot ROC-AUC and PR-AUC curve. Otherwise, pass. 
 
 
 name of function: **train** include all the training procedure. 
@@ -357,10 +359,10 @@ name of function: **train** include all the training procedure.
 
 	train(self, train, val, test = None, verbose = True)
 
-* **train** () - 
-* **val** () - 
-* **test** () - 
-* **verbose** (bool) - 
+* **train** () - Train data generator
+* **val** () - Valid data generator
+* **test** () - Test data generator
+* **verbose** (bool) - If verbose is True, then print training record every 100 iterations. 
 
 
 name of function: **predict** 
@@ -369,7 +371,7 @@ name of function: **predict**
 
 	 predict(self, df_data)
 
-* **df_data** () - 
+* **df_data** (pd.DataFrame) - specify data that we need to predict. 
 
 
 name of function: **save_model** save the well-trained model to specific directory. 
