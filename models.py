@@ -778,8 +778,8 @@ class DBTA:
 					if (i % 100 == 0):
 						t_now = time()
 						print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
-							' with loss ' + str(loss.cpu().detach().numpy()) +\
-							". Total time " + str(int(t_now - t_start)/3600) + " hours") 
+							' with loss ' + str(loss.cpu().detach().numpy())[:7] +\
+							". Total time " + str(int(t_now - t_start)/3600)[:7] + " hours") 
 						### record total run time
 
 			##### validate, select the best model up to now 
@@ -792,7 +792,7 @@ class DBTA:
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc   
-					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))
+					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
 					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
@@ -801,8 +801,8 @@ class DBTA:
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
-					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse) + ' , Pearson Correlation: '\
-						 + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
+						 + str(r2)[:7] + ' with p-value: ' + str(p_val)[:7] +' , Concordance Index: '+str(CI)[:7])
 			table.add_row(lst)
 
 			##### test the best model every XX epoches 
