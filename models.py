@@ -392,10 +392,12 @@ def model_initialize(**config):
 	model = DBTA(**config)
 	return model
 
-def model_pretrained(path_dir):
+def model_pretrained(path_dir = None, model = None):
+	if model is not None:
+		path_dir = download_pretrained_model(model)
 	config = load_dict(path_dir)
 	model = DBTA(**config)
-	model.load_pretrained(path_dir + '/model.pt')
+	model.load_pretrained(path_dir + '/model.pt')    
 	return model
 
 def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
