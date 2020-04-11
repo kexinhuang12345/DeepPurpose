@@ -359,9 +359,9 @@ name of function: **train** include all the training procedure.
 
 	train(self, train, val, test = None, verbose = True)
 
-* **train** () - todo
-* **val** () - 
-* **test** () - 
+* **train** () - Train data generator
+* **val** () - Valid data generator
+* **test** () - Test data generator
 * **verbose** (bool) - If verbose is True, then print training record every 100 iterations. 
 
 
