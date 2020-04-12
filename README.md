@@ -11,23 +11,23 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 ### Features
 
-- For biomedical researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, designed to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained deep learning models!
+- For non-computational researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, aiming to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained deep learning models!
 
-- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
+- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ combined models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
 	- support cold target, cold drug settings for robust model evaluations and support single-target high throughput sequencing assay data setup.
-	- many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing, including antiviral, COVID19 targets, ...
+	- many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing, including antiviral, COVID19 targets, BindingDB, DAVIS, KIBA, ...
 	- many pretrained checkpoints.
-	- label unit conversion for skewed label distribution such as Kd.
-	- time reference for computational expensive encoding.
 	- easy monitoring of training process with detailed training metrics output such as test set figures (AUCs) and tables, also support early stopping.
 	- detailed output records such as rank list for repurposing result.
 	- various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.
+	- label unit conversion for skewed label distribution such as Kd.
+	- time reference for computational expensive encoding.
 	- PyTorch based, support CPU, GPU, Multi-GPUs.
 	
-*NOTE: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](kexinhuang@hsph.harvard.edu).
+*NOTE: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](kexinhuang@hsph.harvard.edu).*
 	
 
 ## Example
@@ -207,7 +207,7 @@ conda activate deeppurpose
 conda deactivate 
 ## Exit conda environment 
 ```
-*We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.
+*We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
 Checkout demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start:
 
