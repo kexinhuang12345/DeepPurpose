@@ -36,7 +36,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
 
 ```python
-import DeepPurpose.oneliner as oneliner
+from DeepPurpose import oneliner
 oneliner.repurpose(*load_SARS_CoV2_Protease_3CL(), *load_antiviral_drugs())
 ```
 ```
@@ -66,7 +66,7 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 Given a new target sequence (e.g. MMP9), retrieve a list of repurposing drugs from Broad Drug Repurposing Hub, which is the default. Results also aggregated from five pretrained model! Note the drug name here is the Pubchem CID since some drug names in Broad is too long.
 
 ```python
-import DeepPurpose.oneliner as oneliner
+from DeepPurpose import oneliner
 oneliner.repurpose(*load_MMP9())
 ```
 ```
@@ -209,7 +209,7 @@ conda deactivate
 ```
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
-Checkout demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start:
+Checkout 10+ demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start:
 
 | Name | Description |
 |-----------------|-------------|
@@ -218,7 +218,16 @@ Checkout demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/Deep
 | [Virtual Screening for BindingDB IC50](DEMO/case-study-II-Virtual-Screening-for-BindingDB-IC50.ipynb) | Example of one-liner virtual screening |
 |[Reproduce_DeepDTA](DEMO/case-study-IV-Reproduce_DeepDTA.ipynb)|Reproduce [DeepDTA](https://arxiv.org/abs/1801.10193) with DAVIS dataset and show how to use the 10 lines framework|
 | [Binary Classification for DAVIS using CNNs](DEMO/CNN-Binary-Example-DAVIS.ipynb)| Binary Classification for DAVIS dataset using CNN encodings by using the 10 lines framework.|
+....
 
+## Cite Us
+
+Please cite [arxiv]():
+```
+@article{
+}
+
+```
 
 ## Encodings
 Currently, we support the following encodings:
@@ -244,17 +253,69 @@ Currently, we support the following encodings:
 |CNN_RNN| A GRU/LSTM on top of a CNN on target seq|
 |Transformer| Transformer Encoder on ESPF|
 
+## Data
+DeePurpose supports the following dataset loaders for now and more will be added:
+*Public Drug-Target Binding Benchmark Dataset*
+| Data  | Function |
+|-------|----------|
+|[BindingDB](https://www.bindingdb.org/bind/index.jsp)| ```python download_BindingDB()``` to download the data and ```python process_BindingDB()* ``` to process the data|
+|[DAVIS](http://staff.cs.utu.fi/~aatapa/data/DrugTarget/)|```python load_process_DAVIS() ``` to download and process the data|
+|[KIBA](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z)|```python load_process_KIBA() ``` to download and process the data|
+
+*Repurposing Dataset*
+| Data  | Function |
+|-------|----------|
+|[Curated Antiviral Drugs Library](https://en.wikipedia.org/wiki/List_of_antiviral_drugs)|```python load_antiviral_drugs()``` to load and process the data|
+|[Broad Repurposing Hub](https://www.broadinstitute.org/drug-repurposing-hub)|```python load_broad_repurposing_hub() ``` downloads and process the data|
+
+*Bioassay Data for COVID-19*
+(Thanks to [MIT AI Cures](https://www.aicures.mit.edu/data))
+| Data  | Function |
+|-------|----------|
+|[AID1706](https://pubchem.ncbi.nlm.nih.gov/bioassay/1706)|```python load_AID1706_SARS_CoV_3CL()``` to load and process|
+
+*COVID-19 Targets*
+| Data  | Function |
+|-------|----------|
+|SARS-CoV 3CL Protease|```python load_SARS_CoV_Protease_3CL()```|
+|SARS-CoV2 3CL Protease|```python load_SARS_CoV2_Protease_3CL()```|
+|SARS_CoV2 RNA Polymerase|```python load_SARS_CoV2_RNA_polymerase()```|
+|SARS-CoV2 Helicase|```python load_SARS_CoV2_Helicase()```|
+|SARS-CoV2 3to5_exonuclease|```python load_SARS_CoV2_3to5_exonuclease()```|
+|SARS-CoV2 endoRNAse|```python load_SARS_CoV2_endoRNAse()```|
+
+DeepPurpose also supports to read from users' txt file. It assumes the following data format.
+
+For drug target pairs:
+```
+Drug1_SMILES Target1_Seq Score/Label
+Drug2_SMILES Target2_Seq Score/Label
+....
+```
+Then, use 
+
+```python 
+from DeepPurpose import dataset
+X_drug, X_target, y = dataset.read_file_training_dataset_drug_target_pairs(PATH)
+```
+
+For bioassay data:
+```
+Target_Seq
+Drug1_SMILES Score/Label
+Drug2_SMILES Score/Label
+....
+```
+
+Then, use 
+
+```python 
+from DeepPurpose import dataset
+X_drug, X_target, y = dataset.read_file_training_dataset_bioassay(PATH)
+```
+
 ## Documentations
-
-
-## Cite Us
-
-Please cite [arxiv]():
-```
-@article{
-}
-
-```
+For more detailed documentations, please see [here]().
 
 ## Contact
 Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
