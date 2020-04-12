@@ -689,7 +689,10 @@ class DBTA:
 		lr = self.config['LR']
 		BATCH_SIZE = self.config['batch_size']
 		train_epoch = self.config['train_epoch']
-		test_every_X_epoch = self.config['test_every_X_epoch']
+		if 'test_every_X_epoch' in self.config.keys():
+			test_every_X_epoch = self.config['test_every_X_epoch']
+		else:     
+			test_every_X_epoch = 40
 		loss_history = []
 
 		self.model = self.model.to(self.device)
