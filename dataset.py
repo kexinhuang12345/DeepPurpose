@@ -22,6 +22,58 @@ We use some existing files from https://github.com/yangkevin2/coronavirus_data
 We use the SMILES, protein sequence from DeepDTA github repo: https://github.com/hkmztrk/DeepDTA/tree/master/data.
 '''
 
+def read_file_training_dataset_bioassay(path):
+	# a line in the file is SMILES score, the first line is the target sequence
+	try:
+		file = open(path, "r")
+	except:
+		print('Path Not Found, please double check!')
+	target = file.readline()
+	if target[-1:] == '\n':
+		target = target[:-1]        
+	X_drug = []
+	y = []
+	for aline in file:
+		values = aline.split()
+		X_drug.append(values[0])
+		y.append(float(values[1]))
+	file.close()
+	return np.array(X_drug), target, np.array(y)
+
+def read_file_training_dataset_drug_target_pairs(path):
+	# a line in the file is SMILES Target_seq score    
+	try:
+		file = open(path, "r")
+	except:
+		print('Path Not Found, please double check!')
+	X_drug = []
+	X_target = []
+	y = []
+	for aline in file:
+		values = aline.split()
+		X_drug.append(values[0])
+		X_target.append(values[1])
+		y.append(float(values[2]))
+	file.close()
+	return np.array(X_drug), np.array(X_target), np.array(y)
+
+def read_file_training_dataset_drug_target_pairs(path):
+	try:
+		file = open(path, "r")
+	except:
+		print('Path Not Found, please double check!')
+	X_drug = []
+	X_target = []
+	y = []
+	for aline in file:
+		values = aline.split()
+		X_drug.append(values[0])
+		X_target.append(values[1])
+		y.append(float(values[2]))
+	file.close()
+	return np.array(X_drug), np.array(X_target), np.array(y)
+
+
 def download_BindingDB(path):
 
 	print('Beginning to download dataset...')
@@ -202,6 +254,16 @@ def load_process_KIBA(path = './data', binary = False, threshold = 9):
 
 	print('Done!')
 	return np.array(SMILES), np.array(Target_seq), np.array(y)
+
+def load_AID1706_txt_file(path = './data'):
+	print('Beginning Processing...')
+
+	if not os.path.exists(path):
+		os.makedirs(path)  
+        
+	url = 'https://deeppurpose.s3.amazonaws.com/AID1706.txt'
+	saved_path_data = wget.download(url, path)
+	return saved_path_data
 
 def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, balanced = True, oversample_num = 30, seed = 1):
 	print('Beginning Processing...')
