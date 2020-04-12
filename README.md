@@ -258,31 +258,31 @@ DeePurpose supports the following dataset loaders for now and more will be added
 *Public Drug-Target Binding Benchmark Dataset*
 | Data  | Function |
 |-------|----------|
-|[BindingDB](https://www.bindingdb.org/bind/index.jsp)| ```python download_BindingDB()``` to download the data and ```python process_BindingDB()* ``` to process the data|
-|[DAVIS](http://staff.cs.utu.fi/~aatapa/data/DrugTarget/)|```python load_process_DAVIS() ``` to download and process the data|
-|[KIBA](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z)|```python load_process_KIBA() ``` to download and process the data|
+|[BindingDB](https://www.bindingdb.org/bind/index.jsp)| ```download_BindingDB()``` to download the data and ```process_BindingDB()* ``` to process the data|
+|[DAVIS](http://staff.cs.utu.fi/~aatapa/data/DrugTarget/)|```load_process_DAVIS() ``` to download and process the data|
+|[KIBA](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z)|```load_process_KIBA() ``` to download and process the data|
 
 *Repurposing Dataset*
 | Data  | Function |
 |-------|----------|
-|[Curated Antiviral Drugs Library](https://en.wikipedia.org/wiki/List_of_antiviral_drugs)|```python load_antiviral_drugs()``` to load and process the data|
-|[Broad Repurposing Hub](https://www.broadinstitute.org/drug-repurposing-hub)|```python load_broad_repurposing_hub() ``` downloads and process the data|
+|[Curated Antiviral Drugs Library](https://en.wikipedia.org/wiki/List_of_antiviral_drugs)|```load_antiviral_drugs()``` to load and process the data|
+|[Broad Repurposing Hub](https://www.broadinstitute.org/drug-repurposing-hub)|```load_broad_repurposing_hub() ``` downloads and process the data|
 
 *Bioassay Data for COVID-19*
 (Thanks to [MIT AI Cures](https://www.aicures.mit.edu/data))
 | Data  | Function |
 |-------|----------|
-|[AID1706](https://pubchem.ncbi.nlm.nih.gov/bioassay/1706)|```python load_AID1706_SARS_CoV_3CL()``` to load and process|
+|[AID1706](https://pubchem.ncbi.nlm.nih.gov/bioassay/1706)|```load_AID1706_SARS_CoV_3CL()``` to load and process|
 
 *COVID-19 Targets*
 | Data  | Function |
 |-------|----------|
-|SARS-CoV 3CL Protease|```python load_SARS_CoV_Protease_3CL()```|
-|SARS-CoV2 3CL Protease|```python load_SARS_CoV2_Protease_3CL()```|
-|SARS_CoV2 RNA Polymerase|```python load_SARS_CoV2_RNA_polymerase()```|
-|SARS-CoV2 Helicase|```python load_SARS_CoV2_Helicase()```|
-|SARS-CoV2 3to5_exonuclease|```python load_SARS_CoV2_3to5_exonuclease()```|
-|SARS-CoV2 endoRNAse|```python load_SARS_CoV2_endoRNAse()```|
+|SARS-CoV 3CL Protease|```load_SARS_CoV_Protease_3CL()```|
+|SARS-CoV2 3CL Protease|```load_SARS_CoV2_Protease_3CL()```|
+|SARS_CoV2 RNA Polymerase|```load_SARS_CoV2_RNA_polymerase()```|
+|SARS-CoV2 Helicase|```load_SARS_CoV2_Helicase()```|
+|SARS-CoV2 3to5_exonuclease|```load_SARS_CoV2_3to5_exonuclease()```|
+|SARS-CoV2 endoRNAse|```load_SARS_CoV2_endoRNAse()```|
 
 DeepPurpose also supports to read from users' txt file. It assumes the following data format.
 
