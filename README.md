@@ -185,7 +185,7 @@ cd DeepPurpose
 conda env create -f env.yml  
 ## Build virtual environment with all packages installed using conda
 
-conda activate deeppurpose
+conda activate DeepPurpose
 ## Activate conda environment
 
 ## run our code
