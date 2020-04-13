@@ -13,7 +13,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 - For non-computational researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, aiming to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained deep learning models!
 
-- For computational researchers, 15+ state-of-the-art encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ combined models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
+- For computational researchers, 15+ powerful encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ combined models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.
@@ -174,6 +174,12 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 ```
 
 ## Install & Usage
+Try it on [Binder](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)!
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)
+
+We recommend to install it locally since Binder needs to install environment every time launching:
+
 ```bash
 # -- First Time -- #
 git clone git@github.com:kexinhuang12345/DeepPurpose.git
@@ -207,8 +213,16 @@ conda activate deeppurpose
 conda deactivate 
 ## Exit conda environment 
 ```
+
+Docker image will also be up soon!
+
+We also provide installation video tutorials:
+[Binder]()
+[Local environment]()
+
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
+## Demos
 Checkout 10+ demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start:
 
 | Name | Description |
