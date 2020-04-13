@@ -194,6 +194,9 @@ conda env create -f env.yml
 conda activate DeepPurpose
 ## Activate conda environment
 
+jupyter notebook
+## open the jupyter notebook with the conda env
+
 ## run our code
 ... ...
 
