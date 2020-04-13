@@ -269,6 +269,7 @@ Currently, we support the following encodings:
 
 ## Data
 DeePurpose supports the following dataset loaders for now and more will be added:
+
 *Public Drug-Target Binding Benchmark Dataset*
 | Data  | Function |
 |-------|----------|
