@@ -636,7 +636,8 @@ class DBTA:
 		if not os.path.exists(self.result_folder):
 			os.mkdir(self.result_folder)            
 		self.binary = False
-
+		if 'num_workers' not in self.config.keys():
+			self.config['num_workers'] = 0
 
 	def test_(self, data_generator, model, repurposing_mode = False, test = False):
 		y_pred = []
@@ -712,7 +713,7 @@ class DBTA:
 
 		params = {'batch_size': BATCH_SIZE,
 	    		'shuffle': True,
-	    		'num_workers': 4,
+	    		'num_workers': self.config['num_workers'],
 	    		'drop_last': False}
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
@@ -724,7 +725,7 @@ class DBTA:
 			info = data_process_loader(test.index.values, test.Label.values, test, **self.config)
 			params_test = {'batch_size': BATCH_SIZE,
 					'shuffle': False,
-					'num_workers': 4,
+					'num_workers': self.config['num_workers'],
 					'drop_last': False,
 					'sampler':SequentialSampler(info)}
         
@@ -888,7 +889,7 @@ class DBTA:
 		self.model.to(device)
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
-				'num_workers': 4,
+				'num_workers': self.config['num_workers'],
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
 
