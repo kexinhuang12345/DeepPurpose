@@ -194,6 +194,9 @@ conda env create -f env.yml
 conda activate DeepPurpose
 ## Activate conda environment
 
+jupyter notebook
+## open the jupyter notebook with the conda env
+
 ## run our code
 ... ...
 
@@ -314,7 +317,7 @@ from DeepPurpose import dataset
 X_drug, X_target, y = dataset.read_file_training_dataset_drug_target_pairs(PATH)
 ```
 
-For bioassay data:
+For bioassay training data:
 ```
 Target_Seq
 Drug1_SMILES Score/Label
@@ -327,6 +330,43 @@ Then, use
 ```python 
 from DeepPurpose import dataset
 X_drug, X_target, y = dataset.read_file_training_dataset_bioassay(PATH)
+```
+
+For drug repurposing library:
+```
+Drug1_Name Drug1_SMILES 
+Drug2_Name Drug2_SMILES
+....
+```
+Then, use 
+
+```python 
+from DeepPurpose import dataset
+X_drug, X_drug_names = dataset.read_file_repurposing_library(PATH)
+```
+
+For target sequence to be repurposed:
+```
+Target_Name Target_seq 
+```
+Then, use 
+
+```python 
+from DeepPurpose import dataset
+Target_seq, Target_name = dataset.read_file_target_sequence(PATH)
+```
+
+For virtual screening library:
+```
+Drug1_SMILES Drug1_Name Target1_Seq Target1_Name
+Drug1_SMILES Drug1_Name Target1_Seq Target1_Name
+....
+```
+Then, use 
+
+```python 
+from DeepPurpose import dataset
+X_drug, X_target, X_drug_names, X_target_names = dataset.read_file_virtual_screening_drug_target_pairs(PATH)
 ```
 
 ## Documentations
