@@ -174,7 +174,7 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 ```
 
 ## Install & Usage
-Try it on [Binder](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)!
+Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)
 
@@ -218,7 +218,7 @@ Docker image will also be up soon!
 
 We also provide installation video tutorials:
 [Binder]()
-[Local environment]()
+[Local PC conda]()
 
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
