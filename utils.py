@@ -431,10 +431,10 @@ def generate_config(drug_encoding, target_encoding,
 					transformer_intermediate_size_drug = 512,
 					transformer_num_attention_heads_drug = 8,
 					transformer_n_layer_drug = 8,
-					transformer_emb_size_target = 128,
-					transformer_intermediate_size_target = 512,
-					transformer_num_attention_heads_target = 8,
-					transformer_n_layer_target = 4,
+					transformer_emb_size_target = 64,
+					transformer_intermediate_size_target = 256,
+					transformer_num_attention_heads_target = 4,
+					transformer_n_layer_target = 2,
 					transformer_dropout_rate = 0.1,
 					transformer_attention_probs_dropout = 0.1,
 					transformer_hidden_dropout_rate = 0.1,
@@ -658,20 +658,68 @@ def load_dict(path):
 		return pickle.load(f)
 
 def download_pretrained_model(model_name, save_dir = './save_folder'):
+	if model_name == 'DeepDTA_DAVIS':
+		print('Beginning Downloading DeepDTA_DAVIS Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_DeepDTA_DAVIS.zip'
+	elif model_name == 'CNN_CNN_DAVIS':
+		print('Beginning Downloading CNN_CNN DAVIS Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_cnn_cnn_davis.zip'
+	elif model_name == 'CNN_CNN_BindingDB':
+		print('Beginning Downloading CNN_CNN BindingDB Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_cnn_cnn_bindingdb.zip'
+	elif model_name == 'Daylight_AAC_DAVIS':
+		print('Beginning Downloading Daylight_AAC_DAVIS Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_daylight_aac_davis.zip'
+	elif model_name == 'Daylight_AAC_KIBA':
+		print('Beginning Downloading Daylight_AAC_KIBA Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_daylight_aac_kiba.zip'
+	elif model_name == 'Daylight_AAC_BindingDB':
+		print('Beginning Downloading Daylight_AAC_BindingDB Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_daylight_aac_bindingdb.zip'
+	elif model_name == 'Morgan_AAC_BindingDB':
+		print('Beginning Downloading Morgan_AAC_BindingDB Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_aac_bindingdb.zip'
+	elif model_name == 'Morgan_AAC_KIBA':
+		print('Beginning Downloading Morgan_AAC_KIBA Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_aac_kiba.zip'
+	elif model_name == 'Morgan_AAC_DAVIS':
+		print('Beginning Downloading Morgan_AAC_DAVIS Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_aac_davis.zip'
+	elif model_name == 'Morgan_CNN_BindingDB':
+		print('Beginning Downloading Morgan_CNN_BindingDB Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_cnn_bindingdb.zip'
+	elif model_name == 'Morgan_CNN_KIBA':
+		print('Beginning Downloading Morgan_CNN_KIBA Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_cnn_kiba.zip'
+	elif model_name == 'Morgan_CNN_DAVIS':
+		print('Beginning Downloading Morgan_CNN_DAVIS Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_cnn_davis.zip'
+	elif model_name == 'MPNN_CNN_BindingDB':
+		print('Beginning Downloading MPNN_CNN_BindingDB Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_mpnn_cnn_bindingdb.zip'
+	elif model_name == 'MPNN_CNN_KIBA':
+		print('Beginning Downloading MPNN_CNN_KIBA Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_mpnn_cnn_kiba.zip'
+	elif model_name == 'MPNN_CNN_DAVIS':
+		print('Beginning Downloading MPNN_CNN_DAVIS Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_mpnn_cnn_davis.zip'
+	elif model_name == 'Transformer_CNN_BindingDB':
+		print('Beginning Downloading Transformer_CNN_BindingDB Model...')
+		url = 'https://deeppurpose.s3.amazonaws.com/model_transformer_cnn_bindingdb.zip'
+
+	if not os.path.exists(save_dir):
+		os.mkdir(save_dir)
+	if not os.path.exists(os.path.join(save_dir, 'pretrained_model')):
+		os.mkdir(os.path.join(save_dir, 'pretrained_model'))
+
+	pretrained_dir = os.path.join(save_dir, 'pretrained_model')
+	pretrained_dir_ = wget.download(url, pretrained_dir)
+
+	print('Downloading finished... Beginning to extract zip file...')
+	with ZipFile(pretrained_dir_, 'r') as zip: 
+		zip.extractall(path = pretrained_dir)
+	print('pretrained model Successfully Downloaded...')
+    
 	if model_name == 'DeepDTA':
-		print('Beginning Downloading DeepDTA Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/pretrained_DeepDTA.zip'
-		if not os.path.exists(save_dir):
-			os.mkdir(save_dir)
-		if not os.path.exists(os.path.join(save_dir, 'pretrained_DeepDTA')):
-			os.mkdir(os.path.join(save_dir, 'pretrained_DeepDTA'))
-
-		pretrained_dir = os.path.join(save_dir, 'pretrained_DeepDTA')
-		pretrained_dir_ = wget.download(url, pretrained_dir)
-
-		print('Downloading finished... Beginning to extract zip file...')
-		with ZipFile(pretrained_dir_, 'r') as zip: 
-		    zip.extractall(path = pretrained_dir)
-		print('pretrained_DeepDTA Successfully Downloaded...')
 		pretrained_dir = os.path.join(pretrained_dir, 'pretrained_DeepDTA')
-		return pretrained_dir        
+	return pretrained_dir        

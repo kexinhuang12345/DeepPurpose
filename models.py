@@ -648,7 +648,6 @@ class DBTA:
 				v_d = v_d
 			else:
 				v_d = v_d.float().to(self.device)                
-				score = self.model(v_d, v_p.float().to(self.device))
 			if self.target_encoding == 'Transformer':
 				v_p = v_p
 			else:
