@@ -752,15 +752,16 @@ class DBTA:
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
+				if self.target_encoding == 'Transformer':
+					v_p = v_p
+				else:
+					v_p = v_p.float().to(self.device) 
 				if self.drug_encoding == "MPNN" or self.drug_encoding == 'Transformer':
 					v_d = v_d
 				else:
 					v_d = v_d.float().to(self.device)                
-					score = self.model(v_d, v_p.float().to(self.device))
-				if self.target_encoding == 'Transformer':
-					v_p = v_p
-				else:
-					v_p = v_p.float().to(self.device)                
+					#score = self.model(v_d, v_p.float().to(self.device))
+               
 				score = self.model(v_d, v_p)
 				label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
 
