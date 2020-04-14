@@ -388,7 +388,7 @@ The list of avaiable pretrained models:
 
 Model name consists of first the drug encoding, then the target encoding and then the trained dataset.
 
-|Model Name||
+|Model Name|
 |------|
 |DeepDTA_DAVIS|
 |CNN_CNN_BindingDB|
