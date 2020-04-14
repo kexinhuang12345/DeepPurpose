@@ -376,7 +376,36 @@ X_drug, X_target, X_drug_names, X_target_names = dataset.read_file_virtual_scree
 Checkout [Dataset Tutorial](DEMO/load_data_tutorial.ipynb).
 
 ## Pretrained models
-We provide more than 10 pretrained models. Please see [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb) on how to load them.
+We provide more than 10 pretrained models. Please see [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb) on how to load them. It is as simple as 
+
+```python
+from DeepPurpose import models
+net = models.model_pretrained(model = 'MPNN_CNN_DAVIS')
+or
+net = models.model_pretrained(FILE_PATH)
+```
+The list of avaiable pretrained models:
+
+Model name consists of first the drug encoding, then the target encoding and then the trained dataset.
+
+|Model Name||
+|------|
+|DeepDTA_DAVIS|
+|CNN_CNN_BindingDB|
+|Morgan_CNN_BindingDB|
+|Morgan_CNN_KIBA|
+|Morgan_CNN_DAVIS|
+|MPNN_CNN_BindingDB|
+|MPNN_CNN_KIBA|
+|MPNN_CNN_DAVIS|
+|Transformer_CNN_BindingDB|
+|Daylight_AAC_DAVIS|
+|Daylight_AAC_KIBA|
+|Daylight_AAC_BindingDB|
+|Morgan_AAC_BindingDB|
+|Morgan_AAC_KIBA|
+|Morgan_AAC_DAVIS|
+|CNN_Transformer_DAVIS|
 
 ## Documentations
 More detailed documentations are coming soon.
