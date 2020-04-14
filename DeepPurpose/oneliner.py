@@ -1,6 +1,6 @@
-import models as models
-from utils import *
-from dataset import *
+from DeepPurpose import models
+from DeepPurpose.utils import *
+from DeepPurpose.dataset import *
 from prettytable import PrettyTable
 import wget
 from zipfile import ZipFile 
