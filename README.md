@@ -188,7 +188,7 @@ git clone git@github.com:kexinhuang12345/DeepPurpose.git
 cd DeepPurpose
 # Change directory to DeepPurpose
 
-conda env create -f env.yml  
+conda env create -f environment.yml  
 ## Build virtual environment with all packages installed using conda
 
 conda activate DeepPurpose
