@@ -220,8 +220,10 @@ conda deactivate
 Docker image will also be up soon!
 
 We also provide installation video tutorials:
-[Binder]()
-[Local PC conda]()
+
+\[[Binder]()\]
+
+\[[Local PC conda]()\]
 
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
@@ -230,11 +232,14 @@ Checkout 10+ demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/
 
 | Name | Description |
 |-----------------|-------------|
+| [Dataset Tutorial](DEMO/load_data_tutorial.ipynb) | Tutorial on how to use the dataset loader and read customized data|
 | [Drug Repurposing for 3CLPro](DEMO/case-study-I-Drug-Repurposing-for-3CLPro.ipynb)| Example of one-liner repurposing for 3CLPro|
 | [Drug Repurposing with Customized Data](DEMO/case-study-III-Drug-Repurposing-with-Customized-Data.ipynb)| Example of one-liner repurposing with AID1706 Bioassay Data, training from scratch|
 | [Virtual Screening for BindingDB IC50](DEMO/case-study-II-Virtual-Screening-for-BindingDB-IC50.ipynb) | Example of one-liner virtual screening |
 |[Reproduce_DeepDTA](DEMO/case-study-IV-Reproduce_DeepDTA.ipynb)|Reproduce [DeepDTA](https://arxiv.org/abs/1801.10193) with DAVIS dataset and show how to use the 10 lines framework|
 | [Binary Classification for DAVIS using CNNs](DEMO/CNN-Binary-Example-DAVIS.ipynb)| Binary Classification for DAVIS dataset using CNN encodings by using the 10 lines framework.|
+| [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb)| Tutorial on how to load pretraining models|
+
 ....
 
 ## Cite Us
@@ -368,9 +373,42 @@ Then, use
 from DeepPurpose import dataset
 X_drug, X_target, X_drug_names, X_target_names = dataset.read_file_virtual_screening_drug_target_pairs(PATH)
 ```
+Checkout [Dataset Tutorial](DEMO/load_data_tutorial.ipynb).
+
+## Pretrained models
+We provide more than 10 pretrained models. Please see [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb) on how to load them. It is as simple as 
+
+```python
+from DeepPurpose import models
+net = models.model_pretrained(model = 'MPNN_CNN_DAVIS')
+or
+net = models.model_pretrained(FILE_PATH)
+```
+The list of avaiable pretrained models:
+
+Model name consists of first the drug encoding, then the target encoding and then the trained dataset.
+
+|Model Name|
+|------|
+|DeepDTA_DAVIS|
+|CNN_CNN_BindingDB|
+|Morgan_CNN_BindingDB|
+|Morgan_CNN_KIBA|
+|Morgan_CNN_DAVIS|
+|MPNN_CNN_BindingDB|
+|MPNN_CNN_KIBA|
+|MPNN_CNN_DAVIS|
+|Transformer_CNN_BindingDB|
+|Daylight_AAC_DAVIS|
+|Daylight_AAC_KIBA|
+|Daylight_AAC_BindingDB|
+|Morgan_AAC_BindingDB|
+|Morgan_AAC_KIBA|
+|Morgan_AAC_DAVIS|
+|CNN_Transformer_DAVIS|
 
 ## Documentations
-For more detailed documentations, please see [here]().
+More detailed documentations are coming soon.
 
 ## Contact
 Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 

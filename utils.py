@@ -12,7 +12,8 @@ from chemutils import get_mol, atom_features, bond_features, MAX_NB, ATOM_FDIM, 
 from subword_nmt.apply_bpe import BPE
 import codecs
 import pickle
-
+import wget
+from zipfile import ZipFile 
 import os
 if os.getcwd()[-7:] != 'Purpose':
 	os.chdir('./DeepPurpose/')
@@ -720,6 +721,37 @@ def download_pretrained_model(model_name, save_dir = './save_folder'):
 		zip.extractall(path = pretrained_dir)
 	print('pretrained model Successfully Downloaded...')
     
-	if model_name == 'DeepDTA':
-		pretrained_dir = os.path.join(pretrained_dir, 'pretrained_DeepDTA')
+	if model_name == 'DeepDTA_DAVIS':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_DeepDTA_DAVIS')
+	elif model_name == 'CNN_CNN_DAVIS':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_cnn_cnn_davis')
+	elif model_name == 'CNN_CNN_BindingDB':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_cnn_cnn_bindingdb')
+	elif model_name == 'Daylight_AAC_DAVIS':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_daylight_aac_davis')
+	elif model_name == 'Daylight_AAC_KIBA':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_daylight_aac_kiba')
+	elif model_name == 'Daylight_AAC_BindingDB':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_daylight_aac_bindingdb')
+	elif model_name == 'Morgan_AAC_BindingDB':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_aac_bindingdb')
+	elif model_name == 'Morgan_AAC_KIBA':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_aac_kiba')
+	elif model_name == 'Morgan_AAC_DAVIS':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_aac_davis')
+	elif model_name == 'Morgan_CNN_BindingDB':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_cnn_bindingdb')
+	elif model_name == 'Morgan_CNN_KIBA':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_cnn_kiba')
+	elif model_name == 'Morgan_CNN_DAVIS':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_cnn_davis')
+	elif model_name == 'MPNN_CNN_BindingDB':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_mpnn_cnn_bindingdb')
+	elif model_name == 'MPNN_CNN_KIBA':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_mpnn_cnn_kiba')
+	elif model_name == 'MPNN_CNN_DAVIS':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_mpnn_cnn_davis')
+	elif model_name == 'Transformer_CNN_BindingDB':
+		pretrained_dir = os.path.join(pretrained_dir, 'model_transformer_cnn_bindingdb')
+
 	return pretrained_dir        
