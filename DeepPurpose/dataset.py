@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import wget
 from zipfile import ZipFile 
-from utils import convert_y_unit
+from DeepPurpose.utils import convert_y_unit
 import json
 import os 
 
@@ -337,7 +337,7 @@ def load_broad_repurposing_hub(path = './data'):
 def load_antiviral_drugs(path = './data', no_cid = False):
 	url = 'https://deeppurpose.s3.amazonaws.com/antiviral_drugs.csv'
 	if not os.path.exists(path):
-		os.mkdirs(path)
+		os.mkdir(path)
 	saved_path_data = wget.download(url, path)
 	df = pd.read_csv(saved_path_data)
 	if no_cid:
@@ -346,7 +346,17 @@ def load_antiviral_drugs(path = './data', no_cid = False):
 		return df.SMILES.values, df[' Name'].values, df['Pubchem CID'].values
 
 def load_IC50_Not_Pretrained(path = './data', n=500): 
+	print('Downloading...')    
 	url = 'https://deeppurpose.s3.amazonaws.com/IC50_not_Kd.csv'
+	if not os.path.exists(path):
+	    os.makedirs(path)
+	saved_path_data = wget.download(url, path)
+	df = pd.read_csv(saved_path_data).sample(n = n, replace = False).reset_index(drop = True)
+	return df['Target Sequence'].values, df['SMILES'].values
+
+def load_IC50_1000_Samples(path = './data', n=100): 
+	print('Downloading...')    
+	url = 'https://deeppurpose.s3.amazonaws.com/IC50_samples.csv'
 	if not os.path.exists(path):
 	    os.makedirs(path)
 	saved_path_data = wget.download(url, path)
