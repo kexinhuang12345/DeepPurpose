@@ -220,8 +220,10 @@ conda deactivate
 Docker image will also be up soon!
 
 We also provide installation video tutorials:
-[Binder]()
-[Local PC conda]()
+
+\[[Binder]()\]
+
+\[[Local PC conda]()\]
 
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
@@ -235,6 +237,9 @@ Checkout 10+ demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/
 | [Virtual Screening for BindingDB IC50](DEMO/case-study-II-Virtual-Screening-for-BindingDB-IC50.ipynb) | Example of one-liner virtual screening |
 |[Reproduce_DeepDTA](DEMO/case-study-IV-Reproduce_DeepDTA.ipynb)|Reproduce [DeepDTA](https://arxiv.org/abs/1801.10193) with DAVIS dataset and show how to use the 10 lines framework|
 | [Binary Classification for DAVIS using CNNs](DEMO/CNN-Binary-Example-DAVIS.ipynb)| Binary Classification for DAVIS dataset using CNN encodings by using the 10 lines framework.|
+| [Dataset Tutorial](DEMO/load_data_tutorial.ipynb) | Tutorial on how to use the dataset loader and read customized data|
+| [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb)| Tutorial on how to load pretraining models|
+
 ....
 
 ## Cite Us
@@ -368,9 +373,13 @@ Then, use
 from DeepPurpose import dataset
 X_drug, X_target, X_drug_names, X_target_names = dataset.read_file_virtual_screening_drug_target_pairs(PATH)
 ```
+Checkout [Dataset Tutorial](DEMO/load_data_tutorial.ipynb).
+
+## Pretrained models
+We provide more than 10 pretrained models. Please see [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb) on how to load them.
 
 ## Documentations
-For more detailed documentations, please see [here]().
+More detailed documentations are coming soon.
 
 ## Contact
 Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
