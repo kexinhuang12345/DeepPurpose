@@ -27,7 +27,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 	- time reference for computational expensive encoding.
 	- PyTorch based, support CPU, GPU, Multi-GPUs.
 	
-*NOTE: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](kexinhuang@hsph.harvard.edu).*
+*NOTE: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](mailto:kexinhuang@hsph.harvard.edu).*
 	
 
 ## Example
