@@ -6,3 +6,5 @@ __pycache__/
 data/
 
 save_folder/
+
+result/
