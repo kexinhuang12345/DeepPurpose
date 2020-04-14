@@ -83,8 +83,8 @@ def read_file_repurposing_library(path):
 	X_drug_names = []
 	for aline in file:
 		values = aline.split()
-		X_drug.append(values[0])
-		X_drug_names.append(float(values[1]))
+		X_drug.append(values[1])
+		X_drug_names.append(values[0])
 	file.close()
 	return np.array(X_drug), np.array(X_drug_names)
 
@@ -96,10 +96,10 @@ def read_file_target_sequence(path):
 		print('Path Not Found, please double check!')    
 	values = file.readline().split()
 	file.close()
-	return values[0], values[1]
+	return values[1], values[0]
 
 
-def download_BindingDB(path):
+def download_BindingDB(path = './data'):
 
 	print('Beginning to download dataset...')
 
