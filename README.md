@@ -228,7 +228,7 @@ We also provide installation video tutorials:
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
 ## Demos
-Checkout 10+ demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder to start:
+Checkout 10+ demos & tutorials to start:
 
 | Name | Description |
 |-----------------|-------------|
@@ -236,11 +236,11 @@ Checkout 10+ demos & tutorials in the [DEMO](https://github.com/kexinhuang12345/
 | [Drug Repurposing for 3CLPro](DEMO/case-study-I-Drug-Repurposing-for-3CLPro.ipynb)| Example of one-liner repurposing for 3CLPro|
 | [Drug Repurposing with Customized Data](DEMO/case-study-III-Drug-Repurposing-with-Customized-Data.ipynb)| Example of one-liner repurposing with AID1706 Bioassay Data, training from scratch|
 | [Virtual Screening for BindingDB IC50](DEMO/case-study-II-Virtual-Screening-for-BindingDB-IC50.ipynb) | Example of one-liner virtual screening |
-|[Reproduce_DeepDTA](DEMO/case-study-IV-Reproduce_DeepDTA.ipynb)|Reproduce [DeepDTA](https://arxiv.org/abs/1801.10193) with DAVIS dataset and show how to use the 10 lines framework|
+|[Reproduce DeepDTA](DEMO/case-study-IV-Reproduce_DeepDTA.ipynb)|Reproduce [DeepDTA](https://arxiv.org/abs/1801.10193) with DAVIS dataset and show how to use the 10 lines framework|
 | [Binary Classification for DAVIS using CNNs](DEMO/CNN-Binary-Example-DAVIS.ipynb)| Binary Classification for DAVIS dataset using CNN encodings by using the 10 lines framework.|
 | [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb)| Tutorial on how to load pretraining models|
 
-....
+and more in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder!
 
 ## Cite Us
 
@@ -281,15 +281,15 @@ DeePurpose supports the following dataset loaders for now and more will be added
 *Public Drug-Target Binding Benchmark Dataset*
 | Data  | Function |
 |-------|----------|
-|[BindingDB](https://www.bindingdb.org/bind/index.jsp)| ```download_BindingDB()``` to download the data and ```process_BindingDB()* ``` to process the data|
-|[DAVIS](http://staff.cs.utu.fi/~aatapa/data/DrugTarget/)|```load_process_DAVIS() ``` to download and process the data|
-|[KIBA](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z)|```load_process_KIBA() ``` to download and process the data|
+|[BindingDB](https://www.bindingdb.org/bind/index.jsp)| ```download_BindingDB()``` to download the data and ```process_BindingDB()``` to process the data|
+|[DAVIS](http://staff.cs.utu.fi/~aatapa/data/DrugTarget/)|```load_process_DAVIS()``` to download and process the data|
+|[KIBA](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z)|```load_process_KIBA()``` to download and process the data|
 
 *Repurposing Dataset*
 | Data  | Function |
 |-------|----------|
 |[Curated Antiviral Drugs Library](https://en.wikipedia.org/wiki/List_of_antiviral_drugs)|```load_antiviral_drugs()``` to load and process the data|
-|[Broad Repurposing Hub](https://www.broadinstitute.org/drug-repurposing-hub)|```load_broad_repurposing_hub() ``` downloads and process the data|
+|[Broad Repurposing Hub](https://www.broadinstitute.org/drug-repurposing-hub)|```load_broad_repurposing_hub()``` downloads and process the data|
 
 *Bioassay Data for COVID-19*
 (Thanks to [MIT AI Cures](https://www.aicures.mit.edu/data))
