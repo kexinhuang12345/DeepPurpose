@@ -1,0 +1,2 @@
+Rufloxacin CN1CCN(CC1)c1c(F)cc2c3c1SCCn3cc(C(O)=O)c2=O
+Sparfloxacin C[C@H]1CN(CC@@HN1)c1c(F)c(N)c2c(c1F)n(cc(C(O)=O)c2=O)C1CC1
