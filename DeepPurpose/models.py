@@ -22,11 +22,8 @@ import scikitplot as skplt
 
 import os
 
-if os.getcwd()[-7:] != 'Purpose':
-	os.chdir('./DeepPurpose/')
-
-from utils import *
-from model_helper import Encoder_MultipleLayers, Embeddings    
+from DeepPurpose.utils import *
+from DeepPurpose.model_helper import Encoder_MultipleLayers, Embeddings    
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -245,7 +242,7 @@ class MPNN(nn.Sequential):
 		super(MPNN, self).__init__()
 		self.mpnn_hidden_size = mpnn_hidden_size
 		self.mpnn_depth = mpnn_depth 
-		from chemutils import ATOM_FDIM, BOND_FDIM
+		from DeepPurpose.chemutils import ATOM_FDIM, BOND_FDIM
 
 		self.W_i = nn.Linear(ATOM_FDIM + BOND_FDIM, self.mpnn_hidden_size, bias=False)
 		self.W_h = nn.Linear(self.mpnn_hidden_size, self.mpnn_hidden_size, bias=False)
