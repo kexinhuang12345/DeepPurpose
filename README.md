@@ -147,7 +147,7 @@ train, val, test = data_process(X_drug, X_target, y,
                                 split_method='cold_protein', 
                                 frac=[0.7,0.1,0.2])
 
-# Generate new model using default values; also allow model tuning via input parameters.
+# Generate new model using default parameters; also allow model tuning via input parameters.
 config = generate_config(drug_encoding, target_encoding, transformer_n_layer_target = 8)
 net = models.model_initialize(**config)
 
@@ -166,7 +166,6 @@ target, target_name = load_SARS_CoV_Protease_3CL()
 _ = models.repurpose(X_repurpose, target, net, drug_name, target_name)
 
 # Virtual screening using the trained model or pre-trained model 
-# In this example, model is trained with binary outcome and customized input is given. 
 X_repurpose, drug_name, target, target_name = ['CCCCCCCOc1cccc(c1)C([O-])=O', ...], ['16007391', ...], ['MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...', ...], ['P36896', 'P00374']
 
 _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
