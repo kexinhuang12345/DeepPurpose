@@ -220,7 +220,7 @@ Docker image will also be up soon!
 
 We also provide installation video tutorials:
 
-\[[Binder]()\]
+\[[Binder](https://www.youtube.com/watch?v=ghUyZknxq5o)\]
 
 \[[Local PC conda]()\]
 
@@ -279,7 +279,7 @@ Currently, we support the following encodings:
 |Transformer| Transformer Encoder on ESPF|
 
 ## Data
-DeePurpose supports the following dataset loaders for now and more will be added:
+DeepPurpose supports the following dataset loaders for now and more will be added:
 
 *Public Drug-Target Binding Benchmark Dataset*
 | Data  | Function |
