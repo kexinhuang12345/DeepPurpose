@@ -244,9 +244,13 @@ and more in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/maste
 
 ## Cite Us
 
-Please cite [arxiv]():
+Please cite [arxiv]() for now:
 ```
-@article{
+@article{deeppurpose,
+  title={DeepPurpose: a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit},
+  author={Huang, Kexin and Fu, Tianfan and Xiao, Cao and Glass, Lucas and Sun, Jimeng},
+  journal={},
+  year={2020}
 }
 
 ```
