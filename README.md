@@ -181,7 +181,7 @@ We recommend to install it locally since Binder needs to install environment eve
 
 ```bash
 # -- First Time -- #
-git clone git@github.com:kexinhuang12345/DeepPurpose.git
+git clone https://github.com/kexinhuang12345/DeepPurpose.git
 # Download code repository
 
 cd DeepPurpose
