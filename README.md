@@ -206,7 +206,7 @@ conda deactivate
 cd DeepPurpose
 # Change directory to DeepPurpose
 
-conda activate deeppurpose
+conda activate DeepPurpose
 ## Activate conda environment
 
 ## run our code
