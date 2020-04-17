@@ -181,7 +181,7 @@ We recommend to install it locally since Binder needs to install environment eve
 
 ```bash
 # -- First Time -- #
-git clone git@github.com:kexinhuang12345/DeepPurpose.git
+git clone https://github.com/kexinhuang12345/DeepPurpose.git
 # Download code repository
 
 cd DeepPurpose
@@ -222,7 +222,7 @@ We also provide installation video tutorials:
 
 \[[Binder](https://www.youtube.com/watch?v=ghUyZknxq5o)\]
 
-\[[Local PC conda]()\]
+\[[Local PC conda](https://youtu.be/bqinehjnWvE)\]
 
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
