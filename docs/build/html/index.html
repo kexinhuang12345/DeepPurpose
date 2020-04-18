@@ -313,6 +313,45 @@ $ conda deactivate <span class="c1">### exit</span>
 <ul class="simple">
 <li><p><strong>path</strong> (str, a directory) - the path where model is loaded.</p></li>
 </ul>
+<hr class="docutils" />
+<p>name of function: <strong>read_file_training_dataset_bioassay</strong> load bioarray dataset, with one target sequence and multiple drugs and their interaction score with the target.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_training_dataset_bioassay</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of bioassay dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence. Example: ./toy_data/AID1706.txt</p></li>
+</ul>
+<p>name of function: <strong>read_file_training_dataset_drug_target_pairs</strong> load drug target pairs dataset. We have requirement on format of file. Each line contains a drug SMILES and target sequence and their interaction score. Example: ./toy_data/dti.txt</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_training_dataset_drug_target_pairs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of drug target pairs dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence.  Example: ./toy_data/AID1706.txt</p></li>
+</ul>
+<p>name of function: <strong>read_file_virtual_screening_drug_target_pairs</strong> load virtual screening drug target pairs dataset.
+We have requirement on format of file.
+Each line contains a drug SMILES and target sequence.
+Example: ./toy_data/dti.txt</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_virtual_screening_drug_target_pairs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of virtual screening drug target pairs dataset file. We have requirement on format of file. Each line contains a drug SMILES and target sequence. Example: ./toy_data/??</p></li>
+</ul>
+<p>name of function: <strong>read_file_repurposing_library</strong> load drug repurposing dataset.
+We have requirement on format of file.
+Each line contains a drug SMILES and its name.
+Example: ./toy_data/??</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_repurposing_library</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of drug repurposing dataset file. We have requirement on format of file. Each line contains a drug SMILES and its name. Example: ./toy_data/??</p></li>
+</ul>
+<p>name of function: <strong>read_file_target_sequence</strong> load drug repurposing dataset.
+We have requirement on format of file.
+Each line contains a drug SMILES and its name.
+Example: ./toy_data/??</p>
 </div>
 </div>
 </div>

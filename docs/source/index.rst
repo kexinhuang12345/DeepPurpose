@@ -394,19 +394,74 @@ name of function: **load_pretrained** load the well-trained model so that we are
 
 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+name of function: **read_file_training_dataset_bioassay** load bioarray dataset, with one target sequence and multiple drugs and their interaction score with the target. 
+
+.. code-block:: python
+
+	dataset.read_file_training_dataset_bioassay(path)
+
+
+* **path** (str, a directory) - the path of bioassay dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence. Example: ./toy_data/AID1706.txt 
+
+
+
+
+name of function: **read_file_training_dataset_drug_target_pairs** load drug target pairs dataset. We have requirement on format of file. Each line contains a drug SMILES and target sequence and their interaction score. Example: ./toy_data/dti.txt 
+
+
+.. code-block:: python
+
+	dataset.read_file_training_dataset_drug_target_pairs(path)
+
+* **path** (str, a directory) - the path of drug target pairs dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence.  Example: ./toy_data/AID1706.txt 
 
 
 
 
 
 
+name of function: **read_file_virtual_screening_drug_target_pairs** load virtual screening drug target pairs dataset. 
+We have requirement on format of file. 
+Each line contains a drug SMILES and target sequence. 
+Example: ./toy_data/dti.txt 
+
+.. code-block:: python
+
+	dataset.read_file_virtual_screening_drug_target_pairs(path)
+
+
+* **path** (str, a directory) - the path of virtual screening drug target pairs dataset file. We have requirement on format of file. Each line contains a drug SMILES and target sequence. Example: ./toy_data/??
+
+
+
+name of function: **read_file_repurposing_library** load drug repurposing dataset. 
+We have requirement on format of file. 
+Each line contains a drug SMILES and its name.  
+Example: ./toy_data/??
+
+
+.. code-block:: python
+
+	dataset.read_file_repurposing_library(path)
+
+
+* **path** (str, a directory) - the path of drug repurposing dataset file. We have requirement on format of file. Each line contains a drug SMILES and its name. Example: ./toy_data/??
 
 
 
 
 
+name of function: **read_file_target_sequence** load drug repurposing dataset. 
+We have requirement on format of file. 
+Each line contains a drug SMILES and its name.  
+Example: ./toy_data/??
 
+.. code-block:: python
 
+	dataset.read_file_target_sequence(path)
 
 
 
