@@ -433,7 +433,7 @@ Example: ./toy_data/dti.txt
 	dataset.read_file_virtual_screening_drug_target_pairs(path)
 
 
-* **path** (str, a directory) - the path of virtual screening drug target pairs dataset file. We have requirement on format of file. Each line contains a drug SMILES and target sequence. Example: ./toy_data/??
+* **path** (str, a directory) - the path of virtual screening drug target pairs dataset file. 
 
 
 
@@ -448,20 +448,25 @@ Example: ./toy_data/??
 	dataset.read_file_repurposing_library(path)
 
 
-* **path** (str, a directory) - the path of drug repurposing dataset file. We have requirement on format of file. Each line contains a drug SMILES and its name. Example: ./toy_data/??
+* **path** (str, a directory) - the path of drug repurposing dataset file. 
 
 
 
 
 
 name of function: **read_file_target_sequence** load drug repurposing dataset. 
-We have requirement on format of file. 
-Each line contains a drug SMILES and its name.  
+We have requirement on format of file.
+The file only have one line. 
+The line contains target name and target sequence. 
 Example: ./toy_data/??
 
 .. code-block:: python
 
 	dataset.read_file_target_sequence(path)
+
+* **path** (str, a directory) - the path of target sequence dataset file. 
+
+
 
 
 
