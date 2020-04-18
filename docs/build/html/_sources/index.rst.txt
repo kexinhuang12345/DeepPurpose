@@ -459,6 +459,9 @@ We have requirement on format of file.
 Each line contains a drug SMILES and its name.  
 Example: ./toy_data/??
 
+.. code-block:: python
+
+	dataset.read_file_target_sequence(path)
 
 
 
