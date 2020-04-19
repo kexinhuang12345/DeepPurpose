@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Introduction to DeepPurpose &#8212; DeepPurpose 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Download" href="download.html" />
+    <link rel="prev" title="DeepPurpose documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction-to-deeppurpose">
+<h1>Introduction to DeepPurpose<a class="headerlink" href="#introduction-to-deeppurpose" title="Permalink to this headline">¶</a></h1>
+<p>DeepPurpose is a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch).
+It allows very easy usage (only one line of code!) for non-computational domain researchers to be able to obtain a list of potential drugs using deep learning while facilitating deep learning method research in this topic by providing a flexible framework (less than 10 lines of codes!) and baselines.
+The Github repository is located <a class="reference external" href="https://github.com/kexinhuang12345/DeepPurpose">here</a>.</p>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>For non-computational researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, aiming to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained deep learning models!</p></li>
+<li><p>For computational researchers, 15+ powerful encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ combined models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!</p></li>
+<li><p>Realistic and user-friendly design:</p>
+<ul>
+<li><p>automatic identification to do drug target binding affinity (regression) or drug target interaction prediction (binary) task.</p></li>
+<li><p>support cold target, cold drug settings for robust model evaluations and support single-target high throughput sequencing assay data setup.</p></li>
+<li><p>many dataset loading/downloading/unzipping scripts to ease the tedious preprocessing, including antiviral, COVID19 targets, BindingDB, DAVIS, KIBA, …</p></li>
+<li><p>many pretrained checkpoints.</p></li>
+<li><p>easy monitoring of training process with detailed training metrics output such as test set figures (AUCs) and tables, also support early stopping.</p></li>
+<li><p>detailed output records such as rank list for repurposing result.</p></li>
+<li><p>various evaluation metrics: ROC-AUC, PR-AUC, F1 for binary task, MSE, R-squared, Concordance Index for regression task.</p></li>
+<li><p>label unit conversion for skewed label distribution such as Kd.</p></li>
+<li><p>time reference for computational expensive encoding.</p></li>
+<li><p>PyTorch based, support CPU, GPU, Multi-GPUs.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeepPurpose</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Background</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction to DeepPurpose</a></li>
+</ul>
+<p class="caption"><span class="caption-text">How to run</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_data.html">Processing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility_function.html">Utility Function</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">DeepPurpose documentation!</a></li>
+      <li>Next: <a href="download.html" title="next chapter">Download</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Kexin Huang, Tianfan Fu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notes/introduction.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

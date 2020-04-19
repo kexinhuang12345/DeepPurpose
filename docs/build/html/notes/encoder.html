@@ -34,6 +34,79 @@
             
   <div class="section" id="drug-target-encoder">
 <h1>Drug/Target Encoder<a class="headerlink" href="#drug-target-encoder" title="Permalink to this headline">¶</a></h1>
+<p>Drug encoding</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Drug Encodings</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Morgan</p></td>
+<td><p>Extended-Connectivity Fingerprints</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pubchem</p></td>
+<td><p>Pubchem Substructure-based Fingerprints</p></td>
+</tr>
+<tr class="row-even"><td><p>Daylight</p></td>
+<td><p>Daylight-type fingerprints</p></td>
+</tr>
+<tr class="row-odd"><td><p>rdkit_2d_normalized</p></td>
+<td><p>Normalized Descriptastorus</p></td>
+</tr>
+<tr class="row-even"><td><p>CNN</p></td>
+<td><p>Convolutional Neural Network on SMILES</p></td>
+</tr>
+<tr class="row-odd"><td><p>CNN_RNN</p></td>
+<td><p>A GRU/LSTM on top of a CNN on SMILES</p></td>
+</tr>
+<tr class="row-even"><td><p>Transformer</p></td>
+<td><p>Transformer Encoder on ESPF</p></td>
+</tr>
+<tr class="row-odd"><td><p>MPNN</p></td>
+<td><p>Message-passing neural network</p></td>
+</tr>
+</tbody>
+</table>
+<p>Target encoding</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Target Encodings</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AAC</p></td>
+<td><p>Amino acid composition up to 3-mers</p></td>
+</tr>
+<tr class="row-odd"><td><p>PseudoAAC</p></td>
+<td><p>Pseudo amino acid composition</p></td>
+</tr>
+<tr class="row-even"><td><p>Conjoint_triad</p></td>
+<td><p>Conjoint triad features</p></td>
+</tr>
+<tr class="row-odd"><td><p>Quasi-seq</p></td>
+<td><p>Quasi-sequence order descriptor</p></td>
+</tr>
+<tr class="row-even"><td><p>CNN</p></td>
+<td><p>Convolutional Neural Network on target seq</p></td>
+</tr>
+<tr class="row-odd"><td><p>CNN_RNN</p></td>
+<td><p>A GRU/LSTM on top of a CNN on target seq</p></td>
+</tr>
+<tr class="row-even"><td><p>Transformer</p></td>
+<td><p>Transformer Encoder on ESPF</p></td>
+</tr>
+</tbody>
+</table>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -197,6 +270,10 @@
 
 
 <h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to DeepPurpose</a></li>
+</ul>
 <p class="caption"><span class="caption-text">How to run</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
@@ -207,6 +284,8 @@
 <li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Drug/Target Encoder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_data.html">Processing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility_function.html">Utility Function</a></li>
 </ul>
 
 <div class="relations">
