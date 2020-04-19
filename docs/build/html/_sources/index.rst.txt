@@ -433,7 +433,13 @@ Example: ./toy_data/dti.txt
 	dataset.read_file_virtual_screening_drug_target_pairs(path)
 
 
-* **path** (str, a directory) - the path of virtual screening drug target pairs dataset file. We have requirement on format of file. Each line contains a drug SMILES and target sequence. Example: ./toy_data/??
+* **path** (str, a directory) - the path of virtual screening drug target pairs dataset file. 
+
+
+
+
+
+
 
 
 
@@ -447,22 +453,26 @@ Example: ./toy_data/??
 
 	dataset.read_file_repurposing_library(path)
 
+* **path** (str, a directory) - the path of drug repurposing dataset file. 
 
-* **path** (str, a directory) - the path of drug repurposing dataset file. We have requirement on format of file. Each line contains a drug SMILES and its name. Example: ./toy_data/??
+
+
 
 
 
 
 
 name of function: **read_file_target_sequence** load drug repurposing dataset. 
-We have requirement on format of file. 
-Each line contains a drug SMILES and its name.  
+We have requirement on format of file.
+The file only have one line. 
+The line contains target name and target sequence. 
 Example: ./toy_data/??
 
 .. code-block:: python
 
 	dataset.read_file_target_sequence(path)
 
+* **path** (str, a directory) - the path of target sequence dataset file. 
 
 
 
@@ -470,6 +480,354 @@ Example: ./toy_data/??
 
 
 
+
+
+
+
+name of function: **download_BindingDB** load BindingDB dataset, save it to a specific path. 
+If the path doesn't exist, create the folder. 
+
+.. code-block:: python
+
+	dataset.download_BindingDB(path)
+
+* **path** (str, a directory) - the path that save BindingDB dataset file. Example: "./data". 
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **download_DrugTargetCommons** load DrugTargetCommons dataset, save it to a specific path. 
+If the path doesn't exist, create the folder. 
+
+.. code-block:: python
+
+	dataset.download_DrugTargetCommons(path)
+
+* **path** (str, a directory) - the path that save DrugTargetCommons dataset file. Example: "./data". 
+
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **process_BindingDB**  processes BindingDB dataset. 
+
+.. code-block:: python
+
+	dataset.process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_to_log = True, threshold = 30)
+
+* **path** (str, a directory) - the path that save BindingDB dataset file. Example: "./data/BindingDB_All.tsv". 
+* **df** (pandas.DataFrame) - Dataframe that contains input data, if first parameter "path" is None, use the "df". 
+* **y** (str; can be "Kd", "Ki", "IC50" or "EC50") - specify the binding score. 
+* **binary** (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task. 
+* **convert_to_log** (bool) - If True, convert the target score to logspace for easier regression'
+* **threshold** (float) - The threshold that select target score ?? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **load_process_DAVIS**  load DAVIS dataset. 
+
+.. code-block:: python
+
+	dataset.load_process_DAVIS(path = './data', binary = False, convert_to_log = True, threshold = 30)
+
+
+* **path** (str, a directory) - the path that save DAVIS dataset file. Example: "./data". 
+* **binary** (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task. 
+* **convert_to_log** (bool) - If True, convert the target score to logspace for easier regression'
+* **threshold** (float) - The threshold that select target score ?? 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **load_process_KIBA** load KIBA dataset. 
+
+
+.. code-block:: python
+
+
+	load_process_KIBA(path = './data', binary = False, threshold = 9):
+
+* **path** (str, a directory) - the path that save KIBA dataset file. Example: "./data". 
+* **binary** (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task. 
+* **threshold** (float) - The threshold that select target score ?? 
+
+
+
+
+
+
+
+
+
+
+name of function: **load_AID1706_txt_file** load KIBA dataset. 
+
+.. code-block:: python
+
+
+	load_AID1706_txt_file(path = './data')
+
+* **path** (str, a directory) - the path that save AID1706 dataset file. Example: "./data". 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **load_AID1706_SARS_CoV_3CL** load AID1706_SARS_CoV_3CL dataset. 
+
+.. code-block:: python
+
+	load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, balanced = True, oversample_num = 30, seed = 1)
+
+* **path** (str, a directory) - the path that save AID1706_SARS_CoV_3CL dataset file. Example: "./data". 
+* **binary** (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task. 
+* **threshold** (float) - The threshold that select target score ?? 
+* **balanced** (bool) - If True, do oversampling to make number of positive and negative samples equal. 
+* **oversample_num** (int) - control the oversample rate. 
+* **seed** (int) - random seed in oversample. 
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **load_broad_repurposing_hub** load repurposing dataset. 
+
+.. code-block:: python
+
+	load_broad_repurposing_hub(path = './data'):
+
+* **path** (str, a directory) - the path that save repurposing dataset file. Example: "./data". 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **load_antiviral_drugs** load antiviral drugs dataset. 
+
+.. code-block:: python
+
+	load_antiviral_drugs(path = './data', no_cid = False)
+
+* **path** (str, a directory) - the path that save antiviral drugs dataset file. Example: "./data". 
+* **no_cid** (bool) - If False, including "Pubchem CID". 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+name of function: **generate_config** set the configuration. 
+
+
+.. code-block:: python
+
+	generate_config(drug_encoding, target_encoding, 
+					result_folder = "./result/",
+					input_dim_drug = 1024, 
+					input_dim_protein = 8420,
+					hidden_dim_drug = 256, 
+					hidden_dim_protein = 256,
+					cls_hidden_dims = [1024, 1024, 512],
+					mlp_hidden_dims_drug = [1024, 256, 64],
+					mlp_hidden_dims_target = [1024, 256, 64],
+					batch_size = 256,
+					train_epoch = 10,
+					test_every_X_epoch = 20,
+					LR = 1e-4,
+					transformer_emb_size_drug = 128,
+					transformer_intermediate_size_drug = 512,
+					transformer_num_attention_heads_drug = 8,
+					transformer_n_layer_drug = 8,
+					transformer_emb_size_target = 128,
+					transformer_intermediate_size_target = 512,
+					transformer_num_attention_heads_target = 8,
+					transformer_n_layer_target = 4,
+					transformer_dropout_rate = 0.1,
+					transformer_attention_probs_dropout = 0.1,
+					transformer_hidden_dropout_rate = 0.1,
+					mpnn_hidden_size = 50,
+					mpnn_depth = 3,
+					cnn_drug_filters = [32,64,96],
+					cnn_drug_kernels = [4,6,8],
+					cnn_target_filters = [32,64,96],
+					cnn_target_kernels = [4,8,12],
+					rnn_Use_GRU_LSTM_drug = 'GRU',
+					rnn_drug_hid_dim = 64,
+					rnn_drug_n_layers = 2,
+					rnn_drug_bidirectional = True,
+					rnn_Use_GRU_LSTM_target = 'GRU',
+					rnn_target_hid_dim = 64,
+					rnn_target_n_layers = 2,
+					rnn_target_bidirectional = True
+					)
+
+
+* **drug_encoding** (str) - Encoder mode for drug. It can be "transformer", "MPNN", "CNN", "CNN_RNN" ...,
+* **target_encoding** (str) - Encoder mode for protein. It can be "transformer", "CNN", "CNN_RNN" ..., 
+* **input_dim_drug** (int) - Dimension of input drug feature. 
+* **input_dim_protein** (int) - Dimension of input protein feature. 
+* **hidden_dim_drug** (int) - Dimension of hidden layer of drug feature. 
+* **hidden_dim_protein** (int) - Dimension of hidden layer of protein feature. 
+* **batch_size** (int) - batch size
+* **train_epoch** (int) - training epoch
+* **test_every_X_epoch** (int) - test every X epochs
+* **LR** (int) - Learning rate. 
+* **cls_hidden_dims** (list of int) - hidden dimensions of classifier. 
+* **mlp_hidden_dims_drug** (list of int) - hidden dimension of MLP when encoding drug. 
+* **mlp_hidden_dims_target** (list of int) - hidden dimension of MLP when encoding protein. 
+* **transformer_emb_size_drug** (int) - embedding size of transformer when encoding drug. 
+* **transformer_intermediate_size_drug** (int) - 
+* **transformer_num_attention_heads_drug** (int) - 
+* **transformer_n_layer_drug** (int) - 
+* **transformer_emb_size_target** (int) - 
+* **transformer_intermediate_size_target** (int) - 
+* **transformer_num_attention_heads_target** (int) - 
+* **transformer_n_layer_target** (int) - 
+* **transformer_dropout_rate** (float) - 
 
 
 
