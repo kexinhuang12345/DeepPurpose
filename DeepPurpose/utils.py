@@ -3,7 +3,8 @@ import pandas as pd
 from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem
 from rdkit.Chem.Fingerprints import FingerprintMols
-from DeepPurpose.pybiomed_helper import _GetPseudoAAC, CalculateAADipeptideComposition, calcPubChemFingerAll, CalculateConjointTriad, GetQuasiSequenceOrder
+from DeepPurpose.pybiomed_helper import _GetPseudoAAC, CalculateAADipeptideComposition, \
+calcPubChemFingerAll, CalculateConjointTriad, GetQuasiSequenceOrder
 import torch
 from torch.utils import data
 from torch.autograd import Variable
@@ -222,7 +223,9 @@ def create_fold_setting_cold_protein(df, fold_seed, frac):
 
     train_val = df[~df['Target Sequence'].isin(gene_drop)]
     
-    gene_drop_val = train_val['Target Sequence'].drop_duplicates().sample(frac = val_frac/(1-test_frac), replace = False, random_state = fold_seed).values
+    gene_drop_val = train_val['Target Sequence'].drop_duplicates().sample(frac = val_frac/(1-test_frac), 
+    																	  replace = False, 
+    																	  random_state = fold_seed).values
     val = train_val[train_val['Target Sequence'].isin(gene_drop_val)]
     train = train_val[~train_val['Target Sequence'].isin(gene_drop_val)]
     
@@ -237,7 +240,9 @@ def create_fold_setting_cold_drug(df, fold_seed, frac):
 
     train_val = df[~df['SMILES'].isin(drug_drop)]
     
-    drug_drop_val = train_val['SMILES'].drop_duplicates().sample(frac = val_frac/(1-test_frac), replace = False, random_state = fold_seed).values
+    drug_drop_val = train_val['SMILES'].drop_duplicates().sample(frac = val_frac/(1-test_frac), 
+    															 replace = False, 
+    															 random_state = fold_seed).values
     val = train_val[train_val['SMILES'].isin(drug_drop_val)]
     train = train_val[~train_val['SMILES'].isin(drug_drop_val)]
     
@@ -245,7 +250,8 @@ def create_fold_setting_cold_drug(df, fold_seed, frac):
 
 #TODO: add one target, drug folding
 
-def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=None, split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1, sample_frac = 1):
+def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=None, 
+				 split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1, sample_frac = 1):
 	if split_method == 'repurposing_VS':
 		y = [-1]*len(X_drug) # create temp y for compatitibility
 	if isinstance(X_target, str):
@@ -315,12 +321,14 @@ def data_process(X_drug, X_target, y=None, drug_encoding=None, target_encoding=N
 	print('unique target sequence: ' + str(len(df_data['Target Sequence'].unique())))
 
 	if target_encoding == 'AAC':
-		print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU. Calculate your time by the unique target sequence #, instead of the entire dataset.')
+		print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU.\
+				 Calculate your time by the unique target sequence #, instead of the entire dataset.')
 		AA = pd.Series(df_data['Target Sequence'].unique()).apply(CalculateAADipeptideComposition)
 		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
 		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
 	elif target_encoding == 'PseudoAAC':
-		print('-- Encoding PseudoAAC takes time. Time Reference: 462s for ~100 sequences in a CPU. Calculate your time by the unique target sequence #, instead of the entire dataset.')
+		print('-- Encoding PseudoAAC takes time. Time Reference: 462s for ~100 sequences in a CPU.\
+				 Calculate your time by the unique target sequence #, instead of the entire dataset.')
 		AA = pd.Series(df_data['Target Sequence'].unique()).apply(_GetPseudoAAC)
 		AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
 		df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]

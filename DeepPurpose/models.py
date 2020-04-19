@@ -439,7 +439,8 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 	with open(fo,'w') as fout:
 		print('virtual screening...')
-		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
+		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, \
+														   model.drug_encoding, model.target_encoding, 'virtual screening')
 		y_pred = model.predict(df_data)
 
 		if convert_y:
@@ -741,8 +742,10 @@ class DBTA:
 					test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 					test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
 					print("Up to Epoch " + str(epo), end = " ")
-					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
-				np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) + '_logits.npy'), np.array(logits))			
+					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) +\
+						  ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+				np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + \
+						str(self.target_encoding) + '_logits.npy'), np.array(logits))			
 
 
 
