@@ -64,6 +64,7 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 ....
 ```
 
+<details>
 
 ### Case Study 1 (b): New Target Repurposing using Broad Drug Repurposing Hub, with One Line.
 Given a new target sequence (e.g. MMP9), retrieve a list of repurposing drugs from Broad Drug Repurposing Hub, which is the default. Results also aggregated from five pretrained model! Note the drug name here is the Pubchem CID since some drug names in Broad is too long.
