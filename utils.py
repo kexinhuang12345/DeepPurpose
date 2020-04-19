@@ -239,7 +239,8 @@ def create_fold_setting_cold_drug(df, fold_seed, frac):
 
     train_val = df[~df['SMILES'].isin(drug_drop)]
     
-    drug_drop_val = train_val['SMILES'].drop_duplicates().sample(frac = val_frac/(1-test_frac), replace = False, random_state = fold_seed).values
+    drug_drop_val = train_val['SMILES'].drop_duplicates().sample(frac = val_frac/(1-test_frac),
+    															 replace = False, random_state = fold_seed).values
     val = train_val[train_val['SMILES'].isin(drug_drop_val)]
     train = train_val[~train_val['SMILES'].isin(drug_drop_val)]
     

@@ -155,7 +155,9 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_
 		print('select Kd, Ki, IC50 or EC50')
 
 	df_want = df[df[idx_str].notnull()]
-	df_want = df_want[['BindingDB Reactant_set_id', 'Ligand InChI', 'Ligand SMILES', 'PubChem CID', 'UniProt (SwissProt) Primary ID of Target Chain', 'BindingDB Target Chain  Sequence', idx_str]]
+	df_want = df_want[['BindingDB Reactant_set_id', 'Ligand InChI', 'Ligand SMILES',\
+					  'PubChem CID', 'UniProt (SwissProt) Primary ID of Target Chain',\
+					  'BindingDB Target Chain  Sequence', idx_str]]
 	df_want.rename(columns={'BindingDB Reactant_set_id':'ID',
 							'Ligand SMILES':'SMILES',
 							'Ligand InChI':'InChI',
@@ -272,7 +274,9 @@ def load_process_KIBA(path = './data', binary = False, threshold = 9):
 				y.append(affinity.values[i, j])
 
 	if binary:
-		print('Note that KIBA is not suitable for binary classification as it is a modified score. Default binary threshold for the binding affinity scores are 9, you should adjust it by using the "threshold" parameter')
+		print('Note that KIBA is not suitable for binary classification as it is a modified score. \
+			   Default binary threshold for the binding affinity scores are 9, \
+			   you should adjust it by using the "threshold" parameter')
 		y = [1 if i else 0 for i in np.array(y) < threshold]
 	else:
 		y = y
