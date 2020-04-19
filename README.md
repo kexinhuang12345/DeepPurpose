@@ -33,7 +33,10 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 ## Example
 
 ### Case Study 1 (a): Antiviral Drugs Repurposing for SARS-CoV2 3CLPro, using One Line.
-Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
+  Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
+
+<details>
+  <summary>Click here for the code!</summary>
 
 ```python
 from DeepPurpose import oneliner
@@ -61,10 +64,14 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 ....
 ```
 
+</details>
 
 ### Case Study 1 (b): New Target Repurposing using Broad Drug Repurposing Hub, with One Line.
 Given a new target sequence (e.g. MMP9), retrieve a list of repurposing drugs from Broad Drug Repurposing Hub, which is the default. Results also aggregated from five pretrained model! Note the drug name here is the Pubchem CID since some drug names in Broad is too long.
 
+<details>
+  <summary>Click here for the code!</summary>
+	
 ```python
 from DeepPurpose import oneliner
 oneliner.repurpose(*load_MMP9())
@@ -89,10 +96,17 @@ Drug Repurposing Result for MMP9
 |  12  |  6917974.0  |     MMP9    |     24.50     |
 |  13  |  73707512.0 |     MMP9    |     26.83     |
 ```
+  
+</details>
+
+
 
 ### Case Study 2: Repurposing using Customized training data, with One Line.
 Given a new target sequence (e.g. SARS-CoV 3CL Pro), training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model can be trained from scratch or finetuned from the pretraining checkpoint!
 
+<details>
+  <summary>Click here for the code!</summary>
+	
 ```python
 from DeepPurpose import oneliner
 from DeepPurpose.dataset import *
@@ -121,9 +135,13 @@ Drug Repurposing Result for SARS-CoV 3CL Protease
 |  13  |   Podophyllotoxin    | SARS-CoV 3CL Protease |     YES     |     0.60    |
 ....
 ```
+</details>
 
 ### Case Study 3: A Framework for Drug Target Interaction Prediction, with less than 10 lines of codes.
 Under the hood of one model from scratch, a flexible framework for method researchers:
+
+<details>
+  <summary>Click here for the code!</summary>
 
 ```python
 from DeepPurpose import models
@@ -172,12 +190,19 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 
 ```
 
+</details>
+
 ## Install & Usage
 Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)
 
+[Video tutorial](https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
+
 We recommend to install it locally since Binder needs to install environment every time launching:
+
+<details>
+  <summary>Click here for the code!</summary>
 
 ```bash
 # -- First Time -- #
@@ -215,14 +240,12 @@ conda activate DeepPurpose
 conda deactivate 
 ## Exit conda environment 
 ```
+</details>
+
+[Video tutorial](https://youtu.be/bqinehjnWvE) to install locally using conda.
 
 Docker image will also be up soon!
 
-We also provide installation video tutorials:
-
-\[[Binder](https://www.youtube.com/watch?v=ghUyZknxq5o)\]
-
-\[[Local PC conda](https://youtu.be/bqinehjnWvE)\]
 
 *We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
@@ -254,6 +277,9 @@ Please cite [arxiv]() for now:
 }
 
 ```
+
+## Contact
+Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
 
 ## Encodings
 Currently, we support the following encodings:
@@ -312,6 +338,9 @@ DeepPurpose supports the following dataset loaders for now and more will be adde
 |SARS-CoV2 endoRNAse|```load_SARS_CoV2_endoRNAse()```|
 
 DeepPurpose also supports to read from users' txt file. It assumes the following data format.
+
+<details>
+  <summary>Click here for the format expected!</summary>
 
 For drug target pairs:
 ```
@@ -377,6 +406,8 @@ Then, use
 from DeepPurpose import dataset
 X_drug, X_target, X_drug_names, X_target_names = dataset.read_file_virtual_screening_drug_target_pairs(PATH)
 ```
+</details>
+
 Checkout [Dataset Tutorial](DEMO/load_data_tutorial.ipynb).
 
 ## Pretrained models
@@ -391,6 +422,9 @@ net = models.model_pretrained(FILE_PATH)
 The list of avaiable pretrained models:
 
 Model name consists of first the drug encoding, then the target encoding and then the trained dataset.
+
+<details>
+  <summary>Click here for the models supported!</summary>
 
 |Model Name|
 |------|
@@ -411,11 +445,10 @@ Model name consists of first the drug encoding, then the target encoding and the
 |Morgan_AAC_DAVIS|
 |CNN_Transformer_DAVIS|
 
+</details>
+
 ## Documentations
 More detailed documentations are coming soon.
-
-## Contact
-Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
 
 ## Disclaimer
 The output list should be inspected manually by experts before proceeding to the wet-lab validation, and our work is still in active developement with limitations, please do not directly use the drugs.
