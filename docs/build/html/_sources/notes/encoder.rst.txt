@@ -2,6 +2,37 @@ Drug/Target Encoder
 ========================
 
 
+Drug encoding 
+
+======================   ===================================================
+    Drug Encodings                         Description 
+======================   ===================================================
+      Morgan                    Extended-Connectivity Fingerprints                    
+      Pubchem                 Pubchem Substructure-based Fingerprints                   
+      Daylight                      Daylight-type fingerprints 
+ rdkit_2d_normalized                Normalized Descriptastorus                   
+        CNN                    Convolutional Neural Network on SMILES                    
+      CNN_RNN                     A GRU/LSTM on top of a CNN on SMILES                   
+     Transformer                    Transformer Encoder on ESPF
+       MPNN                    	     Message-passing neural network 
+======================   ===================================================
+
+
+Target encoding 
+
+
+====================   ===================================================
+  Target Encodings                        Description   
+====================   ===================================================
+      AAC                       Amino acid composition up to 3-mers      
+    PseudoAAC                    Pseudo amino acid composition            
+   Conjoint_triad                    Conjoint triad features                  
+    Quasi-seq                    Quasi-sequence order descriptor              
+      CNN                    Convolutional Neural Network on target seq
+    CNN_RNN                   A GRU/LSTM on top of a CNN on target seq             
+   Transformer                     Transformer Encoder on ESPF
+====================   ===================================================
+
 
 
 .. code-block:: python

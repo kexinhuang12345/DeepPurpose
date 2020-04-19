@@ -5,7 +5,9 @@
 
 DeepPurpose documentation!
 ================================
-Welcome! This is the documentation for DeepPurpose, a PyTorch-based deep learning library for Drug Target Interaction.
+Welcome! This is the documentation for DeepPurpose. 
+DeepPurpose is a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). 
+It allows very easy usage (only one line of code!) for non-computational domain researchers to be able to obtain a list of potential drugs using deep learning while facilitating deep learning method research in this topic by providing a flexible framework (less than 10 lines of codes!) and baselines. 
 The Github repository is located `here <https://github.com/kexinhuang12345/DeepPurpose>`_.
 
 
@@ -14,8 +16,8 @@ The Github repository is located `here <https://github.com/kexinhuang12345/DeepP
    :maxdepth: 1
    :caption: Background 
 
-   notes/
-
+   notes/introduction
+   
 
 
 .. toctree::
