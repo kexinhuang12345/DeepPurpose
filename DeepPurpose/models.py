@@ -357,7 +357,8 @@ def model_pretrained(path_dir = None, model = None):
 	model.load_pretrained(path_dir + '/model.pt')    
 	return model
 
-def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
+def repurpose(X_repurpose, target, model, drug_names = None, target_name = None, 
+			  result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
 	# X_repurpose: a list of SMILES string
 	# target: one target 
 	fo = os.path.join(result_folder, "repurposing.txt")
@@ -420,7 +421,8 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 					break
 	return y_pred
 
-def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None, result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
+def virtual_screening(X_repurpose, target, model, drug_names = None, target_names = None,
+					  result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
 	fo = os.path.join(result_folder, "virtual_screening.txt")
@@ -526,7 +528,8 @@ class DBTA:
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
-		if target_encoding == 'AAC' or target_encoding == 'PseudoAAC' or target_encoding == 'Conjoint_triad' or target_encoding == 'Quasi-seq':
+		if target_encoding == 'AAC' or target_encoding == 'PseudoAAC' or 
+		   target_encoding == 'Conjoint_triad' or target_encoding == 'Quasi-seq':
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
 		elif target_encoding == 'CNN':
 			self.model_protein = CNN('protein', **config)
@@ -590,7 +593,8 @@ class DBTA:
 		else:
 			if repurposing_mode:
 				return y_pred
-			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], 
+				   pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None, verbose = True):
 		if len(train.Label.unique()) == 2:
@@ -709,7 +713,8 @@ class DBTA:
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc   
-					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
+					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
+						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
 					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
@@ -759,8 +764,10 @@ class DBTA:
 				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
-				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
-			np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) + '_logits.npy'), np.array(logits))                
+				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
+					  + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+			np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) 
+				     + '_logits.npy'), np.array(logits))                
 		# load early stopped model
 		self.model = model_max
 

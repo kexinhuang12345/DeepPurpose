@@ -9,6 +9,12 @@ Welcome! This is the documentation for DeepPurpose, a PyTorch-based deep learnin
 The Github repository is located `here <https://github.com/kexinhuang12345/DeepPurpose>`_.
 
 
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Background 
+
+   notes/
 
 
 
