@@ -49,89 +49,9 @@ The Github repository is located <a class="reference external" href="https://git
 <li class="toctree-l1"><a class="reference internal" href="notes/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/encoder.html">Drug/Target Encoder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/process_data.html">Processing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/utility_function.html">Utility Function</a></li>
 </ul>
-</div>
-<div class="section" id="documentation">
-<h2>3 Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="encoder-models">
-<h3>3.1 Encoder Models<a class="headerlink" href="#encoder-models" title="Permalink to this headline">¶</a></h3>
-<p><strong>environment</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span>
-<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">torch.utils</span> <span class="kn">import</span> <span class="n">data</span>
-<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">SequentialSampler</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-</pre></div>
-</div>
-<hr class="docutils" />
-<p>name of function: <strong>generate_config</strong> set the configuration.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generate_config</span><span class="p">(</span><span class="n">drug_encoding</span><span class="p">,</span> <span class="n">target_encoding</span><span class="p">,</span>
-                                <span class="n">result_folder</span> <span class="o">=</span> <span class="s2">&quot;./result/&quot;</span><span class="p">,</span>
-                                <span class="n">input_dim_drug</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
-                                <span class="n">input_dim_protein</span> <span class="o">=</span> <span class="mi">8420</span><span class="p">,</span>
-                                <span class="n">hidden_dim_drug</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-                                <span class="n">hidden_dim_protein</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-                                <span class="n">cls_hidden_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">512</span><span class="p">],</span>
-                                <span class="n">mlp_hidden_dims_drug</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
-                                <span class="n">mlp_hidden_dims_target</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">64</span><span class="p">],</span>
-                                <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-                                <span class="n">train_epoch</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                                <span class="n">test_every_X_epoch</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-                                <span class="n">LR</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
-                                <span class="n">transformer_emb_size_drug</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
-                                <span class="n">transformer_intermediate_size_drug</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
-                                <span class="n">transformer_num_attention_heads_drug</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-                                <span class="n">transformer_n_layer_drug</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-                                <span class="n">transformer_emb_size_target</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
-                                <span class="n">transformer_intermediate_size_target</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
-                                <span class="n">transformer_num_attention_heads_target</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-                                <span class="n">transformer_n_layer_target</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-                                <span class="n">transformer_dropout_rate</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-                                <span class="n">transformer_attention_probs_dropout</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-                                <span class="n">transformer_hidden_dropout_rate</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-                                <span class="n">mpnn_hidden_size</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
-                                <span class="n">mpnn_depth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-                                <span class="n">cnn_drug_filters</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">96</span><span class="p">],</span>
-                                <span class="n">cnn_drug_kernels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span>
-                                <span class="n">cnn_target_filters</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">96</span><span class="p">],</span>
-                                <span class="n">cnn_target_kernels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">12</span><span class="p">],</span>
-                                <span class="n">rnn_Use_GRU_LSTM_drug</span> <span class="o">=</span> <span class="s1">&#39;GRU&#39;</span><span class="p">,</span>
-                                <span class="n">rnn_drug_hid_dim</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
-                                <span class="n">rnn_drug_n_layers</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-                                <span class="n">rnn_drug_bidirectional</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                                <span class="n">rnn_Use_GRU_LSTM_target</span> <span class="o">=</span> <span class="s1">&#39;GRU&#39;</span><span class="p">,</span>
-                                <span class="n">rnn_target_hid_dim</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
-                                <span class="n">rnn_target_n_layers</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-                                <span class="n">rnn_target_bidirectional</span> <span class="o">=</span> <span class="kc">True</span>
-                                <span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>drug_encoding</strong> (str) - Encoder mode for drug. It can be “transformer”, “MPNN”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>target_encoding</strong> (str) - Encoder mode for protein. It can be “transformer”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>input_dim_drug</strong> (int) - Dimension of input drug feature.</p></li>
-<li><p><strong>input_dim_protein</strong> (int) - Dimension of input protein feature.</p></li>
-<li><p><strong>hidden_dim_drug</strong> (int) - Dimension of hidden layer of drug feature.</p></li>
-<li><p><strong>hidden_dim_protein</strong> (int) - Dimension of hidden layer of protein feature.</p></li>
-<li><p><strong>batch_size</strong> (int) - batch size</p></li>
-<li><p><strong>train_epoch</strong> (int) - training epoch</p></li>
-<li><p><strong>test_every_X_epoch</strong> (int) - test every X epochs</p></li>
-<li><p><strong>LR</strong> (float) - Learning rate.</p></li>
-<li><p><strong>cls_hidden_dims</strong> (list of int) - hidden dimensions of classifier.</p></li>
-<li><p><strong>mlp_hidden_dims_drug</strong> (list of int) - hidden dimension of MLP when encoding drug.</p></li>
-<li><p><strong>mlp_hidden_dims_target</strong> (list of int) - hidden dimension of MLP when encoding protein.</p></li>
-<li><p><strong>transformer_emb_size_drug</strong> (int) - embedding size of transformer when encoding drug.</p></li>
-<li><p><strong>transformer_intermediate_size_drug</strong> (int) -</p></li>
-<li><p><strong>transformer_num_attention_heads_drug</strong> (int) -</p></li>
-<li><p><strong>transformer_n_layer_drug</strong> (int) -</p></li>
-<li><p><strong>transformer_emb_size_target</strong> (int) -</p></li>
-<li><p><strong>transformer_intermediate_size_target</strong> (int) -</p></li>
-<li><p><strong>transformer_num_attention_heads_target</strong> (int) -</p></li>
-<li><p><strong>transformer_n_layer_target</strong> (int) -</p></li>
-<li><p><strong>transformer_dropout_rate</strong> (float) -</p></li>
-</ul>
-</div>
 </div>
 </div>
 
@@ -162,6 +82,8 @@ The Github repository is located <a class="reference external" href="https://git
 <li class="toctree-l1"><a class="reference internal" href="notes/model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/encoder.html">Drug/Target Encoder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/process_data.html">Processing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/utility_function.html">Utility Function</a></li>
 </ul>
 
 <div class="relations">
