@@ -197,7 +197,7 @@ Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook int
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)
 
-[Video tutorial(https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
+[Video tutorial](https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
 
 We recommend to install it locally since Binder needs to install environment every time launching:
 
@@ -242,7 +242,7 @@ conda deactivate
 ```
 </details>
 
-[Video tutorial(https://youtu.be/bqinehjnWvE) to install locally using conda.
+[Video tutorial](https://youtu.be/bqinehjnWvE) to install locally using conda.
 
 Docker image will also be up soon!
 
@@ -423,6 +423,9 @@ The list of avaiable pretrained models:
 
 Model name consists of first the drug encoding, then the target encoding and then the trained dataset.
 
+<details>
+  <summary>Click here for the models supported!</summary>
+
 |Model Name|
 |------|
 |DeepDTA_DAVIS|
@@ -441,6 +444,8 @@ Model name consists of first the drug encoding, then the target encoding and the
 |Morgan_AAC_KIBA|
 |Morgan_AAC_DAVIS|
 |CNN_Transformer_DAVIS|
+
+</details>
 
 ## Documentations
 More detailed documentations are coming soon.
