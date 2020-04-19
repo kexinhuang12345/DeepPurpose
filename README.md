@@ -33,7 +33,9 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 ## Example
 
 ### Case Study 1 (a): Antiviral Drugs Repurposing for SARS-CoV2 3CLPro, using One Line.
-Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
+<details>
+  <summary>Click to expand!</summary>
+  Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
 
 ```python
 from DeepPurpose import oneliner
@@ -89,6 +91,10 @@ Drug Repurposing Result for MMP9
 |  12  |  6917974.0  |     MMP9    |     24.50     |
 |  13  |  73707512.0 |     MMP9    |     26.83     |
 ```
+  
+</details>
+
+
 
 ### Case Study 2: Repurposing using Customized training data, with One Line.
 Given a new target sequence (e.g. SARS-CoV 3CL Pro), training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model can be trained from scratch or finetuned from the pretraining checkpoint!
