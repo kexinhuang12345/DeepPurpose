@@ -35,35 +35,20 @@
 <h1>DeepPurpose documentation!<a class="headerlink" href="#deeppurpose-documentation" title="Permalink to this headline">¶</a></h1>
 <p>Welcome! This is the documentation for DeepPurpose, a PyTorch-based deep learning library for Drug Target Interaction.
 The Github repository is located <a class="reference external" href="https://github.com/kexinhuang12345/DeepPurpose">here</a>.</p>
-<div class="section" id="how-to-start">
-<h2>1 How to Start<a class="headerlink" href="#how-to-start" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="download">
-<h3>1.1 Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:kexinhuang12345/DeepPurpose.git
-$ <span class="c1">###  Download code repository</span>
-$
-$
-$ <span class="nb">cd</span> DeepPurpose
-$ <span class="c1">### Change directory to DeepPurpose</span>
-</pre></div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">How to run</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
+</ul>
 </div>
-</div>
-<div class="section" id="installation">
-<h3>1.2 Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda env create -f env.yml
-$ <span class="c1">## Build virtual environment with all packages installed using conda</span>
-$
-$ conda activate DeepPurpose
-$ <span class="c1">##  Activate conda environment</span>
-$
-$
-$ conda deactivate <span class="c1">### exit</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="run">
-<h2>2 Run<a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/encoder.html">Drug/Target Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/process_data.html">Processing Data</a></li>
+</ul>
 </div>
 <div class="section" id="documentation">
 <h2>3 Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
@@ -79,367 +64,6 @@ $ conda deactivate <span class="c1">### exit</span>
 </pre></div>
 </div>
 <hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><a class="reference external" href="https://arxiv.org/pdf/1908.06760.pdf">Transformer</a> can be used to encode both drug and protein on <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a>.</p>
-<p>name of function: <strong>constructor</strong> create Transformer.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>encoding</strong> (string, “drug” or “protein”) - specify input type of the model, “drug” or “protein”.</p></li>
-<li><dl class="simple">
-<dt><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of transformer. The keys include</dt><dd><ul>
-<li><p>transformer_dropout_rate (float) - dropout rate of transformer.</p></li>
-<li><p>input_dim_drug (int) - input dimension when encoding drug.</p></li>
-<li><p>transformer_emb_size_drug (int) - dimension of embedding in input layer when encoding drug.</p></li>
-<li><p>transformer_n_layer_drug (int) - number of layers in transformer when encoding drug.</p></li>
-<li><p><strong>todo</strong></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of MPNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v</strong> (tuple of length 2) - input feature of transformer. v[0] (np.array) is index of atoms. v[1] (np.array) is the corresponding mask.</p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">CNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Convolutional_neural_network">CNN (Convolutional Neural Network)</a> can be used to encode both drug and protein on <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a>.</p>
-<p><strong>constructor</strong> create CNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>encoding</strong> (string, “drug” or “protein”) - specify input type of model, “drug” or “protein”.</p></li>
-<li><dl class="simple">
-<dt><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of CNN. The keys include</dt><dd><ul>
-<li><p>cnn_drug_filters (list, each element is int) - specify the size of filter when encoding drug, e.g., cnn_drug_filters = [32,64,96].</p></li>
-<li><p>cnn_drug_kernels (list, each element is int) - specify the size of kernel when encoding drug, e.g., cnn_drug_kernels = [4,6,8].</p></li>
-<li><p>hidden_dim_drug (int) - specify the hidden dimension when encoding drug, e.g., hidden_dim_drug = 256.</p></li>
-<li><p>cnn_target_filters (list, each element is int) - specify the size of filter when encoding protein, e.g, cnn_target_filters = [32,64,96].</p></li>
-<li><p>cnn_target_kernels (list, each element is int) - specify the size of kernel when encoding protein, e.g, cnn_target_kernels = [4,8,12].</p></li>
-<li><p>hidden_dim_protein (int) - specify the hidden dimension when encoding protein, e.g., hidden_dim_protein = 256.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of CNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v</strong> (torch.Tensor) - input feature of CNN.</p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">CNN_RNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>CNN_RNN means a GRU/LSTM on top of a CNN on <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a>.</p>
-<p><strong>constructor</strong> create CNN_RNN</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>encoding</strong> (string, “drug” or “protein”) - specify input type, “drug” or “protein”.</p></li>
-<li><dl class="simple">
-<dt><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of transformer. The keys include</dt><dd><ul>
-<li><p>cnn_drug_filters (list, each element is int) - specify the size of filter when encoding drug, e.g., cnn_drug_filters = [32,64,96].</p></li>
-<li><p>cnn_drug_kernels (list, each element is int) - specify the size of kernel when encoding drug, e.g., cnn_drug_kernels = [4,6,8].</p></li>
-<li><p>rnn_drug_hid_dim (int) - specify the hidden dimension of RNN when encoding drug, e.g., rnn_drug_hid_dim = 64.</p></li>
-<li><p>rnn_drug_n_layers (int) - specify number of layer in RNN when encoding drug, .e.g, rnn_drug_n_layers = 2.</p></li>
-<li><p>rnn_drug_bidirectional (bool) - specify if RNN is bidirectional when encoding drug, .e.g, rnn_drug_bidirectional = True.</p></li>
-<li><p>hidden_dim_drug (int) - specify the hidden dimension when encoding drug, e.g., hidden_dim_drug = 256.</p></li>
-<li><p>cnn_target_filters (list, each element is int) - specify the size of filter when encoding protein, e.g, cnn_target_filters = [32,64,96].</p></li>
-<li><p>cnn_target_kernels (list, each element is int) - specify the size of kernel when encoding protein, e.g, cnn_target_kernels = [4,8,12].</p></li>
-<li><p>hidden_dim_protein (int) - specify the hidden dimension when encoding protein, e.g., hidden_dim_protein = 256.</p></li>
-<li><p>rnn_target_hid_dim (int) - specify hidden dimension of RNN when encoding protein, e.g., rnn_target_hid_dim = 64.</p></li>
-<li><p>rnn_target_n_layers (int) - specify the number of layer in RNN when encoding protein, e.g., rnn_target_n_layers = 2.</p></li>
-<li><p>rnn_target_bidirectional (bool) - specify if RNN is bidirectional when encoding protein, e.g., rnn_target_bidirectional = True</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of CNN_RNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v</strong> (torch.Tensor) - input feature of CNN_RNN.</p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Multi-Layer Perceptron</p>
-<p><strong>constructor</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>input_dim</strong> (int) - dimension of input feature.</p></li>
-<li><p><strong>hidden_dim</strong> (int) - dimension of hidden layer.</p></li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of MLP.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v</strong></p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">MPNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><a class="reference external" href="https://www.biorxiv.org/content/10.1101/684662v3">Message Passing Neural Network (MPNN)</a> encode drug in its graph representation.</p>
-<p><strong>constructor</strong> create MPNN class.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mpnn_hidden_size</span><span class="p">,</span> <span class="n">mpnn_depth</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>mpnn_hidden_size</strong> (int) - specify dimension of hidden layer in MPNN, e.g,  mpnn_hidden_size = 256.</p></li>
-<li><p><strong>mpnn_depth</strong> (int) - specify depth of MPNN, e.g.,  mpnn_depth = 3.</p></li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of MPNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><dl class="simple">
-<dt><strong>feature</strong> (tuple of length 5)</dt><dd><ul>
-<li><p><strong>todo</strong></p></li>
-<li></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
-<hr class="docutils" />
-<div class="section" id="classifier">
-<h3>3.2 Classifier<a class="headerlink" href="#classifier" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Classifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Classifier is make the prediction for DBTA, it serve as a basic component of class DBTA.</p>
-<p><strong>constructor</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_drug</span><span class="p">,</span> <span class="n">model_protein</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>model_drug</strong> (DeepPurpose.models.XX) - Encoder model for drug. XX can be “transformer”, “MPNN”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>model_protein</strong> (DeepPurpose.models.XX) - Encoder model for protein. XX can be “transformer”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of classifier.</p></li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of Classifier.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v_D</span><span class="p">,</span> <span class="n">v_P</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v_D</strong> (many types) - input feature for drug encoder model, like “DeepPurpose.models.transformer”, “DeepPurpose.models.CNN”, “DeepPurpose.models.CNN_RNN”, “DeepPurpose.models.MPNN”.</p></li>
-<li><p><strong>v_P</strong> (many types) - input feature for protein encoder model, like “DeepPurpose.models.transformer”, “DeepPurpose.models.CNN”, “DeepPurpose.models.CNN_RNN”.</p></li>
-</ul>
-</div>
-<hr class="docutils" />
-<div class="section" id="drug-target-binding-affinity">
-<h3>3.3 Drug Target Binding Affinity<a class="headerlink" href="#drug-target-binding-affinity" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">DBTA</span>
-</pre></div>
-</div>
-<p>Drug Target Binding Affinity (DBTA) model include all learning procedure.</p>
-<p>name of function: <strong>constructor</strong> create DBTA model.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><dl class="simple">
-<dt><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of DBTA.</dt><dd><ul>
-<li><p><strong>drug_encoding</strong> (str) - Encoder mode for drug. It can be “transformer”, “MPNN”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>target_encoding</strong> (str) - Encoder mode for protein. It can be “transformer”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>result_folder</strong> (str) - directory that store the learning log/results.</p></li>
-<li><p><strong>concrete parameter for encoder model</strong> (repeated)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p>name of function: <strong>test_</strong> include all the inference procedure.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_generator</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">repurposing_mode</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>data_generator</strong> (iterator) - iterator of torch.utils.data.DataLoader. It can be test data or validation data.</p></li>
-<li><p><strong>model</strong> (DeepPurpose.models.Classifier) - model of DBTA.</p></li>
-<li><p><strong>repurposing_mode</strong> (bool) - If repurposing_mode is True, then do repurposing. Otherwise, do compute the accuracy (including AUC score).</p></li>
-<li><p><strong>test</strong> (bool) - If test is True, plot ROC-AUC and PR-AUC curve. Otherwise, pass.</p></li>
-</ul>
-<p>name of function: <strong>train</strong> include all the training procedure.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>train</strong> () - Train data generator</p></li>
-<li><p><strong>val</strong> () - Valid data generator</p></li>
-<li><p><strong>test</strong> () - Test data generator</p></li>
-<li><p><strong>verbose</strong> (bool) - If verbose is True, then print training record every 100 iterations.</p></li>
-</ul>
-<p>name of function: <strong>predict</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_data</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>df_data</strong> (pd.DataFrame) - specify data that we need to predict.</p></li>
-</ul>
-<p>name of function: <strong>save_model</strong> save the well-trained model to specific directory.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_dir</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path_dir</strong> (str, a directory) - the path where model is saved.</p></li>
-</ul>
-<p>name of function: <strong>load_pretrained</strong> load the well-trained model so that we are able to make inference directly.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_pretrained</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path where model is loaded.</p></li>
-</ul>
-<hr class="docutils" />
-<p>name of function: <strong>read_file_training_dataset_bioassay</strong> load bioarray dataset, with one target sequence and multiple drugs and their interaction score with the target.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_training_dataset_bioassay</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path of bioassay dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence. Example: ./toy_data/AID1706.txt</p></li>
-</ul>
-<p>name of function: <strong>read_file_training_dataset_drug_target_pairs</strong> load drug target pairs dataset. We have requirement on format of file. Each line contains a drug SMILES and target sequence and their interaction score. Example: ./toy_data/dti.txt</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_training_dataset_drug_target_pairs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path of drug target pairs dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence.  Example: ./toy_data/AID1706.txt</p></li>
-</ul>
-<p>name of function: <strong>read_file_virtual_screening_drug_target_pairs</strong> load virtual screening drug target pairs dataset.
-We have requirement on format of file.
-Each line contains a drug SMILES and target sequence.
-Example: ./toy_data/dti.txt</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_virtual_screening_drug_target_pairs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path of virtual screening drug target pairs dataset file.</p></li>
-</ul>
-<p>name of function: <strong>read_file_repurposing_library</strong> load drug repurposing dataset.
-We have requirement on format of file.
-Each line contains a drug SMILES and its name.
-Example: ./toy_data/??</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_repurposing_library</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path of drug repurposing dataset file.</p></li>
-</ul>
-<p>name of function: <strong>read_file_target_sequence</strong> load drug repurposing dataset.
-We have requirement on format of file.
-The file only have one line.
-The line contains target name and target sequence.
-Example: ./toy_data/??</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_target_sequence</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path of target sequence dataset file.</p></li>
-</ul>
-<p>name of function: <strong>download_BindingDB</strong> load BindingDB dataset, save it to a specific path.
-If the path doesn’t exist, create the folder.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">download_BindingDB</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save BindingDB dataset file. Example: “./data”.</p></li>
-</ul>
-<p>name of function: <strong>download_DrugTargetCommons</strong> load DrugTargetCommons dataset, save it to a specific path.
-If the path doesn’t exist, create the folder.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">download_DrugTargetCommons</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save DrugTargetCommons dataset file. Example: “./data”.</p></li>
-</ul>
-<p>name of function: <strong>process_BindingDB</strong>  processes BindingDB dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">process_BindingDB</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">df</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;Kd&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">convert_to_log</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save BindingDB dataset file. Example: “./data/BindingDB_All.tsv”.</p></li>
-<li><p><strong>df</strong> (pandas.DataFrame) - Dataframe that contains input data, if first parameter “path” is None, use the “df”.</p></li>
-<li><p><strong>y</strong> (str; can be “Kd”, “Ki”, “IC50” or “EC50”) - specify the binding score.</p></li>
-<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
-<li><p><strong>convert_to_log</strong> (bool) - If True, convert the target score to logspace for easier regression’</p></li>
-<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
-</ul>
-<p>name of function: <strong>load_process_DAVIS</strong>  load DAVIS dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">load_process_DAVIS</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">convert_to_log</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save DAVIS dataset file. Example: “./data”.</p></li>
-<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
-<li><p><strong>convert_to_log</strong> (bool) - If True, convert the target score to logspace for easier regression’</p></li>
-<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
-</ul>
-<p>name of function: <strong>load_process_KIBA</strong> load KIBA dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_process_KIBA</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">9</span><span class="p">):</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save KIBA dataset file. Example: “./data”.</p></li>
-<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
-<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
-</ul>
-<p>name of function: <strong>load_AID1706_txt_file</strong> load KIBA dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_AID1706_txt_file</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save AID1706 dataset file. Example: “./data”.</p></li>
-</ul>
-<p>name of function: <strong>load_AID1706_SARS_CoV_3CL</strong> load AID1706_SARS_CoV_3CL dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_AID1706_SARS_CoV_3CL</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">balanced</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">oversample_num</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save AID1706_SARS_CoV_3CL dataset file. Example: “./data”.</p></li>
-<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
-<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
-<li><p><strong>balanced</strong> (bool) - If True, do oversampling to make number of positive and negative samples equal.</p></li>
-<li><p><strong>oversample_num</strong> (int) - control the oversample rate.</p></li>
-<li><p><strong>seed</strong> (int) - random seed in oversample.</p></li>
-</ul>
-<p>name of function: <strong>load_broad_repurposing_hub</strong> load repurposing dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_broad_repurposing_hub</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">):</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save repurposing dataset file. Example: “./data”.</p></li>
-</ul>
-<p>name of function: <strong>load_antiviral_drugs</strong> load antiviral drugs dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_antiviral_drugs</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">no_cid</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save antiviral drugs dataset file. Example: “./data”.</p></li>
-<li><p><strong>no_cid</strong> (bool) - If False, including “Pubchem CID”.</p></li>
-</ul>
 <p>name of function: <strong>generate_config</strong> set the configuration.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">generate_config</span><span class="p">(</span><span class="n">drug_encoding</span><span class="p">,</span> <span class="n">target_encoding</span><span class="p">,</span>
                                 <span class="n">result_folder</span> <span class="o">=</span> <span class="s2">&quot;./result/&quot;</span><span class="p">,</span>
@@ -527,6 +151,17 @@ If the path doesn’t exist, create the folder.</p>
 
 
 <h3>Navigation</h3>
+<p class="caption"><span class="caption-text">How to run</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/encoder.html">Drug/Target Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/process_data.html">Processing Data</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
