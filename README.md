@@ -64,7 +64,7 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 ....
 ```
 
-<details>
+</details>
 
 ### Case Study 1 (b): New Target Repurposing using Broad Drug Repurposing Hub, with One Line.
 Given a new target sequence (e.g. MMP9), retrieve a list of repurposing drugs from Broad Drug Repurposing Hub, which is the default. Results also aggregated from five pretrained model! Note the drug name here is the Pubchem CID since some drug names in Broad is too long.
@@ -190,7 +190,7 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 
 ```
 
-<details>
+</details>
 
 ## Install & Usage
 Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
@@ -200,6 +200,9 @@ Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook int
 [Video tutorial(https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
 
 We recommend to install it locally since Binder needs to install environment every time launching:
+
+<details>
+  <summary>Click here for the code!</summary>
 
 ```bash
 # -- First Time -- #
@@ -237,6 +240,8 @@ conda activate DeepPurpose
 conda deactivate 
 ## Exit conda environment 
 ```
+</details>
+
 [Video tutorial(https://youtu.be/bqinehjnWvE) to install locally using conda.
 
 Docker image will also be up soon!
@@ -272,6 +277,9 @@ Please cite [arxiv]() for now:
 }
 
 ```
+
+## Contact
+Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
 
 ## Encodings
 Currently, we support the following encodings:
@@ -330,6 +338,9 @@ DeepPurpose supports the following dataset loaders for now and more will be adde
 |SARS-CoV2 endoRNAse|```load_SARS_CoV2_endoRNAse()```|
 
 DeepPurpose also supports to read from users' txt file. It assumes the following data format.
+
+<details>
+  <summary>Click here for the format expected!</summary>
 
 For drug target pairs:
 ```
@@ -395,6 +406,8 @@ Then, use
 from DeepPurpose import dataset
 X_drug, X_target, X_drug_names, X_target_names = dataset.read_file_virtual_screening_drug_target_pairs(PATH)
 ```
+</details>
+
 Checkout [Dataset Tutorial](DEMO/load_data_tutorial.ipynb).
 
 ## Pretrained models
@@ -431,9 +444,6 @@ Model name consists of first the drug encoding, then the target encoding and the
 
 ## Documentations
 More detailed documentations are coming soon.
-
-## Contact
-Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
 
 ## Disclaimer
 The output list should be inspected manually by experts before proceeding to the wet-lab validation, and our work is still in active developement with limitations, please do not directly use the drugs.
