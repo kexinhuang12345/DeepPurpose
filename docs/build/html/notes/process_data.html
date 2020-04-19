@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Processing Data &#8212; DeepPurpose 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Drug/Target Encoder" href="encoder.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="processing-data">
+<h1>Processing Data<a class="headerlink" href="#processing-data" title="Permalink to this headline">¶</a></h1>
+<p>name of function: <strong>read_file_training_dataset_bioassay</strong> load bioarray dataset, with one target sequence and multiple drugs and their interaction score with the target.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_training_dataset_bioassay</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of bioassay dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence. Example: ./toy_data/AID1706.txt</p></li>
+</ul>
+<p>name of function: <strong>read_file_training_dataset_drug_target_pairs</strong> load drug target pairs dataset. We have requirement on format of file. Each line contains a drug SMILES and target sequence and their interaction score. Example: ./toy_data/dti.txt</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_training_dataset_drug_target_pairs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of drug target pairs dataset file. We have requirement on format of file. First line is target sequence. From 2nd line to n-th line, each line a SMILES and interaction score with target sequence.  Example: ./toy_data/AID1706.txt</p></li>
+</ul>
+<p>name of function: <strong>read_file_virtual_screening_drug_target_pairs</strong> load virtual screening drug target pairs dataset.
+We have requirement on format of file.
+Each line contains a drug SMILES and target sequence.
+Example: ./toy_data/dti.txt</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_virtual_screening_drug_target_pairs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of virtual screening drug target pairs dataset file.</p></li>
+</ul>
+<p>name of function: <strong>read_file_repurposing_library</strong> load drug repurposing dataset.
+We have requirement on format of file.
+Each line contains a drug SMILES and its name.
+Example: ./toy_data/??</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_repurposing_library</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of drug repurposing dataset file.</p></li>
+</ul>
+<p>name of function: <strong>read_file_target_sequence</strong> load drug repurposing dataset.
+We have requirement on format of file.
+The file only have one line.
+The line contains target name and target sequence.
+Example: ./toy_data/??</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_target_sequence</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path of target sequence dataset file.</p></li>
+</ul>
+<p>name of function: <strong>download_BindingDB</strong> load BindingDB dataset, save it to a specific path.
+If the path doesn’t exist, create the folder.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">download_BindingDB</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save BindingDB dataset file. Example: “./data”.</p></li>
+</ul>
+<p>name of function: <strong>download_DrugTargetCommons</strong> load DrugTargetCommons dataset, save it to a specific path.
+If the path doesn’t exist, create the folder.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">download_DrugTargetCommons</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save DrugTargetCommons dataset file. Example: “./data”.</p></li>
+</ul>
+<p>name of function: <strong>process_BindingDB</strong>  processes BindingDB dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">process_BindingDB</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">df</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;Kd&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">convert_to_log</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save BindingDB dataset file. Example: “./data/BindingDB_All.tsv”.</p></li>
+<li><p><strong>df</strong> (pandas.DataFrame) - Dataframe that contains input data, if first parameter “path” is None, use the “df”.</p></li>
+<li><p><strong>y</strong> (str; can be “Kd”, “Ki”, “IC50” or “EC50”) - specify the binding score.</p></li>
+<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
+<li><p><strong>convert_to_log</strong> (bool) - If True, convert the target score to logspace for easier regression’</p></li>
+<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
+</ul>
+<p>name of function: <strong>load_process_DAVIS</strong>  load DAVIS dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">load_process_DAVIS</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">convert_to_log</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save DAVIS dataset file. Example: “./data”.</p></li>
+<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
+<li><p><strong>convert_to_log</strong> (bool) - If True, convert the target score to logspace for easier regression’</p></li>
+<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
+</ul>
+<p>name of function: <strong>load_process_KIBA</strong> load KIBA dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_process_KIBA</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">9</span><span class="p">):</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save KIBA dataset file. Example: “./data”.</p></li>
+<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
+<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
+</ul>
+<p>name of function: <strong>load_AID1706_txt_file</strong> load KIBA dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_AID1706_txt_file</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save AID1706 dataset file. Example: “./data”.</p></li>
+</ul>
+<p>name of function: <strong>load_AID1706_SARS_CoV_3CL</strong> load AID1706_SARS_CoV_3CL dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_AID1706_SARS_CoV_3CL</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">balanced</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">oversample_num</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save AID1706_SARS_CoV_3CL dataset file. Example: “./data”.</p></li>
+<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
+<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
+<li><p><strong>balanced</strong> (bool) - If True, do oversampling to make number of positive and negative samples equal.</p></li>
+<li><p><strong>oversample_num</strong> (int) - control the oversample rate.</p></li>
+<li><p><strong>seed</strong> (int) - random seed in oversample.</p></li>
+</ul>
+<p>name of function: <strong>load_broad_repurposing_hub</strong> load repurposing dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_broad_repurposing_hub</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">):</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save repurposing dataset file. Example: “./data”.</p></li>
+</ul>
+<p>name of function: <strong>load_antiviral_drugs</strong> load antiviral drugs dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_antiviral_drugs</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">no_cid</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>path</strong> (str, a directory) - the path that save antiviral drugs dataset file. Example: “./data”.</p></li>
+<li><p><strong>no_cid</strong> (bool) - If False, including “Pubchem CID”.</p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeepPurpose</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">How to run</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Processing Data</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="encoder.html" title="previous chapter">Drug/Target Encoder</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Kexin Huang, Tianfan Fu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notes/process_data.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
