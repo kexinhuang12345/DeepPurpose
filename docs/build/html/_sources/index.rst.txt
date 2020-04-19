@@ -17,7 +17,7 @@ The Github repository is located `here <https://github.com/kexinhuang12345/DeepP
    :caption: Background 
 
    notes/introduction
-   
+   notes/DTI 
 
 
 .. toctree::
@@ -27,7 +27,8 @@ The Github repository is located `here <https://github.com/kexinhuang12345/DeepP
 
    notes/download 
    notes/installation
-
+   notes/learning
+   notes/inference
 
 .. toctree::
    :glob:
