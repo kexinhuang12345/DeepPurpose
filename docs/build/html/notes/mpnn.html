@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Message Passing Neural Network (MPNN) &#8212; DeepPurpose 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CNN+RNN" href="cnnrnn.html" />
+    <link rel="prev" title="Transformer" href="transformer.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="message-passing-neural-network-mpnn">
+<h1>Message Passing Neural Network (MPNN)<a class="headerlink" href="#message-passing-neural-network-mpnn" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">MPNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://www.biorxiv.org/content/10.1101/684662v3">Message Passing Neural Network (MPNN)</a> encode drug in its graph representation.</p>
+<p><strong>constructor</strong> create MPNN class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mpnn_hidden_size</span><span class="p">,</span> <span class="n">mpnn_depth</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>mpnn_hidden_size</strong> (int) - specify dimension of hidden layer in MPNN, e.g,  mpnn_hidden_size = 256.</p></li>
+<li><p><strong>mpnn_depth</strong> (int) - specify depth of MPNN, e.g.,  mpnn_depth = 3.</p></li>
+</ul>
+<p><strong>Calling functions</strong> implement the feedforward procedure of MPNN.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>feature</strong> (tuple of length 5)</dt><dd><ul>
+<li><p><strong>todo</strong></p></li>
+<li></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeepPurpose</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Feature of DeepPurpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DTI.html">What is Drug Target Interaction?</a></li>
+</ul>
+<p class="caption"><span class="caption-text">How to run</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_data.html">Processing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility_function.html">Utility Function</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="encoder.html">Drug/Target Encoder</a><ul>
+      <li>Previous: <a href="transformer.html" title="previous chapter">Transformer</a></li>
+      <li>Next: <a href="cnnrnn.html" title="next chapter">CNN+RNN</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Kexin Huang, Tianfan Fu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notes/mpnn.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
