@@ -14,7 +14,7 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Processing Data" href="process_data.html" />
+    <link rel="next" title="Transformer" href="transformer.html" />
     <link rel="prev" title="Model" href="model.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -34,7 +34,8 @@
             
   <div class="section" id="drug-target-encoder">
 <h1>Drug/Target Encoder<a class="headerlink" href="#drug-target-encoder" title="Permalink to this headline">¶</a></h1>
-<p>Drug encoding</p>
+<div class="section" id="drug-encoding">
+<h2>Drug encoding<a class="headerlink" href="#drug-encoding" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30%" />
@@ -72,7 +73,9 @@
 </tr>
 </tbody>
 </table>
-<p>Target encoding</p>
+</div>
+<div class="section" id="target-encoding">
+<h2>Target encoding<a class="headerlink" href="#target-encoding" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 28%" />
@@ -107,150 +110,60 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
+</div>
+<div class="section" id="encoder-model">
+<h2>Encoder Model<a class="headerlink" href="#encoder-model" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 77%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Encoder Model</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CNN</p></td>
+<td><p>Convolutional Neural Network on SMILES</p></td>
+</tr>
+<tr class="row-odd"><td><p>CNN_RNN</p></td>
+<td><p>A GRU/LSTM on top of a CNN on SMILES</p></td>
+</tr>
+<tr class="row-even"><td><p>Transformer</p></td>
+<td><p>Transformer Encoder on SMILES</p></td>
+</tr>
+<tr class="row-odd"><td><p>MPNN</p></td>
+<td><p>Message Passing Neural Network on Molecular Graph</p></td>
+</tr>
+<tr class="row-even"><td><p>MLP</p></td>
+<td><p>MultiLayer Perceptron on fix-dim feature vector</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="technical-details">
+<h2>Technical Details<a class="headerlink" href="#technical-details" title="Permalink to this headline">¶</a></h2>
+<p>First, we describe the common modules we import in DeepPurpose.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 </pre></div>
 </div>
-<p><a class="reference external" href="https://arxiv.org/pdf/1908.06760.pdf">Transformer</a> can be used to encode both drug and protein on <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a>.</p>
-<p>name of function: <strong>constructor</strong> create Transformer.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>encoding</strong> (string, “drug” or “protein”) - specify input type of the model, “drug” or “protein”.</p></li>
-<li><dl class="simple">
-<dt><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of transformer. The keys include</dt><dd><ul>
-<li><p>transformer_dropout_rate (float) - dropout rate of transformer.</p></li>
-<li><p>input_dim_drug (int) - input dimension when encoding drug.</p></li>
-<li><p>transformer_emb_size_drug (int) - dimension of embedding in input layer when encoding drug.</p></li>
-<li><p>transformer_n_layer_drug (int) - number of layers in transformer when encoding drug.</p></li>
-<li><p><strong>todo</strong></p></li>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Links of details of various encoders</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mpnn.html">Message Passing Neural Network (MPNN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnnrnn.html">CNN+RNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn.html">CNN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlp.html">MLP</a></li>
 </ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of MPNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
 </div>
-<ul class="simple">
-<li><p><strong>v</strong> (tuple of length 2) - input feature of transformer. v[0] (np.array) is index of atoms. v[1] (np.array) is the corresponding mask.</p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">CNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
 </div>
-<p><a class="reference external" href="https://en.wikipedia.org/wiki/Convolutional_neural_network">CNN (Convolutional Neural Network)</a> can be used to encode both drug and protein on <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a>.</p>
-<p><strong>constructor</strong> create CNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>encoding</strong> (string, “drug” or “protein”) - specify input type of model, “drug” or “protein”.</p></li>
-<li><dl class="simple">
-<dt><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of CNN. The keys include</dt><dd><ul>
-<li><p>cnn_drug_filters (list, each element is int) - specify the size of filter when encoding drug, e.g., cnn_drug_filters = [32,64,96].</p></li>
-<li><p>cnn_drug_kernels (list, each element is int) - specify the size of kernel when encoding drug, e.g., cnn_drug_kernels = [4,6,8].</p></li>
-<li><p>hidden_dim_drug (int) - specify the hidden dimension when encoding drug, e.g., hidden_dim_drug = 256.</p></li>
-<li><p>cnn_target_filters (list, each element is int) - specify the size of filter when encoding protein, e.g, cnn_target_filters = [32,64,96].</p></li>
-<li><p>cnn_target_kernels (list, each element is int) - specify the size of kernel when encoding protein, e.g, cnn_target_kernels = [4,8,12].</p></li>
-<li><p>hidden_dim_protein (int) - specify the hidden dimension when encoding protein, e.g., hidden_dim_protein = 256.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of CNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v</strong> (torch.Tensor) - input feature of CNN.</p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">CNN_RNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>CNN_RNN means a GRU/LSTM on top of a CNN on <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILES</a>.</p>
-<p><strong>constructor</strong> create CNN_RNN</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>encoding</strong> (string, “drug” or “protein”) - specify input type, “drug” or “protein”.</p></li>
-<li><dl class="simple">
-<dt><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of transformer. The keys include</dt><dd><ul>
-<li><p>cnn_drug_filters (list, each element is int) - specify the size of filter when encoding drug, e.g., cnn_drug_filters = [32,64,96].</p></li>
-<li><p>cnn_drug_kernels (list, each element is int) - specify the size of kernel when encoding drug, e.g., cnn_drug_kernels = [4,6,8].</p></li>
-<li><p>rnn_drug_hid_dim (int) - specify the hidden dimension of RNN when encoding drug, e.g., rnn_drug_hid_dim = 64.</p></li>
-<li><p>rnn_drug_n_layers (int) - specify number of layer in RNN when encoding drug, .e.g, rnn_drug_n_layers = 2.</p></li>
-<li><p>rnn_drug_bidirectional (bool) - specify if RNN is bidirectional when encoding drug, .e.g, rnn_drug_bidirectional = True.</p></li>
-<li><p>hidden_dim_drug (int) - specify the hidden dimension when encoding drug, e.g., hidden_dim_drug = 256.</p></li>
-<li><p>cnn_target_filters (list, each element is int) - specify the size of filter when encoding protein, e.g, cnn_target_filters = [32,64,96].</p></li>
-<li><p>cnn_target_kernels (list, each element is int) - specify the size of kernel when encoding protein, e.g, cnn_target_kernels = [4,8,12].</p></li>
-<li><p>hidden_dim_protein (int) - specify the hidden dimension when encoding protein, e.g., hidden_dim_protein = 256.</p></li>
-<li><p>rnn_target_hid_dim (int) - specify hidden dimension of RNN when encoding protein, e.g., rnn_target_hid_dim = 64.</p></li>
-<li><p>rnn_target_n_layers (int) - specify the number of layer in RNN when encoding protein, e.g., rnn_target_n_layers = 2.</p></li>
-<li><p>rnn_target_bidirectional (bool) - specify if RNN is bidirectional when encoding protein, e.g., rnn_target_bidirectional = True</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of CNN_RNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v</strong> (torch.Tensor) - input feature of CNN_RNN.</p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Multi-Layer Perceptron</p>
-<p><strong>constructor</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>input_dim</strong> (int) - dimension of input feature.</p></li>
-<li><p><strong>hidden_dim</strong> (int) - dimension of hidden layer.</p></li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of MLP.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v</strong></p></li>
-</ul>
-<hr class="docutils" />
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">MPNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><a class="reference external" href="https://www.biorxiv.org/content/10.1101/684662v3">Message Passing Neural Network (MPNN)</a> encode drug in its graph representation.</p>
-<p><strong>constructor</strong> create MPNN class.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mpnn_hidden_size</span><span class="p">,</span> <span class="n">mpnn_depth</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>mpnn_hidden_size</strong> (int) - specify dimension of hidden layer in MPNN, e.g,  mpnn_hidden_size = 256.</p></li>
-<li><p><strong>mpnn_depth</strong> (int) - specify depth of MPNN, e.g.,  mpnn_depth = 3.</p></li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of MPNN.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><dl class="simple">
-<dt><strong>feature</strong> (tuple of length 5)</dt><dd><ul>
-<li><p><strong>todo</strong></p></li>
-<li></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
 </div>
 
 
@@ -279,6 +192,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
@@ -294,7 +208,7 @@
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="model.html" title="previous chapter">Model</a></li>
-      <li>Next: <a href="process_data.html" title="next chapter">Processing Data</a></li>
+      <li>Next: <a href="transformer.html" title="next chapter">Transformer</a></li>
   </ul></li>
 </ul>
 </div>
