@@ -34,6 +34,141 @@
             
   <div class="section" id="processing-data">
 <h1>Processing Data<a class="headerlink" href="#processing-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="drug-target-binding-benchmark-dataset">
+<h2>Drug-Target Binding Benchmark Dataset<a class="headerlink" href="#drug-target-binding-benchmark-dataset" title="Permalink to this headline">¶</a></h2>
+<p>We list public <strong>Drug-Target Binding Benchmark Dataset</strong>
+that is supported by DeepPurpose and
+corresponding downloading and processing function.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 88%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Dataset</p></th>
+<th class="head"><p>downloading and processing Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BindingDB</p></td>
+<td><p>download_BindingDB() to download the data and process_BindingDB() to process the data</p></td>
+</tr>
+<tr class="row-odd"><td><p>DAVIS</p></td>
+<td><p>load_process_DAVIS() to download and process the data</p></td>
+</tr>
+<tr class="row-even"><td><p>KIBA</p></td>
+<td><p>load_process_KIBA() to download and process the data</p></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p><strong>Download Link</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.bindingdb.org/bind/index.jsp">BindingDB</a></p></li>
+<li><p><a class="reference external" href="http://staff.cs.utu.fi/~aatapa/data/DrugTarget/">DAVIS</a></p></li>
+<li><p><a class="reference external" href="https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z">KIBA</a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="repurposing-dataset">
+<h2>Repurposing Dataset<a class="headerlink" href="#repurposing-dataset" title="Permalink to this headline">¶</a></h2>
+<p>We list public <strong>Repurposing Dataset</strong>
+that is supported by DeepPurpose and
+corresponding downloading and processing function.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Dataset</p></th>
+<th class="head"><p>downloading and processing Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Curated Antiviral Drugs Library</p></td>
+<td><p>load_antiviral_drugs() to load and process the data</p></td>
+</tr>
+<tr class="row-odd"><td><p>Broad Repurposing Hub</p></td>
+<td><p>load_broad_repurposing_hub() downloads and process the data</p></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p><strong>Download Link</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/List_of_antiviral_drugs">Curated Antiviral Drugs Library</a></p></li>
+<li><p><a class="reference external" href="https://www.broadinstitute.org/drug-repurposing-hub">Broad Repurposing Hub</a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="bioassay-data-for-covid-19">
+<h2>Bioassay Data for COVID-19<a class="headerlink" href="#bioassay-data-for-covid-19" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Dataset</p></th>
+<th class="head"><p>downloading and processing Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AID1706</p></td>
+<td><p>load_AID1706_SARS_CoV_3CL() to load and process</p></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p><strong>Download Link</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1706">AID1706</a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="covid-19-targets">
+<h2>COVID-19 Targets<a class="headerlink" href="#covid-19-targets" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 69%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Dataset</p></th>
+<th class="head"><p>downloading and processing Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SARS-CoV 3CL Protease</p></td>
+<td><p>load_SARS_CoV_Protease_3CL()</p></td>
+</tr>
+<tr class="row-odd"><td><p>SARS-CoV2 3CL Protease</p></td>
+<td><p>load_SARS_CoV2_Protease_3CL()</p></td>
+</tr>
+<tr class="row-even"><td><p>SARS_CoV2 RNA Polymerase</p></td>
+<td><p>load_SARS_CoV2_RNA_polymerase()</p></td>
+</tr>
+<tr class="row-odd"><td><p>SARS-CoV2 Helicase</p></td>
+<td><p>load_SARS_CoV2_Helicase()</p></td>
+</tr>
+<tr class="row-even"><td><p>SARS-CoV2 3to5_exonuclease</p></td>
+<td><p>load_SARS_CoV2_3to5_exonuclease()</p></td>
+</tr>
+<tr class="row-odd"><td><p>SARS-CoV2 endoRNAse</p></td>
+<td><p>load_SARS_CoV2_endoRNAse()</p></td>
+</tr>
+</tbody>
+</table>
 <p>name of function: <strong>read_file_training_dataset_bioassay</strong> load bioarray dataset, with one target sequence and multiple drugs and their interaction score with the target.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">read_file_training_dataset_bioassay</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
@@ -161,6 +296,7 @@ If the path doesn’t exist, create the folder.</p>
 <li><p><strong>no_cid</strong> (bool) - If False, including “Pubchem CID”.</p></li>
 </ul>
 </div>
+</div>
 
 
           </div>
@@ -181,12 +317,14 @@ If the path doesn’t exist, create the folder.</p>
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Background</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Feature of DeepPurpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DTI.html">What is Drug Target Interaction?</a></li>
 </ul>
 <p class="caption"><span class="caption-text">How to run</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">

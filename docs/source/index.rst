@@ -28,7 +28,6 @@ The Github repository is located `here <https://github.com/kexinhuang12345/DeepP
    notes/download 
    notes/installation
    notes/casestudy
-   notes/inference
 
 .. toctree::
    :glob:
