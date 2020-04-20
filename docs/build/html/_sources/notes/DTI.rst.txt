@@ -1,5 +1,5 @@
 What is Drug Target Interaction? 
-========================
+================================================
 
 
 Identifying Drug-Target Interactions (DTI) will greatly narrow down the scope of search of candidate medications, and thus can plays a pivotal role in drug discovery. 

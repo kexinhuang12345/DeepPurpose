@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Case Study &#8212; DeepPurpose 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Inference" href="inference.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="case-study">
+<h1>Case Study<a class="headerlink" href="#case-study" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><strong>1a. Antiviral Drugs Repurposing for SARS-CoV2 3CLPro, using One Line.</strong></p></li>
+</ul>
+<p>Given a new target sequence (e.g. SARS-CoV2 3CL Protease),
+retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs.
+The Binding Score is the Kd values.
+Results aggregated from five pretrained model on BindingDB dataset!</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">DeepPurpose</span> <span class="kn">import</span> <span class="n">oneliner</span>
+<span class="n">oneliner</span><span class="o">.</span><span class="n">repurpose</span><span class="p">(</span><span class="o">*</span><span class="n">load_SARS_CoV2_Protease_3CL</span><span class="p">(),</span> <span class="o">*</span><span class="n">load_antiviral_drugs</span><span class="p">())</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>1b. New Target Repurposing using Broad Drug Repurposing Hub, with One Line.</strong></p></li>
+</ul>
+<p>Given a new target sequence (e.g. MMP9),
+retrieve a list of repurposing drugs from Broad Drug Repurposing Hub,
+which is the default.
+Results also aggregated from five pretrained model!
+Note the drug name here is the Pubchem CID since some drug names in Broad is too long.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">DeepPurpose</span> <span class="kn">import</span> <span class="n">oneliner</span>
+<span class="n">oneliner</span><span class="o">.</span><span class="n">repurpose</span><span class="p">(</span><span class="o">*</span><span class="n">load_MMP9</span><span class="p">())</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>2. Repurposing using Customized training data, with One Line.</strong></p></li>
+</ul>
+<p>Given a new target sequence (e.g. SARS-CoV 3CL Pro),
+training on new data (AID1706 Bioassay),
+and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs).
+The model can be trained from scratch or finetuned from the pretraining checkpoint!</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">DeepPurpose</span> <span class="kn">import</span> <span class="n">oneliner</span>
+<span class="kn">from</span> <span class="nn">DeepPurpose.dataset</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">oneliner</span><span class="o">.</span><span class="n">repurpose</span><span class="p">(</span><span class="o">*</span><span class="n">load_SARS_CoV_Protease_3CL</span><span class="p">(),</span> <span class="o">*</span><span class="n">load_antiviral_drugs</span><span class="p">(</span><span class="n">no_cid</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>  <span class="o">*</span><span class="n">load_AID1706_SARS_CoV_3CL</span><span class="p">(),</span> \
+        <span class="n">split</span><span class="o">=</span><span class="s1">&#39;HTS&#39;</span><span class="p">,</span> <span class="n">convert_y</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">],</span> <span class="n">pretrained</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">agg</span> <span class="o">=</span> <span class="s1">&#39;max_effect&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><ol class="arabic simple" start="3">
+<li><p><strong>A Framework for Drug Target Interaction Prediction, with less than 10 lines of codes.</strong></p></li>
+</ol>
+</li>
+</ul>
+<p>Under the hood of one model from scratch, a flexible framework for method researchers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">DeepPurpose</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">DeepPurpose.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">DeepPurpose.dataset</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Load Data, an array of SMILES for drug,</span>
+<span class="c1"># an array of Amino Acid Sequence for Target</span>
+<span class="c1"># and an array of binding values/0-1 label.</span>
+<span class="c1"># e.g. [&#39;Cc1ccc(CNS(=O)(=O)c2ccc(s2)S(N)(=O)=O)cc1&#39;, ...],</span>
+<span class="c1">#      [&#39;MSHHWGYGKHNGPEHWHKDFPIAKGERQSPVDIDTH...&#39;, ...],</span>
+<span class="c1">#      [0.46, 0.49, ...]</span>
+<span class="c1"># In this example, BindingDB with Kd binding score is used.</span>
+<span class="n">X_drug</span><span class="p">,</span> <span class="n">X_target</span><span class="p">,</span> <span class="n">y</span>  <span class="o">=</span> <span class="n">process_BindingDB</span><span class="p">(</span><span class="n">download_BindingDB</span><span class="p">(</span><span class="n">SAVE_PATH</span><span class="p">),</span>
+                                         <span class="n">y</span> <span class="o">=</span> <span class="s1">&#39;Kd&#39;</span><span class="p">,</span>
+                                         <span class="n">binary</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">convert_to_log</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Type in the encoding names for drug/protein.</span>
+<span class="n">drug_encoding</span><span class="p">,</span> <span class="n">target_encoding</span> <span class="o">=</span> <span class="s1">&#39;MPNN&#39;</span><span class="p">,</span> <span class="s1">&#39;Transformer&#39;</span>
+
+<span class="c1"># Data processing, here we select cold protein split setup.</span>
+<span class="n">train</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">data_process</span><span class="p">(</span><span class="n">X_drug</span><span class="p">,</span> <span class="n">X_target</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                                <span class="n">drug_encoding</span><span class="p">,</span> <span class="n">target_encoding</span><span class="p">,</span>
+                                <span class="n">split_method</span><span class="o">=</span><span class="s1">&#39;cold_protein&#39;</span><span class="p">,</span>
+                                <span class="n">frac</span><span class="o">=</span><span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.2</span><span class="p">])</span>
+
+<span class="c1"># Generate new model using default parameters;</span>
+<span class="c1"># also allow model tuning via input parameters.</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">generate_config</span><span class="p">(</span><span class="n">drug_encoding</span><span class="p">,</span> <span class="n">target_encoding</span><span class="p">,</span> \
+                                                 <span class="n">transformer_n_layer_target</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">model_initialize</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
+
+<span class="c1"># Train the new model.</span>
+<span class="c1"># Detailed output including a tidy table storing</span>
+<span class="c1">#    validation loss, metrics, AUC curves figures and etc.</span>
+<span class="c1">#    are stored in the ./result folder.</span>
+<span class="n">net</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+
+<span class="c1"># or simply load pretrained model from a model directory path</span>
+<span class="c1">#   or reproduced model name such as DeepDTA</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">model_pretrained</span><span class="p">(</span><span class="n">MODEL_PATH_DIR</span> <span class="ow">or</span> <span class="n">MODEL_NAME</span><span class="p">)</span>
+
+<span class="c1"># Repurpose using the trained model or pre-trained model</span>
+<span class="c1"># In this example, loading repurposing dataset using</span>
+<span class="c1"># Broad Repurposing Hub and SARS-CoV 3CL Protease Target.</span>
+<span class="n">X_repurpose</span><span class="p">,</span> <span class="n">drug_name</span><span class="p">,</span> <span class="n">drug_cid</span> <span class="o">=</span> <span class="n">load_broad_repurposing_hub</span><span class="p">(</span><span class="n">SAVE_PATH</span><span class="p">)</span>
+<span class="n">target</span><span class="p">,</span> <span class="n">target_name</span> <span class="o">=</span> <span class="n">load_SARS_CoV_Protease_3CL</span><span class="p">()</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">repurpose</span><span class="p">(</span><span class="n">X_repurpose</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">drug_name</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)</span>
+
+<span class="c1"># Virtual screening using the trained model or pre-trained model</span>
+<span class="n">X_repurpose</span><span class="p">,</span> <span class="n">drug_name</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_name</span> <span class="o">=</span> \
+                <span class="p">[</span><span class="s1">&#39;CCCCCCCOc1cccc(c1)C([O-])=O&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;16007391&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> \
+                <span class="p">[</span><span class="s1">&#39;MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEEL...&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>\
+                <span class="p">[</span><span class="s1">&#39;P36896&#39;</span><span class="p">,</span> <span class="s1">&#39;P00374&#39;</span><span class="p">]</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">virtual_screening</span><span class="p">(</span><span class="n">X_repurpose</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">drug_name</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeepPurpose</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Feature of DeepPurpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DTI.html">What is Drug Target Interaction?</a></li>
+</ul>
+<p class="caption"><span class="caption-text">How to run</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="download.html">Download</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inference.html">Inference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_data.html">Processing Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility_function.html">Utility Function</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="installation.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="inference.html" title="next chapter">Inference</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Kexin Huang, Tianfan Fu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notes/casestudy.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
