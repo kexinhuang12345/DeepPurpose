@@ -77,6 +77,7 @@ COVID-19 Targets
 
 try
 
+
 .. toctree::
    :glob:
    :maxdepth: 1
