@@ -170,7 +170,7 @@ corresponding downloading and processing function.</p>
 </tbody>
 </table>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Details of data processing function</span></p>
+<p class="caption"><span class="caption-text">Technical Details of Function</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data/read_file_training_dataset_bioassay.html">read_file_training_dataset_bioassay</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data/read_file_training_dataset_drug_target_pairs.html">read_file_training_dataset_drug_target_pairs</a></li>
@@ -181,42 +181,12 @@ corresponding downloading and processing function.</p>
 <li class="toctree-l1"><a class="reference internal" href="data/process_BindingDB.html">process_BindingDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data/load_process_DAVIS.html">load_process_DAVIS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data/load_process_KIBA.html">load_process_KIBA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data/load_AID1706_txt_file.html">load_AID1706_txt_file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data/load_AID1706_SARS_CoV_3CL.html">load_AID1706_SARS_CoV_3CL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data/load_antiviral_drugs.html">load_antiviral_drugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data/load_broad_repurposing_hub.html">load_broad_repurposing_hub</a></li>
 </ul>
 </div>
-<p>name of function: <strong>load_AID1706_txt_file</strong> load KIBA dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_AID1706_txt_file</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save AID1706 dataset file. Example: “./data”.</p></li>
-</ul>
-<p>name of function: <strong>load_AID1706_SARS_CoV_3CL</strong> load AID1706_SARS_CoV_3CL dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_AID1706_SARS_CoV_3CL</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">balanced</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">oversample_num</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save AID1706_SARS_CoV_3CL dataset file. Example: “./data”.</p></li>
-<li><p><strong>binary</strong> (bool) - If binary is True, formulate prediction task as a binary classification task. Otherwise, formulate the prediction task as a regression task.</p></li>
-<li><p><strong>threshold</strong> (float) - The threshold that select target score ??</p></li>
-<li><p><strong>balanced</strong> (bool) - If True, do oversampling to make number of positive and negative samples equal.</p></li>
-<li><p><strong>oversample_num</strong> (int) - control the oversample rate.</p></li>
-<li><p><strong>seed</strong> (int) - random seed in oversample.</p></li>
-</ul>
-<p>name of function: <strong>load_broad_repurposing_hub</strong> load repurposing dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_broad_repurposing_hub</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">):</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save repurposing dataset file. Example: “./data”.</p></li>
-</ul>
-<p>name of function: <strong>load_antiviral_drugs</strong> load antiviral drugs dataset.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load_antiviral_drugs</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./data&#39;</span><span class="p">,</span> <span class="n">no_cid</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>path</strong> (str, a directory) - the path that save antiviral drugs dataset file. Example: “./data”.</p></li>
-<li><p><strong>no_cid</strong> (bool) - If False, including “Pubchem CID”.</p></li>
-</ul>
 </div>
 </div>
 
