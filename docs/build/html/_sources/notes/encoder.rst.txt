@@ -83,11 +83,11 @@ First, we describe the common modules we import in DeepPurpose.
    :maxdepth: 1
    :caption: Links of details of various encoders 
 
-   transformer
-   mpnn
-   cnnrnn
-   cnn 
-   mlp 
+   encoders/transformer
+   encoders/mpnn
+   encoders/cnnrnn
+   encoders/cnn 
+   encoders/mlp 
 
 
 
