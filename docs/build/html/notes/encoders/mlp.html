@@ -37,8 +37,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Multi-Layer Perceptron</p>
-<p><strong>constructor</strong></p>
+<p>Multi-Layer Perceptron (MLP) is a class of feedforward artificial neural network.
+An MLP consists of at least three layers of nodes: an input layer, a hidden layer and an output layer.</p>
+<p><strong>constructor</strong> create  an instance of MLP</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -51,7 +52,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p><strong>v</strong></p></li>
+<li><p><strong>v</strong> (torch.Tensor) - input feature of MLP.</p></li>
 </ul>
 </div>
 

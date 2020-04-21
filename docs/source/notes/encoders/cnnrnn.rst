@@ -9,7 +9,7 @@ CNN_RNN means a GRU/LSTM on top of a CNN on `SMILES <https://en.wikipedia.org/wi
 
 
 
-**constructor** create CNN_RNN
+**constructor** create  an instance of CNN_RNN
 
 .. code-block:: python
 

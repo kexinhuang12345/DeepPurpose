@@ -12,7 +12,7 @@ CNN
  
 
 
-**constructor** create CNN. 
+**constructor** create an instance of CNN. 
 
 .. code-block:: python
 

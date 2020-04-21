@@ -7,9 +7,10 @@ MLP
 	class DeepPurpose.models.MLP(nn.Sequential)
 
 
-Multi-Layer Perceptron
+Multi-Layer Perceptron (MLP) is a class of feedforward artificial neural network. 
+An MLP consists of at least three layers of nodes: an input layer, a hidden layer and an output layer. 
 
-**constructor**
+**constructor** create  an instance of MLP
 
 .. code-block:: python
 
@@ -26,7 +27,7 @@ Multi-Layer Perceptron
 
 	forward(self, v)
 
-* **v**
+* **v** (torch.Tensor) - input feature of MLP. 
 
 
 
