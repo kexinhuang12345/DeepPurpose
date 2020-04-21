@@ -199,7 +199,7 @@ Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook int
 
 [Video tutorial](https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
 
-We recommend to install it locally since Binder needs to install environment every time launching:
+We recommend to install it locally since Binder needs to be refreshed every time launching:
 
 <details>
   <summary>Click here for the code!</summary>
@@ -267,12 +267,12 @@ and more in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/maste
 
 ## Cite Us
 
-Please cite [arxiv]() for now:
+Please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
 ```
 @article{deeppurpose,
   title={DeepPurpose: a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit},
   author={Huang, Kexin and Fu, Tianfan and Xiao, Cao and Glass, Lucas and Sun, Jimeng},
-  journal={},
+  journal={arXiv preprint arXiv:2004.08919},
   year={2020}
 }
 
