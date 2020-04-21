@@ -270,7 +270,7 @@ and more in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/maste
 Please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
 ```
 @article{deeppurpose,
-  title={DeepPurpose: a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit},
+  title={DeepPurpose: a Deep Learning Based Drug Repurposing Toolkit},
   author={Huang, Kexin and Fu, Tianfan and Xiao, Cao and Glass, Lucas and Sun, Jimeng},
   journal={arXiv preprint arXiv:2004.08919},
   year={2020}
@@ -448,7 +448,7 @@ Model name consists of first the drug encoding, then the target encoding and the
 </details>
 
 ## Documentations
-More detailed documentations are coming soon.
+https://deeppurpose.readthedocs.io is under active development.
 
 ## Disclaimer
 The output list should be inspected manually by experts before proceeding to the wet-lab validation, and our work is still in active developement with limitations, please do not directly use the drugs.
