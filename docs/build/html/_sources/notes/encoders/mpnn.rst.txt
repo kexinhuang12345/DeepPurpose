@@ -12,7 +12,7 @@ Message Passing Neural Network (MPNN)
 `Message Passing Neural Network (MPNN) <https://www.biorxiv.org/content/10.1101/684662v3>`_ encode drug in its graph representation. 
 
 
-**constructor** create MPNN class. 
+**constructor** create an instance of MPNN class. 
 
 .. code-block:: python
 
@@ -32,8 +32,11 @@ Message Passing Neural Network (MPNN)
 	forward(self, feature)
 
 * **feature** (tuple of length 5)
-	* **todo**  
-	* 
+	* feature[0] (torch.Tensor) - atom-level feature  
+	* feature[1] (torch.Tensor) - bond-level feature 
+	* feature[2] (torch.Tensor) - neighbor information of every atom
+	* feature[3] (torch.Tensor) - neighbor information of every bond 
+	* feature[4] (torch.Tensor) - store number of atoms and bonds for each molecule in a batch 
 
 
 

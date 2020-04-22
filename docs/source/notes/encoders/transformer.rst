@@ -8,7 +8,7 @@ Transformer
 
 `Transformer <https://arxiv.org/pdf/1908.06760.pdf>`_ can be used to encode both drug and protein on `SMILES <https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system>`_. 
 
-name of function: **constructor** create Transformer. 
+**constructor** create an instance of Transformer. 
 
 .. code-block:: python
 

@@ -38,7 +38,7 @@
 </pre></div>
 </div>
 <p><a class="reference external" href="https://www.biorxiv.org/content/10.1101/684662v3">Message Passing Neural Network (MPNN)</a> encode drug in its graph representation.</p>
-<p><strong>constructor</strong> create MPNN class.</p>
+<p><strong>constructor</strong> create an instance of MPNN class.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mpnn_hidden_size</span><span class="p">,</span> <span class="n">mpnn_depth</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -53,8 +53,11 @@
 <ul class="simple">
 <li><dl class="simple">
 <dt><strong>feature</strong> (tuple of length 5)</dt><dd><ul>
-<li><p><strong>todo</strong></p></li>
-<li></li>
+<li><p>feature[0] (torch.Tensor) - atom-level feature</p></li>
+<li><p>feature[1] (torch.Tensor) - bond-level feature</p></li>
+<li><p>feature[2] (torch.Tensor) - neighbor information of every atom</p></li>
+<li><p>feature[3] (torch.Tensor) - neighbor information of every bond</p></li>
+<li><p>feature[4] (torch.Tensor) - store number of atoms and bonds for each molecule in a batch</p></li>
 </ul>
 </dd>
 </dl>
