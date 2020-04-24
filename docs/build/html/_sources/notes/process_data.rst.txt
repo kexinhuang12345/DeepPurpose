@@ -25,6 +25,23 @@ corresponding downloading and processing function.
 	* `KIBA <https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z>`_
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Repurposing Dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -45,6 +62,27 @@ corresponding downloading and processing function.
 	* `Curated Antiviral Drugs Library <https://en.wikipedia.org/wiki/List_of_antiviral_drugs>`_ 
 	* `Broad Repurposing Hub <https://www.broadinstitute.org/drug-repurposing-hub>`_
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Bioassay Data for COVID-19
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -60,6 +98,24 @@ Bioassay Data for COVID-19
 
 	* `AID1706 <https://pubchem.ncbi.nlm.nih.gov/bioassay/1706>`_ 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 COVID-19 Targets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -73,6 +129,12 @@ COVID-19 Targets
   SARS-CoV2 3to5_exonuclease	      load_SARS_CoV2_3to5_exonuclease()
   SARS-CoV2 endoRNAse	               load_SARS_CoV2_endoRNAse()
 ===============================   =====================================================================
+
+
+
+
+
+
 
 
 
