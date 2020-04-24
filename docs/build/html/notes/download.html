@@ -45,12 +45,22 @@ $ <span class="c1">### Change directory to DeepPurpose</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="install">
-<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="first-time-usage-setup-conda-environment">
+<h2>First time usage: setup conda environment<a class="headerlink" href="#first-time-usage-setup-conda-environment" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda env create -f env.yml
 $ <span class="c1">## Build virtual environment with all packages installed using conda</span>
 $
 $ conda activate DeepPurpose
+$ <span class="c1">##  Activate conda environment</span>
+$
+$
+$ conda deactivate <span class="c1">### exit</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="second-time-and-later">
+<h2>Second time and later<a class="headerlink" href="#second-time-and-later" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda activate DeepPurpose
 $ <span class="c1">##  Activate conda environment</span>
 $
 $
@@ -88,6 +98,15 @@ $ conda deactivate <span class="c1">### exit</span>
 <li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="models.html">DeepPurpose.models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html">DeepPurpose.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chemutils.html">DeepPurpose.chemutils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oneliner.html">DeepPurpose.oneliner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_helper.html">DeepPurpose.model_helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">DeepPurpose.utils</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Importance Function</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="model.html">Drug Target Binding Affinity (DTBA) Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>

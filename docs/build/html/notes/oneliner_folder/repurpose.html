@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Classifier &#8212; DeepPurpose 0.0.1 documentation</title>
+    <title>DeepPurpose.oneliner.repurpose &#8212; DeepPurpose 0.0.1 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -14,8 +14,8 @@
     <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Drug Target Binding Affinity (DTBA) Model" href="dbta.html" />
-    <link rel="prev" title="DeepPurpose.models" href="../models.html" />
+    <link rel="next" title="DeepPurpose.oneliner.virtual_screening" href="virtual_screening.html" />
+    <link rel="prev" title="DeepPurpose.oneliner" href="../oneliner.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -32,29 +32,29 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="classifier">
-<h1>Classifier<a class="headerlink" href="#classifier" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Classifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
+  <div class="section" id="deeppurpose-oneliner-repurpose">
+<h1>DeepPurpose.oneliner.repurpose<a class="headerlink" href="#deeppurpose-oneliner-repurpose" title="Permalink to this headline">¶</a></h1>
+<p>text:todo</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">repurpose</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">target_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">X_repurpose</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">drug_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">train_drug</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">train_target</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">train_y</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">save_dir</span> <span class="o">=</span> <span class="s1">&#39;./save_folder&#39;</span><span class="p">,</span>
+                        <span class="n">pretrained_dir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">finetune_epochs</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                        <span class="n">finetune_LR</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+                        <span class="n">finetune_batch_size</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+                        <span class="n">convert_y</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">subsample_frac</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">pretrained</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">split</span> <span class="o">=</span> <span class="s1">&#39;random&#39;</span><span class="p">,</span>
+                        <span class="n">frac</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.2</span><span class="p">],</span>
+                        <span class="n">agg</span> <span class="o">=</span> <span class="s1">&#39;agg_mean_max&#39;</span><span class="p">,</span>
+                        <span class="n">output_len</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
 </pre></div>
 </div>
-<p>Classifier (<a class="reference external" href="https://github.com/kexinhuang12345/DeepPurpose/blob/master/DeepPurpose/models.py#L318">Source Code</a>) is to make the prediction for DBTA, it serve as a basic component of class DBTA.</p>
-<p><strong>constructor</strong> create an instance of Classifier.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_drug</span><span class="p">,</span> <span class="n">model_protein</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>model_drug</strong> (DeepPurpose.models.XX) - Encoder model for drug. XX can be “transformer”, “MPNN”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>model_protein</strong> (DeepPurpose.models.XX) - Encoder model for protein. XX can be “transformer”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of classifier.</p></li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of Classifier.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v_D</span><span class="p">,</span> <span class="n">v_P</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v_D</strong> (many types) - input feature for drug encoder model, like “DeepPurpose.models.transformer”, “DeepPurpose.models.CNN”, “DeepPurpose.models.CNN_RNN”, “DeepPurpose.models.MPNN”.</p></li>
-<li><p><strong>v_P</strong> (many types) - input feature for protein encoder model, like “DeepPurpose.models.transformer”, “DeepPurpose.models.CNN”, “DeepPurpose.models.CNN_RNN”.</p></li>
-</ul>
 </div>
 
 
@@ -86,10 +86,10 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../models.html">DeepPurpose.models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">DeepPurpose.models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataset.html">DeepPurpose.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chemutils.html">DeepPurpose.chemutils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../oneliner.html">DeepPurpose.oneliner</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../oneliner.html">DeepPurpose.oneliner</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model_helper.html">DeepPurpose.model_helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">DeepPurpose.utils</a></li>
 </ul>
@@ -106,9 +106,9 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../models.html">DeepPurpose.models</a><ul>
-      <li>Previous: <a href="../models.html" title="previous chapter">DeepPurpose.models</a></li>
-      <li>Next: <a href="dbta.html" title="next chapter">Drug Target Binding Affinity (DTBA) Model</a></li>
+  <li><a href="../oneliner.html">DeepPurpose.oneliner</a><ul>
+      <li>Previous: <a href="../oneliner.html" title="previous chapter">DeepPurpose.oneliner</a></li>
+      <li>Next: <a href="virtual_screening.html" title="next chapter">DeepPurpose.oneliner.virtual_screening</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -143,7 +143,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../_sources/notes/dtba/classifier.rst.txt"
+      <a href="../../_sources/notes/oneliner_folder/repurpose.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

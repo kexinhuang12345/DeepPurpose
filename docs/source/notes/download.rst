@@ -16,7 +16,7 @@ Download Code
    $ ### Change directory to DeepPurpose 
 
 
-Install
+First time usage: setup conda environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
@@ -29,5 +29,19 @@ Install
    $
    $
    $ conda deactivate ### exit
+
+
+
+Second time and later
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+   $ conda activate DeepPurpose
+   $ ##  Activate conda environment
+   $
+   $
+   $ conda deactivate ### exit
+
 
 

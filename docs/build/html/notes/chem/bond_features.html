@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Classifier &#8212; DeepPurpose 0.0.1 documentation</title>
+    <title>DeepPurpose.chemutils.bond_features &#8212; DeepPurpose 0.0.1 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -14,8 +14,8 @@
     <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Drug Target Binding Affinity (DTBA) Model" href="dbta.html" />
-    <link rel="prev" title="DeepPurpose.models" href="../models.html" />
+    <link rel="next" title="DeepPurpose.oneliner" href="../oneliner.html" />
+    <link rel="prev" title="DeepPurpose.chemutils.atom_features" href="atom_features.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -32,29 +32,17 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="classifier">
-<h1>Classifier<a class="headerlink" href="#classifier" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DeepPurpose</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Classifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">)</span>
+  <div class="section" id="deeppurpose-chemutils-bond-features">
+<h1>DeepPurpose.chemutils.bond_features<a class="headerlink" href="#deeppurpose-chemutils-bond-features" title="Permalink to this headline">¶</a></h1>
+<p>Given a bond in molecular graph, return its feature based on the bond itself, its connection information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">bond_features</span><span class="p">(</span><span class="n">bond</span><span class="p">):</span>
+    <span class="n">bt</span> <span class="o">=</span> <span class="n">bond</span><span class="o">.</span><span class="n">GetBondType</span><span class="p">()</span>
+    <span class="n">stereo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">GetStereo</span><span class="p">())</span>
+    <span class="n">fbond</span> <span class="o">=</span> <span class="p">[</span><span class="n">bt</span> <span class="o">==</span> <span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">SINGLE</span><span class="p">,</span> <span class="n">bt</span> <span class="o">==</span> <span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">,</span> <span class="n">bt</span> <span class="o">==</span> <span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">TRIPLE</span><span class="p">,</span> <span class="n">bt</span> <span class="o">==</span> <span class="n">Chem</span><span class="o">.</span><span class="n">rdchem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">AROMATIC</span><span class="p">,</span> <span class="n">bond</span><span class="o">.</span><span class="n">IsInRing</span><span class="p">()]</span>
+    <span class="n">fstereo</span> <span class="o">=</span> <span class="n">onek_encoding_unk</span><span class="p">(</span><span class="n">stereo</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">fbond</span> <span class="o">+</span> <span class="n">fstereo</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Classifier (<a class="reference external" href="https://github.com/kexinhuang12345/DeepPurpose/blob/master/DeepPurpose/models.py#L318">Source Code</a>) is to make the prediction for DBTA, it serve as a basic component of class DBTA.</p>
-<p><strong>constructor</strong> create an instance of Classifier.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_drug</span><span class="p">,</span> <span class="n">model_protein</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>model_drug</strong> (DeepPurpose.models.XX) - Encoder model for drug. XX can be “transformer”, “MPNN”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>model_protein</strong> (DeepPurpose.models.XX) - Encoder model for protein. XX can be “transformer”, “CNN”, “CNN_RNN” …,</p></li>
-<li><p><strong>config</strong> (kwargs, keyword arguments) - specify the parameter of classifier.</p></li>
-</ul>
-<p><strong>Calling functions</strong> implement the feedforward procedure of Classifier.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v_D</span><span class="p">,</span> <span class="n">v_P</span><span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p><strong>v_D</strong> (many types) - input feature for drug encoder model, like “DeepPurpose.models.transformer”, “DeepPurpose.models.CNN”, “DeepPurpose.models.CNN_RNN”, “DeepPurpose.models.MPNN”.</p></li>
-<li><p><strong>v_P</strong> (many types) - input feature for protein encoder model, like “DeepPurpose.models.transformer”, “DeepPurpose.models.CNN”, “DeepPurpose.models.CNN_RNN”.</p></li>
-</ul>
 </div>
 
 
@@ -86,9 +74,9 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../models.html">DeepPurpose.models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">DeepPurpose.models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dataset.html">DeepPurpose.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chemutils.html">DeepPurpose.chemutils</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../chemutils.html">DeepPurpose.chemutils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../oneliner.html">DeepPurpose.oneliner</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model_helper.html">DeepPurpose.model_helper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">DeepPurpose.utils</a></li>
@@ -106,9 +94,9 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../models.html">DeepPurpose.models</a><ul>
-      <li>Previous: <a href="../models.html" title="previous chapter">DeepPurpose.models</a></li>
-      <li>Next: <a href="dbta.html" title="next chapter">Drug Target Binding Affinity (DTBA) Model</a></li>
+  <li><a href="../chemutils.html">DeepPurpose.chemutils</a><ul>
+      <li>Previous: <a href="atom_features.html" title="previous chapter">DeepPurpose.chemutils.atom_features</a></li>
+      <li>Next: <a href="../oneliner.html" title="next chapter">DeepPurpose.oneliner</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -143,7 +131,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../_sources/notes/dtba/classifier.rst.txt"
+      <a href="../../_sources/notes/chem/bond_features.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

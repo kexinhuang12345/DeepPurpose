@@ -10,7 +10,9 @@ Classifier
 
 	class DeepPurpose.models.Classifier(nn.Sequential)
 
-Classifier is make the prediction for DBTA, it serve as a basic component of class DBTA. 
+
+
+Classifier (`Source Code <https://github.com/kexinhuang12345/DeepPurpose/blob/master/DeepPurpose/models.py#L318>`_) is to make the prediction for DBTA, it serve as a basic component of class DBTA. 
 
 
 **constructor** create an instance of Classifier.
