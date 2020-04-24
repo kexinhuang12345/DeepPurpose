@@ -1,6 +1,7 @@
 Processing Data
 ======================================================================================================
 
+We have downloaded most of the small dataset in the repository. 
 
 Drug-Target Binding Benchmark Dataset
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

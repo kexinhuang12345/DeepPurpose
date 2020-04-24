@@ -1,6 +1,10 @@
 DeepPurpose.dataset
 ================================================
 
+We have downloaded most of the small dataset in the repository. 
+
+
+
 .. toctree::
    :glob:
    :maxdepth: 1
