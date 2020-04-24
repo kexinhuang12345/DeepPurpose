@@ -1,0 +1,111 @@
+/* 
+Taken (with many modifications) from  https://github.com/pytorch/pytorch/blob/master/docs/source/_static/css/pytorch_theme.css
+*/
+body {
+    font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .rst-content .toctree-wrapper p.caption, legend, p.caption {
+    font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+}
+
+footer {
+    font-size: 80%;
+}
+
+footer .rst-footer-buttons {
+    font-size: 125%;
+}
+
+footer p {
+    font-size: 100%;
+}
+
+.wy-side-nav-search {
+    background-color: #EDF0F2;
+    /*background-color: #FFFFFF;*/
+}
+
+.wy-nav-content-wrap, .wy-menu li.current > a {
+    background-color: #FFFFFF;
+}
+
+@media screen and (min-width: 1400px) {
+    .wy-nav-content-wrap {
+        background-color: rgba(0, 0, 0, 0.0470588);
+    }
+
+    .wy-nav-content {
+        background-color: #FFFFFF;
+    }
+}
+
+.wy-nav-top {
+    background-color: #FFFFFF;
+    background-image: url('logo_deeppurpose_horizontal.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 0;
+    margin: 0.4045em 0.809em;
+    color: #000000;
+}
+
+.wy-nav-top > a {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    .wy-side-nav-search>a img.logo {
+        height: 60px;
+    }
+}
+
+.wy-side-nav-search a {
+    display: block;
+}
+
+.rst-content dl:not(.docutils) dt {
+    display: table;
+}
+
+/* Change link colors in the body and literal colors.*/
+.rst-content tt.literal, .rst-content tt.literal, .rst-content code.literal {
+    color: #F05732;
+}
+
+.rst-content tt.xref, a .rst-content tt, .rst-content tt.xref, .rst-content code.xref, a .rst-content tt, a .rst-content code {
+    color: #7D6E5A;
+}
+
+a {
+    color: #F05732;
+}
+
+a:hover {
+    color: #F05732;
+}
+
+a:visited {
+    color: #A53D24;
+  /*  color: #BE8607;*/
+}
+
+.wy-menu a {
+    color: #B3B3B3;
+}
+
+.wy-menu a:hover {
+    color: #B3B3B3;
+}
+
+.rst-content .hidden-section {
+    display: none;
+}
+
+nav .hidden-section {
+    display: inherit;
+}
+
+.wy-side-nav-search>div.version {
+    color: #000000;
+}

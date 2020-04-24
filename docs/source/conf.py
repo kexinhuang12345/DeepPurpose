@@ -16,6 +16,8 @@
 
 
 # -- Project information -----------------------------------------------------
+import sphinx_rtd_theme
+
 
 project = 'DeepPurpose'
 copyright = '2020, Kexin Huang, Tianfan Fu'
@@ -53,9 +55,57 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'alabaster' ## origin 
+html_theme = 'sphinx_rtd_theme'
+
+
+# The theme to use for HTML and HTML Help pages.  See the     documentation for
+# a list of builtin themes.
+
+html_theme_options = {
+   'collapse_navigation': False,
+   'display_version': True,
+   'logo_only': False,
+}
+
+
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_logo = '../build/html/_images/logo_deeppurpose_horizontal.png'
+
+
+
+html_context = {
+    'css_files': [
+  	   'https://fonts.googleapis.com/css?family=Raleway',
+       '../build/html/_static/css/deeppurpose_docs_theme.css'
+    ],
+}
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
