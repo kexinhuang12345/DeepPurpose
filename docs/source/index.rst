@@ -26,7 +26,6 @@ The Github repository is located `here <https://github.com/kexinhuang12345/DeepP
    :caption: How to run
 
    notes/download 
-   notes/installation
    notes/casestudy
 
 .. toctree::

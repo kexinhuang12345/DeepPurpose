@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Download &#8212; DeepPurpose 0.0.1 documentation</title>
+    <title>Download Code &amp; Install &#8212; DeepPurpose 0.0.1 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -14,8 +14,8 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installation" href="installation.html" />
-    <link rel="prev" title="What is Drug Target Interaction?" href="DTI.html" />
+    <link rel="next" title="Case Study" href="casestudy.html" />
+    <link rel="prev" title="What is drug repurposing, virtual screening and drug-target interaction prediction?" href="DTI.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -32,8 +32,10 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="download">
-<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="download-code-install">
+<h1>Download Code &amp; Install<a class="headerlink" href="#download-code-install" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="download-code">
+<h2>Download Code<a class="headerlink" href="#download-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:kexinhuang12345/DeepPurpose.git
 $ <span class="c1">###  Download code repository</span>
 $
@@ -41,6 +43,20 @@ $
 $ <span class="nb">cd</span> DeepPurpose
 $ <span class="c1">### Change directory to DeepPurpose</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda env create -f env.yml
+$ <span class="c1">## Build virtual environment with all packages installed using conda</span>
+$
+$ conda activate DeepPurpose
+$ <span class="c1">##  Activate conda environment</span>
+$
+$
+$ conda deactivate <span class="c1">### exit</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -63,18 +79,17 @@ $ <span class="c1">### Change directory to DeepPurpose</span>
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Background</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Feature of DeepPurpose</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DTI.html">What is Drug Target Interaction?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Features of DeepPurpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DTI.html">What is drug repurposing, virtual screening and drug-target interaction prediction?</a></li>
 </ul>
 <p class="caption"><span class="caption-text">How to run</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Download</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Download Code &amp; Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="casestudy.html">Case Study</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Drug Target Binding Affinity (DTBA) Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_data.html">Processing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -85,8 +100,8 @@ $ <span class="c1">### Change directory to DeepPurpose</span>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="DTI.html" title="previous chapter">What is Drug Target Interaction?</a></li>
-      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
+      <li>Previous: <a href="DTI.html" title="previous chapter">What is drug repurposing, virtual screening and drug-target interaction prediction?</a></li>
+      <li>Next: <a href="casestudy.html" title="next chapter">Case Study</a></li>
   </ul></li>
 </ul>
 </div>

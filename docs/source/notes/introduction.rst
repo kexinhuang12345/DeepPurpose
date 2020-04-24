@@ -1,4 +1,4 @@
-Feature of DeepPurpose
+Features of DeepPurpose
 =====================================
 
 DeepPurpose is a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). 

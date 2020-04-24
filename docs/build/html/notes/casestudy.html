@@ -14,7 +14,7 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Model" href="model.html" />
+    <link rel="next" title="Drug Target Binding Affinity (DTBA) Model" href="model.html" />
     <link rel="prev" title="Installation" href="installation.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -136,6 +136,18 @@ The model can be trained from scratch or finetuned from the pretraining checkpoi
 <span class="n">_</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">virtual_screening</span><span class="p">(</span><span class="n">X_repurpose</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">drug_name</span><span class="p">,</span> <span class="n">target_name</span><span class="p">)</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><ol class="arabic simple" start="4">
+<li><p><strong>Virtual Screening with Customized Training Data with One Line</strong></p></li>
+</ol>
+</li>
+</ul>
+<p>Given a list of new drug-target pairs to be screened,
+retrieve a list of drug-target pairs with top predicted binding scores.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">DeepPurpose</span> <span class="kn">import</span> <span class="n">oneliner</span>
+<span class="n">oneliner</span><span class="o">.</span><span class="n">virtual_screening</span><span class="p">([</span><span class="s1">&#39;MKK...LIDL&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;CC1=C...C4)N&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -157,8 +169,8 @@ The model can be trained from scratch or finetuned from the pretraining checkpoi
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Background</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Feature of DeepPurpose</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DTI.html">What is Drug Target Interaction?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Features of DeepPurpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DTI.html">What is drug repurposing, virtual screening and drug-target interaction prediction?</a></li>
 </ul>
 <p class="caption"><span class="caption-text">How to run</span></p>
 <ul class="current">
@@ -168,7 +180,7 @@ The model can be trained from scratch or finetuned from the pretraining checkpoi
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Drug Target Binding Affinity (DTBA) Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_data.html">Processing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -180,7 +192,7 @@ The model can be trained from scratch or finetuned from the pretraining checkpoi
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="installation.html" title="previous chapter">Installation</a></li>
-      <li>Next: <a href="model.html" title="next chapter">Model</a></li>
+      <li>Next: <a href="model.html" title="next chapter">Drug Target Binding Affinity (DTBA) Model</a></li>
   </ul></li>
 </ul>
 </div>

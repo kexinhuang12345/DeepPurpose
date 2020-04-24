@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>What is Drug Target Interaction? &#8212; DeepPurpose 0.0.1 documentation</title>
+    <title>What is drug repurposing, virtual screening and drug-target interaction prediction? &#8212; DeepPurpose 0.0.1 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Download" href="download.html" />
-    <link rel="prev" title="Feature of DeepPurpose" href="introduction.html" />
+    <link rel="prev" title="Features of DeepPurpose" href="introduction.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -32,8 +32,38 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="what-is-drug-target-interaction">
-<h1>What is Drug Target Interaction?<a class="headerlink" href="#what-is-drug-target-interaction" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="what-is-drug-repurposing-virtual-screening-and-drug-target-interaction-prediction">
+<h1>What is drug repurposing, virtual screening and drug-target interaction prediction?<a class="headerlink" href="#what-is-drug-repurposing-virtual-screening-and-drug-target-interaction-prediction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="drug-repurposing">
+<h2>Drug Repurposing<a class="headerlink" href="#drug-repurposing" title="Permalink to this headline">¶</a></h2>
+<p>Drug repurposing aims to repivot an existing drug to a new therapy.</p>
+</div>
+<div class="section" id="virtual-screening">
+<h2>Virtual Screening<a class="headerlink" href="#virtual-screening" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Virtual screening means to use computer software to automatically screen</dt><dd><p>a huge space of potential drug-target pairs to obtain a predicted binding score.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="drug-target-interaction">
+<h2>Drug-Target Interaction<a class="headerlink" href="#drug-target-interaction" title="Permalink to this headline">¶</a></h2>
+<p>Both of these tasks are able to save cost, time, and facilitate drug discovery.
+Deep learning has shown strong performance in repurposing and screening.
+It relies on the accurate and fast prediction of a fundamental task:
+drug-target interaction prediction.
+DTI prediction task aims to predict the input drug target pair’s interaction probability or binding score.
+Given a powerful DTI model that is able to generalize over a new unseen dataset,
+we can then extend to repurposing/screening.
+For repurposing, given a new target of interest,
+we can first pair it to a repurposing drug library.
+Then this list of input drug-target pairs is fed into the trained DTI model,
+which will output the predicted binding score.
+Similarly, for virtual screening, given a list of screening drug-target pairs we want,
+the DTI model can output the predicted interaction binding scores.
+We can then rank the predicted outcome based on their binding scores and
+test the top-k options in the wet lab after manual inspection.
+DeepPurpose automates this process. By only requiring one line of code,
+it aggregates five pretrained deep learning models and retrieves a list of ranked potential outcomes.</p>
 <p>Identifying Drug-Target Interactions (DTI) will greatly narrow down
 the scope of search of candidate medications,
 and thus can plays a pivotal role in drug discovery.
@@ -46,6 +76,7 @@ high efficiency computational prediction methods could
 serve as promising strategies for drug-target interaction (DTI) prediction.
 In this project, our goal is to focus on deep learning approaches
 for drug-target interaction (DTI) prediction.</p>
+</div>
 </div>
 
 
@@ -67,8 +98,8 @@ for drug-target interaction (DTI) prediction.</p>
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Background</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Feature of DeepPurpose</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">What is Drug Target Interaction?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Features of DeepPurpose</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">What is drug repurposing, virtual screening and drug-target interaction prediction?</a></li>
 </ul>
 <p class="caption"><span class="caption-text">How to run</span></p>
 <ul>
@@ -78,7 +109,7 @@ for drug-target interaction (DTI) prediction.</p>
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Drug Target Binding Affinity (DTBA) Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="encoder.html">Drug/Target Encoder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_data.html">Processing Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -89,7 +120,7 @@ for drug-target interaction (DTI) prediction.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="introduction.html" title="previous chapter">Feature of DeepPurpose</a></li>
+      <li>Previous: <a href="introduction.html" title="previous chapter">Features of DeepPurpose</a></li>
       <li>Next: <a href="download.html" title="next chapter">Download</a></li>
   </ul></li>
 </ul>

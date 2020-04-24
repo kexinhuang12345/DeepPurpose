@@ -130,7 +130,16 @@ Under the hood of one model from scratch, a flexible framework for method resear
 
 
 
+* 4. **Virtual Screening with Customized Training Data with One Line**
 
+Given a list of new drug-target pairs to be screened, 
+retrieve a list of drug-target pairs with top predicted binding scores. 
+
+
+.. code-block:: python
+
+	from DeepPurpose import oneliner
+	oneliner.virtual_screening(['MKK...LIDL', ...], ['CC1=C...C4)N', ...])
 
 
 
