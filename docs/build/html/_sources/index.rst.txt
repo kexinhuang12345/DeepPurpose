@@ -28,10 +28,24 @@ The Github repository is located `here <https://github.com/kexinhuang12345/DeepP
    notes/download 
    notes/casestudy
 
+
 .. toctree::
    :glob:
    :maxdepth: 1
    :caption: Package Reference
+
+   notes/models
+   notes/dataset
+   notes/chemutils
+   notes/oneliner
+   notes/model_helper
+   notes/utils
+
+
+.. toctree::
+   :glob:
+   :maxdepth: 1
+   :caption: Importance Function
 
    notes/model
    notes/encoder
