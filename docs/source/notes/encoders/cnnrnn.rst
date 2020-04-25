@@ -5,7 +5,7 @@ CNN+RNN
 
 	class DeepPurpose.models.CNN_RNN(nn.Sequential)
 
-CNN_RNN means a GRU/LSTM on top of a CNN on `SMILES <https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system>`_. 
+CNN_RNN (`Source <https://github.com/kexinhuang12345/DeepPurpose/blob/master/DeepPurpose/models.py#L109>`_) means a GRU/LSTM on top of a CNN on `SMILES <https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system>`_. 
 
 
 

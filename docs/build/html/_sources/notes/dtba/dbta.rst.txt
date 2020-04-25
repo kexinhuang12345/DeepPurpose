@@ -2,12 +2,11 @@ Drug Target Binding Affinity (DTBA) Model
 ================================================
 
 
-
 .. code-block:: python
 
 	class DeepPurpose.models.DBTA
 
-**Drug Target Binding Affinity (DBTA)** include all component, including drug encoder, target encoder and classifier/regressor. 
+**Drug Target Binding Affinity (DBTA)** (`Source <https://github.com/kexinhuang12345/DeepPurpose/blob/master/DeepPurpose/models.py#L509>`_)  include all component, including drug encoder, target encoder and classifier/regressor. 
 
 
 **constructor** create  an instance of DBTA. 

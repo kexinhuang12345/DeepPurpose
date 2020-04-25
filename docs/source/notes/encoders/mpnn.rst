@@ -9,7 +9,9 @@ Message Passing Neural Network (MPNN)
 
 	class DeepPurpose.models.MPNN(nn.Sequential)
 
-`Message Passing Neural Network (MPNN) <https://www.biorxiv.org/content/10.1101/684662v3>`_ encode drug in its graph representation. 
+`Message Passing Neural Network (MPNN) <https://www.biorxiv.org/content/10.1101/684662v3>`_  
+(`Source <https://github.com/kexinhuang12345/DeepPurpose/blob/master/DeepPurpose/models.py#L239>`_) 
+encode drug in its graph representation. 
 
 
 **constructor** create an instance of MPNN class. 

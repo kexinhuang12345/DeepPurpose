@@ -6,7 +6,7 @@ Transformer
 
 	DeepPurpose.models.transformer(nn.Sequential)
 
-`Transformer <https://arxiv.org/pdf/1908.06760.pdf>`_ can be used to encode both drug and protein on `SMILES <https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system>`_. 
+`Transformer <https://arxiv.org/pdf/1908.06760.pdf>`_ (`Source <https://github.com/kexinhuang12345/DeepPurpose/blob/master/DeepPurpose/models.py#L30>`_) can be used to encode both drug and protein on `SMILES <https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system>`_. 
 
 **constructor** create an instance of Transformer. 
 
