@@ -72,7 +72,8 @@ html_theme_options = {
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_logo = '../build/html/_images/logo_deeppurpose_horizontal.png'
 
-
+html_logo = '../build/html/_images/logo_dp_2.png'
+## logo_dp_2.png 
 
 html_context = {
     'css_files': [
