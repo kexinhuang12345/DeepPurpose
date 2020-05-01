@@ -529,8 +529,8 @@ class DBTA:
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
-		if target_encoding == 'AAC' or target_encoding == 'PseudoAAC' or 
-		   target_encoding == 'Conjoint_triad' or target_encoding == 'Quasi-seq':
+		if (target_encoding == 'AAC' or target_encoding == 'PseudoAAC' or 
+		   	target_encoding == 'Conjoint_triad' or target_encoding == 'Quasi-seq'):
 			self.model_protein = MLP(config['input_dim_protein'], config['hidden_dim_protein'], config['mlp_hidden_dims_target'])
 		elif target_encoding == 'CNN':
 			self.model_protein = CNN('protein', **config)
@@ -594,8 +594,8 @@ class DBTA:
 		else:
 			if repurposing_mode:
 				return y_pred
-			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], 
-				   pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+			return (mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], 
+				   	pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred)
 
 	def train(self, train, val, test = None, verbose = True):
 		if len(train.Label.unique()) == 2:
