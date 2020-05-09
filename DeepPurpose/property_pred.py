@@ -136,16 +136,16 @@ def mpnn_feature_collate_func(x):
 	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
 
 def mpnn_collate_func(x):
-	print("len(x) is ", len(x)) ## batch_size 
-	print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
-	print("len(x[1]) is ", len(x[1])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
-	print("len(x[2]) is ", len(x[2])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
+	#print("len(x) is ", len(x)) ## batch_size == 128 
+	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
+	#print("len(x[1]) is ", len(x[1])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
+	#print("len(x[2]) is ", len(x[2])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
 
 	mpnn_feature = [i[0] for i in x]
-	print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
+	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
 	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
 	from torch.utils.data.dataloader import default_collate
-	x_remain = [[i[1], i[2]] for i in x]
+	x_remain = [[i[1]] for i in x]
 	x_remain_collated = default_collate(x_remain)
 	return [mpnn_feature] + x_remain_collated
 ## used in dataloader 
@@ -224,9 +224,13 @@ class Property_Prediction:
 		else:
 			if repurposing_mode:
 				return y_pred
-			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+			return mean_squared_error(y_label, y_pred), \
+				   pearsonr(y_label, y_pred)[0], \
+				   pearsonr(y_label, y_pred)[1], \
+				   concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None, verbose = True):
+		print("train type", type(train))
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 			self.config['binary'] = True
@@ -262,8 +266,14 @@ class Property_Prediction:
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
 
-		training_generator = data.DataLoader(data_process_loader_Property_Prediction(train.index.values, train.Label.values, train, **self.config), **params)
-		validation_generator = data.DataLoader(data_process_loader_Property_Prediction(val.index.values, val.Label.values, val, **self.config), **params)
+		training_generator = data.DataLoader(data_process_loader_Property_Prediction(train.index.values, 
+																					 train.Label.values, 
+																					 train, **self.config), 
+											**params)
+		validation_generator = data.DataLoader(data_process_loader_Property_Prediction(val.index.values, 
+																						val.Label.values, 
+																						val, **self.config), 
+											**params)
 		
 		if test is not None:
 			info = data_process_loader_Property_Prediction(test.index.values, test.Label.values, test, **self.config)

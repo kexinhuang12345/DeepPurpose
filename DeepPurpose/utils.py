@@ -325,9 +325,11 @@ def data_process(X_drug, X_target = None, y=None, drug_encoding=None, target_enc
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
 	elif drug_encoding == 'MPNN':
 		#print(pd.Series(df_data['SMILES'].unique()))
-		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)
+		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)   ##### list of 5 elements. 
 		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
 		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]	
+		#print("assert ", len(df_data['drug_encoding'][0]) )
+		#assert len(df_data['drug_encoding'][0]) == 5 
 		#raise NotImplementedError
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
@@ -408,6 +410,7 @@ def data_process(X_drug, X_target = None, y=None, drug_encoding=None, target_enc
 			test = df_data
 		elif split_method == 'no_split':
 			print('do not do train/test split on the data for already splitted data')
+			print("assert here")
 			return df_data.reset_index(drop=True)
 		else:
 			train, val, test = create_fold(df_data, random_seed, frac)
@@ -474,7 +477,7 @@ class data_process_loader_Property_Prediction(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
-		
+		#print("len(v_d)", len(v_d))
 		y = self.labels[index]
 		return v_d, y
 
