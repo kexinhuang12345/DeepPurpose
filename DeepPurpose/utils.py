@@ -410,7 +410,6 @@ def data_process(X_drug, X_target = None, y=None, drug_encoding=None, target_enc
 			test = df_data
 		elif split_method == 'no_split':
 			print('do not do train/test split on the data for already splitted data')
-			print("assert here")
 			return df_data.reset_index(drop=True)
 		else:
 			train, val, test = create_fold(df_data, random_seed, frac)
@@ -495,6 +494,7 @@ def generate_config(drug_encoding, target_encoding = None,
 					train_epoch = 10,
 					test_every_X_epoch = 20,
 					LR = 1e-4,
+					decay = 0,
 					transformer_emb_size_drug = 128,
 					transformer_intermediate_size_drug = 512,
 					transformer_num_attention_heads_drug = 8,

@@ -552,6 +552,8 @@ class DBTA:
 		self.binary = False
 		if 'num_workers' not in self.config.keys():
 			self.config['num_workers'] = 0
+		if 'decay' not in self.config.keys():
+			self.config['decay'] = 0
 
 	def test_(self, data_generator, model, repurposing_mode = False, test = False):
 		y_pred = []
@@ -601,6 +603,7 @@ class DBTA:
 			self.config['binary'] = True
 
 		lr = self.config['LR']
+		decay = self.config['decay']
 		BATCH_SIZE = self.config['batch_size']
 		train_epoch = self.config['train_epoch']
 		if 'test_every_X_epoch' in self.config.keys():
@@ -613,16 +616,19 @@ class DBTA:
 
 		# support multiple GPUs
 		if torch.cuda.device_count() > 1:
-			print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
+			if verbose:
+				print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
 			self.model = nn.DataParallel(self.model, dim = 0)
 		elif torch.cuda.device_count() == 1:
-			print("Let's use " + str(torch.cuda.device_count()) + " GPU!")
+			if verbose:
+				print("Let's use " + str(torch.cuda.device_count()) + " GPU!")
 		else:
-			print("Let's use CPU/s!")
+			if verbose:
+				print("Let's use CPU/s!")
 		# Future TODO: support multiple optimizers with parameters
-		opt = torch.optim.Adam(self.model.parameters(), lr = lr)
-
-		print('--- Data Preparation ---')
+		opt = torch.optim.Adam(self.model.parameters(), lr = lr, weight_decay = decay)
+		if verbose:
+			print('--- Data Preparation ---')
 
 		params = {'batch_size': BATCH_SIZE,
 	    		'shuffle': True,
@@ -661,8 +667,8 @@ class DBTA:
 			valid_metric_header.extend(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 		table = PrettyTable(valid_metric_header)
 		float2str = lambda x:'%0.4f'%x
-
-		print('--- Go for Training ---')
+		if verbose:
+			print('--- Go for Training ---')
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
@@ -712,7 +718,8 @@ class DBTA:
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc   
-					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
+					if verbose:
+						print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
 						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
@@ -722,50 +729,31 @@ class DBTA:
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
-					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
+					if verbose:
+						print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
 						 + str(r2)[:7] + ' with p-value: ' + str(p_val)[:7] +' , Concordance Index: '+str(CI)[:7])
 			table.add_row(lst)
-
-			##### test the best model every XX epoches 
-			if epo > 0 and epo % test_every_X_epoch == 0 and test is not None:
-				print('--- Go for Testing ---')
-				if self.binary:
-					auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True)
-					test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
-					test_table.add_row(list(map(float2str, [auc, auprc, f1])))
-					print("Up to Epoch " + str(epo), end = " ")
-					print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
-				else:
-					mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
-					test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
-					test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
-					print("Up to Epoch " + str(epo), end = " ")
-					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) +\
-						  ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
-				np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + \
-						str(self.target_encoding) + '_logits.npy'), np.array(logits))			
-
-
 
 		#### after training 
 		prettytable_file = os.path.join(self.result_folder, "valid_markdowntable.txt")
 		with open(prettytable_file, 'w') as fp:
 			fp.write(table.get_string())
 
-
-
 		if test is not None:
-			print('--- Go for Testing ---')
+			if verbose:
+				print('--- Go for Testing ---')
 			if self.binary:
 				auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True)
 				test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
 				test_table.add_row(list(map(float2str, [auc, auprc, f1])))
-				print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
+				if verbose:
+					print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
 			else:
 				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
-				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
+				if verbose:
+					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
 					  + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) 
 				     + '_logits.npy'), np.array(logits))                
@@ -793,8 +781,8 @@ class DBTA:
 
 		fig_file = os.path.join(self.result_folder, "loss_curve.png")
 		plt.savefig(fig_file)
-
-		print('--- Training Finished ---')
+		if verbose:
+			print('--- Training Finished ---')
           
 
 	def predict(self, df_data):

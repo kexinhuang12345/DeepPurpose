@@ -183,8 +183,10 @@ class Property_Prediction:
 		self.binary = False
 		if 'num_workers' not in self.config.keys():
 			self.config['num_workers'] = 0
+		if 'decay' not in self.config.keys():
+			self.config['decay'] = 0
 
-	def test_(self, data_generator, model, repurposing_mode = False, test = False):
+	def test_(self, data_generator, model, repurposing_mode = False, test = False, verbose = True):
 		y_pred = []
 		y_label = []
 		model.eval()
@@ -213,12 +215,13 @@ class Property_Prediction:
 				return y_pred
 			## ROC-AUC curve
 			if test:
-				roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
-				plt.figure(0)
-				roc_curve(y_pred, y_label, roc_auc_file, self.drug_encoding)
-				plt.figure(1)
-				pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
-				prauc_curve(y_pred, y_label, pr_auc_file, self.drug_encoding)
+				if verbose:
+					roc_auc_file = os.path.join(self.result_folder, "roc-auc.jpg")
+					plt.figure(0)
+					roc_curve(y_pred, y_label, roc_auc_file, self.drug_encoding)
+					plt.figure(1)
+					pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
+					prauc_curve(y_pred, y_label, pr_auc_file, self.drug_encoding)
 
 			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
 		else:
@@ -230,12 +233,13 @@ class Property_Prediction:
 				   concordance_index(y_label, y_pred), y_pred
 
 	def train(self, train, val, test = None, verbose = True):
-		print("train type", type(train))
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 			self.config['binary'] = True
 
 		lr = self.config['LR']
+		decay = self.config['decay']
+
 		BATCH_SIZE = self.config['batch_size']
 		train_epoch = self.config['train_epoch']
 		if 'test_every_X_epoch' in self.config.keys():
@@ -248,16 +252,20 @@ class Property_Prediction:
 
 		# support multiple GPUs
 		if torch.cuda.device_count() > 1:
-			print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
+			if verbose:
+				print("Let's use " + str(torch.cuda.device_count()) + " GPUs!")
 			self.model = nn.DataParallel(self.model, dim = 0)
 		elif torch.cuda.device_count() == 1:
-			print("Let's use " + str(torch.cuda.device_count()) + " GPU!")
+			if verbose:
+				print("Let's use " + str(torch.cuda.device_count()) + " GPU!")
 		else:
-			print("Let's use CPU/s!")
+			if verbose:
+				print("Let's use CPU/s!")
 		# Future TODO: support multiple optimizers with parameters
-		opt = torch.optim.Adam(self.model.parameters(), lr = lr)
+		opt = torch.optim.Adam(self.model.parameters(), lr = lr, weight_decay = decay)
 
-		print('--- Data Preparation ---')
+		if verbose:
+			print('--- Data Preparation ---')
 
 		params = {'batch_size': BATCH_SIZE,
 	    		'shuffle': True,
@@ -303,7 +311,8 @@ class Property_Prediction:
 		table = PrettyTable(valid_metric_header)
 		float2str = lambda x:'%0.4f'%x
 
-		print('--- Go for Training ---')
+		if verbose:
+			print('--- Go for Training ---')
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, label) in enumerate(training_generator):
@@ -335,7 +344,8 @@ class Property_Prediction:
 				if verbose:
 					if (i % 100 == 0):
 						t_now = time()
-						print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
+						if verbose:
+							print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
 							' with loss ' + str(loss.cpu().detach().numpy())[:7] +\
 							". Total time " + str(int(t_now - t_start)/3600)[:7] + " hours") 
 						### record total run time
@@ -349,8 +359,9 @@ class Property_Prediction:
 					valid_metric_record.append(lst)
 					if auc > max_auc:
 						model_max = copy.deepcopy(self.model)
-						max_auc = auc   
-					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
+						max_auc = auc
+					if verbose:
+						print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
 						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
@@ -360,7 +371,8 @@ class Property_Prediction:
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
-					print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
+					if verbose:
+						print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
 						 + str(r2)[:7] + ' with p-value: ' + str(p_val)[:7] +' , Concordance Index: '+str(CI)[:7])
 			table.add_row(lst)
 
@@ -373,17 +385,20 @@ class Property_Prediction:
 
 
 		if test is not None:
-			print('--- Go for Testing ---')
+			if verbose:
+				print('--- Go for Testing ---')
 			if self.binary:
-				auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True)
+				auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True, verbose = verbose)
 				test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
 				test_table.add_row(list(map(float2str, [auc, auprc, f1])))
-				print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
+				if verbose:
+					print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
 			else:
-				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
+				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max, test = True, verbose = verbose)
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
-				print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
+				if verbose:
+					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
 					  + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.drug_encoding)
 				     + '_logits.npy'), np.array(logits))                
@@ -398,29 +413,31 @@ class Property_Prediction:
 		with open(prettytable_file, 'w') as fp:
 			fp.write(test_table.get_string())
 
+		if verbose:
 		### 2. learning curve 
-		fontsize = 16
-		iter_num = list(range(1,len(loss_history)+1))
-		plt.figure(3)
-		plt.plot(iter_num, loss_history, "bo-")
-		plt.xlabel("iteration", fontsize = fontsize)
-		plt.ylabel("loss value", fontsize = fontsize)
-		pkl_file = os.path.join(self.result_folder, "loss_curve_iter.pkl")
-		with open(pkl_file, 'wb') as pck:
-			pickle.dump(loss_history, pck)
+			fontsize = 16
+			iter_num = list(range(1,len(loss_history)+1))
+			plt.figure(3)
+			plt.plot(iter_num, loss_history, "bo-")
+			plt.xlabel("iteration", fontsize = fontsize)
+			plt.ylabel("loss value", fontsize = fontsize)
+			pkl_file = os.path.join(self.result_folder, "loss_curve_iter.pkl")
+			with open(pkl_file, 'wb') as pck:
+				pickle.dump(loss_history, pck)
 
-		fig_file = os.path.join(self.result_folder, "loss_curve.png")
-		plt.savefig(fig_file)
-
-		print('--- Training Finished ---')
+			fig_file = os.path.join(self.result_folder, "loss_curve.png")
+			plt.savefig(fig_file)
+		if verbose:
+			print('--- Training Finished ---')
           
 
-	def predict(self, df_data):
+	def predict(self, df_data, verbose = True):
 		'''
 			utils.data_process_repurpose_virtual_screening 
 			pd.DataFrame
 		'''
-		print('predicting...')
+		if verbose:
+			print('predicting...')
 		info = data_process_loader_Property_Prediction(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		self.model.to(device)
 		params = {'batch_size': self.config['batch_size'],
