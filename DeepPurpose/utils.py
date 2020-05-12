@@ -122,7 +122,9 @@ def smiles2morgan(s, radius = 2, nBits = 1024):
 def smiles2rdkit2d(s):    
     try:
         generator = rdNormalizedDescriptors.RDKit2DNormalized()
-        features = generator.process(s)[1:]
+        features = np.array(generator.process(s)[1:])
+        NaNs = np.isnan(features)
+        features[NaNs] = 0
     except:
         print('descriptastorus not found this smiles: ' + s + ' convert to all 1 features')
         features = np.ones((200, ))

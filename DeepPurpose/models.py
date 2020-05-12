@@ -734,6 +734,10 @@ class DBTA:
 						 + str(r2)[:7] + ' with p-value: ' + str(p_val)[:7] +' , Concordance Index: '+str(CI)[:7])
 			table.add_row(lst)
 
+
+		# load early stopped model
+		self.model = model_max
+
 		#### after training 
 		prettytable_file = os.path.join(self.result_folder, "valid_markdowntable.txt")
 		with open(prettytable_file, 'w') as fp:
@@ -757,16 +761,13 @@ class DBTA:
 					  + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) 
 				     + '_logits.npy'), np.array(logits))                
-		# load early stopped model
-		self.model = model_max
+	
+			######### learning record ###########
 
-
-		######### learning record ###########
-
-		### 1. test results
-		prettytable_file = os.path.join(self.result_folder, "test_markdowntable.txt")
-		with open(prettytable_file, 'w') as fp:
-			fp.write(test_table.get_string())
+			### 1. test results
+			prettytable_file = os.path.join(self.result_folder, "test_markdowntable.txt")
+			with open(prettytable_file, 'w') as fp:
+				fp.write(test_table.get_string())
 
 		### 2. learning curve 
 		fontsize = 16

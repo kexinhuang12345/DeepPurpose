@@ -30,6 +30,11 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 *NOTE: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](mailto:kexinhuang@hsph.harvard.edu).*
 	
 
+### New Features!
+- Support drug property prediction for screening data that does not have target proteins such as bacteria! An example using RDKit2D with DNN for training and repurposing for pseudomonas aeruginosa (MIT AI Cures's [open task](https://www.aicures.mit.edu/data)) is provided as a [demo](DEMO/Drug_Property_Prediction_Bacterial_Activity-RDKit2D_MIT_AiCures.ipynb). It identifies [Elvitegravir](https://www.accessdata.fda.gov/drugsatfda_docs/nda/2014/203093Orig1s000PharmR.pdf) as a potential cure. 
+
+- Now supports hyperparameter tuning via Bayesian Optimization through the [Ax platform](https://ax.dev/)! A demo is provided in [here](DEMO/Drug_Property_Pred-Ax-Hyperparam-Tune.ipynb). 
+
 ## Example
 
 ### Case Study 1 (a): Antiviral Drugs Repurposing for SARS-CoV2 3CLPro, using One Line.

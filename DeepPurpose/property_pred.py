@@ -76,7 +76,7 @@ def repurpose(X_repurpose, model, drug_names = None,
 	with open(fo, 'w') as fout:
 		print('repurposing...')
 
-		df_data, _, _ = data_process(X_repurpose, drug_encoding = drug_encoding, split_method='repurposing_VS')
+		df_data, _, _ = data_process(X_repurpose, drug_encoding = model.drug_encoding, split_method='repurposing_VS')
 		y_pred = model.predict(df_data)
 
 		if convert_y:
@@ -382,7 +382,8 @@ class Property_Prediction:
 		with open(prettytable_file, 'w') as fp:
 			fp.write(table.get_string())
 
-
+		# load early stopped model
+		self.model = model_max
 
 		if test is not None:
 			if verbose:
@@ -402,16 +403,13 @@ class Property_Prediction:
 					  + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.drug_encoding)
 				     + '_logits.npy'), np.array(logits))                
-		# load early stopped model
-		self.model = model_max
 
+			######### learning record ###########
 
-		######### learning record ###########
-
-		### 1. test results
-		prettytable_file = os.path.join(self.result_folder, "test_markdowntable.txt")
-		with open(prettytable_file, 'w') as fp:
-			fp.write(test_table.get_string())
+			### 1. test results
+			prettytable_file = os.path.join(self.result_folder, "test_markdowntable.txt")
+			with open(prettytable_file, 'w') as fp:
+				fp.write(test_table.get_string())
 
 		if verbose:
 		### 2. learning curve 
