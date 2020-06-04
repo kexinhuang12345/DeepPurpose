@@ -2,11 +2,11 @@
 
 
 <h3 align="center">
-<p> A Drug Repurposing and Virtual Screening Toolkit with State-of-the-Art Deep Learning Methods</h3>
+<p> A Drug-Target Interaction Prediction Toolkit with State-of-the-Art Deep Learning Methods, and its Applications in Drug Repurposing and Virtual Screening</h3>
 
 ---
 
-This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows very easy usage (only one line of code!) for non-computational domain researchers to be able to obtain a list of potential drugs using deep learning while facilitating deep learning method research in this topic by providing a flexible framework (less than 10 lines of codes!) and baselines. 
+This repository hosts DeepPurpose, a Deep Learning Based Drug-Target Interaction Prediction Toolkit with Applications in Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows very easy usage (only one line of code!) for non-computational domain researchers to be able to obtain a list of potential drugs using deep learning while facilitating deep learning method research in this topic by providing a flexible framework (less than 10 lines of codes!) and baselines. 
 
 ### News!
 - [05/20] Support drug property prediction for screening data that does not have target proteins such as bacteria! An example using RDKit2D with DNN for training and repurposing for pseudomonas aeruginosa (MIT AI Cures's [open task](https://www.aicures.mit.edu/data)) is provided as a [demo](DEMO/Drug_Property_Prediction_Bacterial_Activity-RDKit2D_MIT_AiCures.ipynb).
