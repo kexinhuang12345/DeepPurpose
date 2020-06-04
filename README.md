@@ -44,7 +44,8 @@ This repository hosts DeepPurpose, a Deep Learning Based Drug Repurposing and Vi
 
 ```python
 from DeepPurpose import oneliner
-oneliner.repurpose(*load_SARS_CoV2_Protease_3CL(), *load_antiviral_drugs())
+from DeepPurpose.dataset import *
+oneliner.repurpose(*load_SARS_CoV2_Protease_3CL(), *load_antiviral_drugs(no_cid = True))
 ```
 ```
 ----output----
@@ -78,6 +79,7 @@ Given a new target sequence (e.g. MMP9), retrieve a list of repurposing drugs fr
 	
 ```python
 from DeepPurpose import oneliner
+from DeepPurpose.dataset import *
 oneliner.repurpose(*load_MMP9())
 ```
 ```
