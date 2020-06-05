@@ -330,7 +330,7 @@ def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, ba
 	return np.array(X_drug), target, np.array(y)
 
 def load_broad_repurposing_hub(path = './data'):
-	url = 'https://drive.google.com/uc?export=download&id=1A4HbHMZvhgDjx5ZjS-uVrCGBaVmvU8wd'
+	url = 'https://deeppurpose.s3.amazonaws.com/broad.csv'
 	if not os.path.exists(path):
 	    os.makedirs(path)
 	saved_path_data = wget.download(url, path)
