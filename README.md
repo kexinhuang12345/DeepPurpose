@@ -210,15 +210,15 @@ Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook int
 We recommend to install it locally since Binder needs to be refreshed every time launching:
 
 <details>
-  <summary>Click here for the code!</summary>
+  <summary>Click here for the installation instruction!</summary>
 
+First time:
 ```bash
-# -- First Time -- #
 git clone https://github.com/kexinhuang12345/DeepPurpose.git
-# Download code repository
+## Download code repository
 
 cd DeepPurpose
-# Change directory to DeepPurpose
+## Change directory to DeepPurpose
 
 conda env create -f environment.yml  
 ## Build virtual environment with all packages installed using conda
@@ -229,24 +229,29 @@ conda activate DeepPurpose
 jupyter notebook
 ## open the jupyter notebook with the conda env
 
-## run our code
+## run our code, e.g. click a file in the DEMO folder
 ... ...
 
 conda deactivate 
-## Exit conda environment 
+## when done, exit conda environment 
+```
 
-# -- In the future -- #
+In the future:
+```bash
 cd DeepPurpose
-# Change directory to DeepPurpose
+## Change directory to DeepPurpose
 
 conda activate DeepPurpose
 ## Activate conda environment
 
-## run our code
+jupyter notebook
+## open the jupyter notebook with the conda env
+
+## run our code, e.g. click a file in the DEMO folder
 ... ...
 
 conda deactivate 
-## Exit conda environment 
+## when done, exit conda environment 
 ```
 </details>
 
