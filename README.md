@@ -2,9 +2,7 @@
 
 
 <h3 align="center">
-<p> A Drug-Target Interaction Prediction Toolkit</h3>
-<h3 align="center">
-<p> with state-of-the-art Deep Learning Methods</h3>
+<p> A Drug-Target Interaction Prediction Toolkit <br> with state-of-the-art Deep Learning Methods</h3>
 <h4 align="center">
 <p> and its Applications in Drug Repurposing and Virtual Screening </h4>
 
