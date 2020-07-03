@@ -381,7 +381,10 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 			### regression 
 			table_header = ["Rank", "Drug Name", "Target Name", "Binding Score"]
 		table = PrettyTable(table_header)
-
+		if drug_names is None:
+			drug_names = ['Drug ' + str(i) for i in list(range(len(X_repurpose)))]
+		if target_name is None:
+			target_name = 'Target' 
 		if drug_names is not None:
 			f_d = max([len(o) for o in drug_names]) + 1
 			for i in range(len(X_repurpose)):
@@ -429,7 +432,10 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 	#if not model.binary:
 	#	print_list = []
 	print_list = []
-
+	if drug_names is None:
+		drug_names = ['Drug ' + str(i) for i in list(range(len(X_repurpose)))]
+	if target_names is None:
+		target_names = ['Target ' + str(i) for i in list(range(len(target)))]   
 	if model.binary:
 		table_header = ["Rank", "Drug Name", "Target Name", "Interaction", "Probability"]
 	else:
