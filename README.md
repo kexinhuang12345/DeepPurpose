@@ -285,8 +285,8 @@ and more in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/maste
 Please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
 ```
 @article{deeppurpose,
-  title={DeepPurpose: a Deep Learning Based Drug Repurposing Toolkit},
-  author={Huang, Kexin and Fu, Tianfan and Xiao, Cao and Glass, Lucas and Sun, Jimeng},
+  title={DeepPurpose: a Deep Learning Library for Drug-Target Interaction Prediction and Applications to Repurposing and Screening},
+  author={Huang, Kexin and Fu, Tianfan and Glass, Lucas and Zitnik, Marinka and Xiao, Cao and Sun, Jimeng},
   journal={arXiv preprint arXiv:2004.08919},
   year={2020}
 }
