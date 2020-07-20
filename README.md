@@ -11,6 +11,7 @@
 This repository hosts DeepPurpose, a Deep Learning Based Drug-Target Interaction Prediction Toolkit with Applications in Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows very easy usage (only one line of code!) for non-computational domain researchers to be able to obtain a list of potential drugs using deep learning while facilitating deep learning method research in this topic by providing a flexible framework (less than 10 lines of codes!) and baselines. 
 
 ### News!
+- [07/20] A simple web UI for DTI prediction can be created under 10 lines using [Gradio](https://github.com/gradio-app/gradio)! A demo is provided [here](https://github.com/kexinhuang12345/DeepPurpose/blob/master/DEMO/web_ui_gradio.ipynb).
 - [07/20] A [blog](https://towardsdatascience.com/drug-discovery-with-deep-learning-under-10-lines-of-codes-742ee306732a) is posted on the Towards Data Science Medium column, check this out!
 - [07/20] Two tutorials are online to go through DeepPurpose's framework to do drug-target interaction prediction and drug property prediction ([DTI](Tutorial_1_DTI_Prediction.ipynb), [Drug Property](Tutorial_2_Drug_Property_Pred_Assay_Data.ipynb)). 
 - [05/20] Support drug property prediction for screening data that does not have target proteins such as bacteria! An example using RDKit2D with DNN for training and repurposing for pseudomonas aeruginosa (MIT AI Cures's [open task](https://www.aicures.mit.edu/data)) is provided as a [demo](DEMO/Drug_Property_Prediction_Bacterial_Activity-RDKit2D_MIT_AiCures.ipynb).
