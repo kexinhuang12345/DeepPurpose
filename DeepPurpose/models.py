@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from time import time
-from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score
+from sklearn.metrics import mean_squared_error, roc_auc_score, average_precision_score, f1_score, log_loss
 from lifelines.utils import concordance_index
 from scipy.stats import pearsonr
 import pickle 
@@ -597,7 +597,7 @@ class DBTA:
 				pr_auc_file = os.path.join(self.result_folder, "pr-auc.jpg")
 				prauc_curve(y_pred, y_label, pr_auc_file, self.drug_encoding + '_' + self.target_encoding)
 
-			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), y_pred
+			return roc_auc_score(y_label, y_pred), average_precision_score(y_label, y_pred), f1_score(y_label, outputs), log_loss(y_label, outputs), y_pred
 		else:
 			if repurposing_mode:
 				return y_pred
@@ -717,8 +717,8 @@ class DBTA:
 			##### validate, select the best model up to now 
 			with torch.set_grad_enabled(False):
 				if self.binary:  
-					## binary: ROC-AUC, PR-AUC, F1  
-					auc, auprc, f1, logits = self.test_(validation_generator, self.model)
+					## binary: ROC-AUC, PR-AUC, F1, cross-entropy loss
+					auc, auprc, f1, loss, logits = self.test_(validation_generator, self.model)
 					lst = ["epoch " + str(epo)] + list(map(float2str,[auc, auprc, f1]))
 					valid_metric_record.append(lst)
 					if auc > max_auc:
@@ -726,7 +726,8 @@ class DBTA:
 						max_auc = auc   
 					if verbose:
 						print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
-						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7])
+						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7] + ' , Cross-entropy Loss: ' + \
+						  str(loss)[:7])
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
 					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
