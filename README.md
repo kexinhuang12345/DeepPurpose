@@ -203,6 +203,40 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 
 </details>
 
+
+### Case Study 4: A Framework for Drug Property Prediction, with less than 10 lines of codes.
+Many screening dataset is from assay, thus have only drug and its activity score. DeepPurpose also provides a framework for this use case:
+
+<details>
+  <summary>Click here for the code!</summary>
+
+```python
+import DeepPurpose.property_pred as models
+from DeepPurpose.utils import *
+from DeepPurpose.dataset import *
+
+# load AID1706 Assay Data
+X_drugs, _, y = load_AID1706_SARS_CoV_3CL()
+
+drug_encoding = 'rdkit_2d_normalized'
+train, val, test = data_process(X_drug = X_drugs, y = y, 
+			    drug_encoding = drug_encoding,
+			    split_method='random', 
+			    random_seed = 1)
+
+config = generate_config(drug_encoding = drug_encoding, 
+                         cls_hidden_dims = [512], 
+                         train_epoch = 20, 
+                         LR = 0.001, 
+                         batch_size = 128,
+                        )
+model = models.model_initialize(**config)
+model.train(train, val, test)
+
+```
+
+</details>
+
 ## Install & Usage
 Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
 
