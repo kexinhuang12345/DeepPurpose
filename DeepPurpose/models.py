@@ -754,11 +754,13 @@ class DBTA:
 			if verbose:
 				print('--- Go for Testing ---')
 			if self.binary:
-				auc, auprc, f1, logits = self.test_(testing_generator, model_max, test = True)
+				auc, auprc, f1, loss, logits = self.test_(testing_generator, model_max, test = True)
 				test_table = PrettyTable(["AUROC", "AUPRC", "F1"])
 				test_table.add_row(list(map(float2str, [auc, auprc, f1])))
 				if verbose:
-					print('Testing AUROC: ' + str(auc) + ' , AUPRC: ' + str(auprc) + ' , F1: '+str(f1))				
+					print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
+					  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7] + ' , Cross-entropy Loss: ' + \
+					  str(loss)[:7])				
 			else:
 				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
