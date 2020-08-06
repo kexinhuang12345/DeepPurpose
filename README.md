@@ -493,7 +493,6 @@ Model name consists of first the drug encoding, then the target encoding and the
 |Morgan_AAC_BindingDB|
 |Morgan_AAC_KIBA|
 |Morgan_AAC_DAVIS|
-|CNN_Transformer_DAVIS|
 
 </details>
 
