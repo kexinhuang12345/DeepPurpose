@@ -778,6 +778,8 @@ def download_pretrained_model(model_name, save_dir = './save_folder'):
 	elif model_name == 'Transformer_CNN_BindingDB':
 		print('Beginning Downloading Transformer_CNN_BindingDB Model...')
 		url = 'https://deeppurpose.s3.amazonaws.com/model_transformer_cnn_bindingdb.zip'
+	else:
+		raise Exception("Given name not a pretrained model. The full list is in the Github README https://github.com/kexinhuang12345/DeepPurpose/blob/master/README.md#pretrained-models")
 
 	if not os.path.exists(save_dir):
 		os.mkdir(save_dir)
