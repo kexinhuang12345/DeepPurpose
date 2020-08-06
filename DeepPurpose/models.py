@@ -361,6 +361,7 @@ def repurpose(X_repurpose, target, model, drug_names = None, target_name = None,
 			  result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
 	# X_repurpose: a list of SMILES string
 	# target: one target 
+	
 	fo = os.path.join(result_folder, "repurposing.txt")
 	print_list = []
 	with open(fo, 'w') as fout:
@@ -428,6 +429,9 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 					  result_folder = "./result/", convert_y = False, output_num_max = 10, verbose = True):
 	# X_repurpose: a list of SMILES string
 	# target: a list of targets
+	if isinstance(target, str):
+		target = [target]
+	
 	fo = os.path.join(result_folder, "virtual_screening.txt")
 	#if not model.binary:
 	#	print_list = []
@@ -458,7 +462,7 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 				print('Virtual Screening Result')
 			f_d = max([len(o) for o in drug_names]) + 1
 			f_p = max([len(o) for o in target_names]) + 1
-			for i in range(target.shape[0]):
+			for i in range(len(target)):
 				if model.binary:
 					if y_pred[i] > 0.5:
 						string_lst = [drug_names[i], target_names[i], "YES", "{0:.2f}".format(y_pred[i])]						
