@@ -135,8 +135,9 @@ class CNN_RNN(nn.Sequential):
 								bidirectional = config['rnn_drug_bidirectional'])
 			else:
 				raise AttributeError('Please use LSTM or GRU.')
+			direction = 2 if config['rnn_drug_bidirectional'] else 1
 			self.rnn = self.rnn.double()
-			self.fc1 = nn.Linear(config['rnn_drug_hid_dim'] * config['rnn_drug_n_layers'] * n_size_d, config['hidden_dim_drug'])
+			self.fc1 = nn.Linear(config['rnn_drug_hid_dim'] * direction * n_size_p, config['hidden_dim_drug'])
 
 		if encoding == 'protein':
 			in_ch = [26] + config['cnn_target_filters']
@@ -164,9 +165,9 @@ class CNN_RNN(nn.Sequential):
 								bidirectional = config['rnn_target_bidirectional'])
 			else:
 				raise AttributeError('Please use LSTM or GRU.')
-
+			direction = 2 if config['rnn_target_bidirectional'] else 1
 			self.rnn = self.rnn.double()
-			self.fc1 = nn.Linear(config['rnn_target_hid_dim'] * config['rnn_target_n_layers'] * n_size_p, config['hidden_dim_protein'])
+			self.fc1 = nn.Linear(config['rnn_target_hid_dim'] * direction * n_size_p, config['hidden_dim_protein'])
 		self.encoding = encoding
 		self.config = config
 
