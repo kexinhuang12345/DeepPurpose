@@ -8,7 +8,7 @@
 
 ---
 
-This repository hosts DeepPurpose, a Deep Learning Based Drug-Target Interaction Prediction Toolkit with Applications in Drug Repurposing and Virtual Screening Toolkit (using PyTorch). It allows very easy usage (only one line of code!) for non-computational domain researchers to be able to obtain a list of potential drugs using deep learning while facilitating deep learning method research in this topic by providing a flexible framework (less than 10 lines of codes!) and baselines. 
+This repository hosts DeepPurpose, a Deep Learning Based Drug-Target Interaction and Property Prediction Toolkit with Applications in Drug Repurposing and Virtual Screening, QSAR and more molecular modeling tasks (using PyTorch). It allows very easy usage (only one line of code!) for non-computational domain researchers to be able to obtain a list of potential drugs using deep learning while facilitating deep learning method research in this topic by providing a flexible framework (less than 10 lines of codes!) and baselines. 
 
 ### News!
 - [07/20] A simple web UI for DTI prediction can be created under 10 lines using [Gradio](https://github.com/gradio-app/gradio)! A demo is provided [here](https://github.com/kexinhuang12345/DeepPurpose/blob/master/DEMO/web_ui_gradio.ipynb).
