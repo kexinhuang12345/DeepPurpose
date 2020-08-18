@@ -137,7 +137,7 @@ class CNN_RNN(nn.Sequential):
 				raise AttributeError('Please use LSTM or GRU.')
 			direction = 2 if config['rnn_drug_bidirectional'] else 1
 			self.rnn = self.rnn.double()
-			self.fc1 = nn.Linear(config['rnn_drug_hid_dim'] * direction * n_size_p, config['hidden_dim_drug'])
+			self.fc1 = nn.Linear(config['rnn_drug_hid_dim'] * direction * n_size_d, config['hidden_dim_drug'])
 
 		if encoding == 'protein':
 			in_ch = [26] + config['cnn_target_filters']
