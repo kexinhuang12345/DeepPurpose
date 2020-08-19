@@ -236,6 +236,18 @@ Drug Repurposing Result for SARS-CoV 3CL Protease
 ```
 </details>
 
+## Cite Us
+
+If you found this package useful, please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
+```
+@article{huang2020deeppurpose,
+  title={DeepPurpose: a Deep Learning Based Drug Repurposing Toolkit},
+  author={Huang, Kexin and Fu, Tianfan and Xiao, Cao and Glass, Lucas and Sun, Jimeng},
+  journal={arXiv preprint arXiv:2004.08919},
+  year={2020}
+}
+
+```
 
 ## Install & Usage
 Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
@@ -314,19 +326,6 @@ Checkout 10+ demos & tutorials to start:
 | [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb)| Tutorial on how to load pretraining models|
 
 and more in the [DEMO](https://github.com/kexinhuang12345/DeepPurpose/tree/master/DEMO) folder!
-
-## Cite Us
-
-Please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
-```
-@article{deeppurpose,
-  title={DeepPurpose: a Deep Learning Library for Drug-Target Interaction Prediction and Applications to Repurposing and Screening},
-  author={Huang, Kexin and Fu, Tianfan and Glass, Lucas and Zitnik, Marinka and Xiao, Cao and Sun, Jimeng},
-  journal={arXiv preprint arXiv:2004.08919},
-  year={2020}
-}
-
-```
 
 ## Contact
 Please contact kexinhuang@hsph.harvard.edu or tfu42@gatech.edu for help or submit an issue. 
