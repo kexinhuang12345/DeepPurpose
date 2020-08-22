@@ -18,7 +18,6 @@ torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
 from prettytable import PrettyTable
-import scikitplot as skplt
 
 import os
 
@@ -62,7 +61,7 @@ def model_initialize(**config):
 
 def model_pretrained(path_dir = None, model = None):
 	if model is not None:
-		path_dir = download_pretrained_model(model)
+		path_dir = download_pretrained_model_property(model)
 	config = load_dict(path_dir)
 	model = Property_Prediction(**config)
 	model.load_pretrained(path_dir + '/model.pt')    

@@ -18,7 +18,6 @@ torch.manual_seed(2)    # reproducible torch:2 np:3
 np.random.seed(3)
 import copy
 from prettytable import PrettyTable
-import scikitplot as skplt
 
 import os
 

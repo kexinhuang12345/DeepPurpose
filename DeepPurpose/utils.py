@@ -827,4 +827,25 @@ def download_pretrained_model(model_name, save_dir = './save_folder'):
 	elif model_name == 'Transformer_CNN_BindingDB':
 		pretrained_dir = os.path.join(pretrained_dir, 'model_transformer_cnn_bindingdb')
 
-	return pretrained_dir        
+	return pretrained_dir
+
+def download_pretrained_model_property(model_name, save_dir = './save_folder'):
+	print('Beginning Downloading' + model_name + ' Model...')
+	url = 'https://deeppurpose.s3.amazonaws.com/' + model_name + '.zip'
+
+	if not os.path.exists(save_dir):
+		os.mkdir(save_dir)
+	if not os.path.exists(os.path.join(save_dir, 'pretrained_model')):
+		os.mkdir(os.path.join(save_dir, 'pretrained_model'))
+
+	pretrained_dir = os.path.join(save_dir, 'pretrained_model')
+	
+	if not os.path.exists(os.path.join(pretrained_dir, model_name)):
+		pretrained_dir_ = wget.download(url, pretrained_dir)
+		print('Downloading finished... Beginning to extract zip file...')
+		with ZipFile(pretrained_dir_, 'r') as zip: 
+			zip.extractall(path = pretrained_dir)
+		print('pretrained model Successfully Downloaded...')
+	
+	pretrained_dir = os.path.join(pretrained_dir, model_name)
+	return pretrained_dir
