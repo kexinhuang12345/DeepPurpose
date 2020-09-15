@@ -8,7 +8,7 @@ Download Code
 
 .. code-block:: bash
 
-   $ git clone git@github.com:kexinhuang12345/DeepPurpose.git
+   $ git clone https://github.com/kexinhuang12345/DeepPurpose.git
    $ ###  Download code repository 
    $
    $
@@ -21,7 +21,7 @@ First time usage: setup conda environment
 
 .. code-block:: bash
 
-   $ conda env create -f env.yml  
+   $ conda env create -f environment.yml  
    $ ## Build virtual environment with all packages installed using conda
    $ 
    $ conda activate DeepPurpose
