@@ -1,4 +1,4 @@
-from DeepPurpose import models
+from DeepPurpose import DTI as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 from prettytable import PrettyTable

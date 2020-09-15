@@ -8,7 +8,10 @@ calcPubChemFingerAll, CalculateConjointTriad, GetQuasiSequenceOrder
 import torch
 from torch.utils import data
 from torch.autograd import Variable
-from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
+try:
+	from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
+except:
+	raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
 from DeepPurpose.chemutils import get_mol, atom_features, bond_features, MAX_NB, ATOM_FDIM, BOND_FDIM
 from subword_nmt.apply_bpe import BPE
 import codecs
@@ -250,23 +253,123 @@ def create_fold_setting_cold_drug(df, fold_seed, frac):
     
     return train, val, test
 
-#TODO: add one target, drug folding
 
-def data_process(X_drug, X_target = None, y=None, drug_encoding=None, target_encoding=None, 
-				 split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1, sample_frac = 1):
-	property_prediction_flag = X_target is None
+def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name = 'drug_encoding'):
+	print('encoding drug...')
+	print('unique drugs: ' + str(len(df_data[column_name].unique())))
+
+	if drug_encoding == 'Morgan':
+		unique = pd.Series(df_data[column_name].unique()).apply(smiles2morgan)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding == 'Pubchem':
+		unique = pd.Series(df_data[column_name].unique()).apply(calcPubChemFingerAll)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding == 'Daylight':
+		unique = pd.Series(df_data[column_name].unique()).apply(smiles2daylight)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding == 'rdkit_2d_normalized':
+		unique = pd.Series(df_data[column_name].unique()).apply(smiles2rdkit2d)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding == 'CNN':
+		unique = pd.Series(df_data[column_name].unique()).apply(trans_drug)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
+	elif drug_encoding == 'CNN_RNN':
+		unique = pd.Series(df_data[column_name].unique()).apply(trans_drug)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding == 'Transformer':
+		unique = pd.Series(df_data[column_name].unique()).apply(drug2emb_encoder)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding == 'MPNN':
+		unique = pd.Series(df_data[column_name].unique()).apply(smiles2mpnnfeature)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	else:
+		raise AttributeError("Please use the correct drug encoding available!")
+	return df_data
+
+def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', save_column_name = 'target_encoding'):
+	print('encoding protein...')
+	print('unique target sequence: ' + str(len(df_data[column_name].unique())))
+	if target_encoding == 'AAC':
+		print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU.\
+				 Calculate your time by the unique target sequence #, instead of the entire dataset.')
+		AA = pd.Series(df_data[column_name].unique()).apply(CalculateAADipeptideComposition)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	elif target_encoding == 'PseudoAAC':
+		print('-- Encoding PseudoAAC takes time. Time Reference: 462s for ~100 sequences in a CPU.\
+				 Calculate your time by the unique target sequence #, instead of the entire dataset.')
+		AA = pd.Series(df_data[column_name].unique()).apply(_GetPseudoAAC)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	elif target_encoding == 'Conjoint_triad':
+		AA = pd.Series(df_data[column_name].unique()).apply(CalculateConjointTriad)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	elif target_encoding == 'Quasi-seq':
+		AA = pd.Series(df_data[column_name].unique()).apply(GetQuasiSequenceOrder)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	elif target_encoding == 'CNN':
+		AA = pd.Series(df_data[column_name].unique()).apply(trans_protein)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
+	elif target_encoding == 'CNN_RNN':
+		AA = pd.Series(df_data[column_name].unique()).apply(trans_protein)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	elif target_encoding == 'Transformer':
+		AA = pd.Series(df_data[column_name].unique()).apply(protein2emb_encoder)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	else:
+		raise AttributeError("Please use the correct protein encoding available!")
+	return df_data
+
+def data_process(X_drug = None, X_target = None, y=None, drug_encoding=None, target_encoding=None, 
+				 split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1, sample_frac = 1, mode = 'DTI', X_drug_ = None, X_target_ = None):
+	#property_prediction_flag = X_target is None
+	property_prediction_flag, function_prediction_flag, DDI_flag, PPI_flag, DTI_flag = False, False, False, False, False
+
+	if (X_target is None) and (X_drug is not None) and (X_drug_ is None):
+		property_prediction_flag = True
+	elif (X_target is not None) and (X_drug is None) and (X_target_ is None):
+		function_prediction_flag = True
+	elif (X_drug is not None) and (X_drug_ is not None):
+		DDI_flag = True
+		if (X_drug is None) or (X_drug_ is None):
+			raise AttributeError("Drug pair sequence should be in X_drug, X_drug_")
+	elif (X_target is not None) and (X_target_ is not None):
+		PPI_flag = True
+		if (X_target is None) or (X_target_ is None):
+			raise AttributeError("Target pair sequence should be in X_target, X_target_")
+	elif (X_drug is not None) and (X_target is not None):
+		DTI_flag = True
+		if (X_drug is None) or (X_target is None):
+			raise AttributeError("Target pair sequence should be in X_target, X_drug")
+	else:
+		raise AttributeError("Please use the correct mode. Currently, we support DTI, DDI, PPI, Drug Property Prediction and Protein Function Prediction...")
 
 	if split_method == 'repurposing_VS':
 		y = [-1]*len(X_drug) # create temp y for compatitibility
 	
-	if X_target is not None:
+	if DTI_flag:
+		print('Drug Target Interaction Prediction Mode...')
 		if isinstance(X_target, str):
 			X_target = [X_target]
 		if len(X_target) == 1:
 			# one target high throughput screening setting
 			X_target = np.tile(X_target, (length_func(X_drug), ))
 
-	if X_target is not None:
 		df_data = pd.DataFrame(zip(X_drug, X_target, y))
 		df_data.rename(columns={0:'SMILES',
 								1: 'Target Sequence',
@@ -274,112 +377,60 @@ def data_process(X_drug, X_target = None, y=None, drug_encoding=None, target_enc
 								inplace=True)
 		print('in total: ' + str(len(df_data)) + ' drug-target pairs')
 
-	else:
+	elif property_prediction_flag:
 		print('Drug Property Prediction Mode...')
 		df_data = pd.DataFrame(zip(X_drug, y))
 		df_data.rename(columns={0:'SMILES',
 								1: 'Label'}, 
 								inplace=True)
 		print('in total: ' + str(len(df_data)) + ' drugs')
+	elif function_prediction_flag:
+		print('Protein Function Prediction Mode...')
+		df_data = pd.DataFrame(zip(X_target, y))
+		df_data.rename(columns={0:'Target Sequence',
+								1: 'Label'}, 
+								inplace=True)
+		print('in total: ' + str(len(df_data)) + ' proteins')
+	elif PPI_flag:
+		print('Protein Protein Interaction Prediction Mode...')
+
+		df_data = pd.DataFrame(zip(X_target, X_target_, y))
+		df_data.rename(columns={0: 'Target Sequence 1',
+								1: 'Target Sequence 2',
+								2: 'Label'}, 
+								inplace=True)
+		print('in total: ' + str(len(df_data)) + ' protein-protein pairs')
+	elif DDI_flag:
+		print('Drug Drug Interaction Prediction Mode...')
+
+		df_data = pd.DataFrame(zip(X_drug, X_drug_, y))
+		df_data.rename(columns={0: 'SMILES 1',
+								1: 'SMILES 2',
+								2: 'Label'}, 
+								inplace=True)
+		print('in total: ' + str(len(df_data)) + ' drug-drug pairs')
 
 
 	if sample_frac != 1:
 		df_data = df_data.sample(frac = sample_frac).reset_index(drop = True)
-		if property_prediction_flag:
-			print('after subsample: ' + str(len(df_data)) + ' drugs')
-		else:
-			print('after subsample: ' + str(len(df_data)) + ' drug-target pairs') 
+		print('after subsample: ' + str(len(df_data)) + ' data points...') 
 
-	print('encoding drug...')
-	print('unique drugs: ' + str(len(df_data['SMILES'].unique())))
+	if DTI_flag:
+		df_data = encode_drug(df_data, drug_encoding)
+		df_data = encode_protein(df_data, target_encoding)
+	elif DDI_flag:
+		df_data = encode_drug(df_data, drug_encoding, 'SMILES 1', 'drug_encoding_1')
+		df_data = encode_drug(df_data, drug_encoding, 'SMILES 2', 'drug_encoding_2')
+	elif PPI_flag:
+		df_data = encode_protein(df_data, target_encoding, 'Target Sequence 1', 'target_encoding_1')
+		df_data = encode_protein(df_data, target_encoding, 'Target Sequence 2', 'target_encoding_2')
+	elif property_prediction_flag:
+		df_data = encode_drug(df_data, drug_encoding)
+	elif function_prediction_flag:
+		df_data = encode_protein(df_data, target_encoding)
 
-	if drug_encoding == 'Morgan':
-		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2morgan)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-	elif drug_encoding == 'Pubchem':
-		unique = pd.Series(df_data['SMILES'].unique()).apply(calcPubChemFingerAll)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-	elif drug_encoding == 'Daylight':
-		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2daylight)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-	elif drug_encoding == 'rdkit_2d_normalized':
-		try:
-			unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2rdkit2d)
-			unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-			df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-		except:
-			raise ImportError("Please install pip install git+https://github.com/bp-kelley/descriptastorus.")
-	elif drug_encoding == 'CNN':
-		unique = pd.Series(df_data['SMILES'].unique()).apply(trans_drug)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-		# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
-	elif drug_encoding == 'CNN_RNN':
-		unique = pd.Series(df_data['SMILES'].unique()).apply(trans_drug)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-	elif drug_encoding == 'Transformer':
-		unique = pd.Series(df_data['SMILES'].unique()).apply(drug2emb_encoder)
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]
-	elif drug_encoding == 'MPNN':
-		#print(pd.Series(df_data['SMILES'].unique()))
-		unique = pd.Series(df_data['SMILES'].unique()).apply(smiles2mpnnfeature)   ##### list of 5 elements. 
-		unique_dict = dict(zip(df_data['SMILES'].unique(), unique))
-		df_data['drug_encoding'] = [unique_dict[i] for i in df_data['SMILES']]	
-		#print("assert ", len(df_data['drug_encoding'][0]) )
-		#assert len(df_data['drug_encoding'][0]) == 5 
-		#raise NotImplementedError
-	else:
-		raise AttributeError("Please use the correct drug encoding available!")
-
-	print('drug encoding finished...')
-
-	if not property_prediction_flag:
-		print('encoding protein...')
-		print('unique target sequence: ' + str(len(df_data['Target Sequence'].unique())))
-
-		if target_encoding == 'AAC':
-			print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU.\
-					 Calculate your time by the unique target sequence #, instead of the entire dataset.')
-			AA = pd.Series(df_data['Target Sequence'].unique()).apply(CalculateAADipeptideComposition)
-			AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
-			df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
-		elif target_encoding == 'PseudoAAC':
-			print('-- Encoding PseudoAAC takes time. Time Reference: 462s for ~100 sequences in a CPU.\
-					 Calculate your time by the unique target sequence #, instead of the entire dataset.')
-			AA = pd.Series(df_data['Target Sequence'].unique()).apply(_GetPseudoAAC)
-			AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
-			df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
-		elif target_encoding == 'Conjoint_triad':
-			AA = pd.Series(df_data['Target Sequence'].unique()).apply(CalculateConjointTriad)
-			AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
-			df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
-		elif target_encoding == 'Quasi-seq':
-			AA = pd.Series(df_data['Target Sequence'].unique()).apply(GetQuasiSequenceOrder)
-			AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
-			df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
-		elif target_encoding == 'CNN':
-			AA = pd.Series(df_data['Target Sequence'].unique()).apply(trans_protein)
-			AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
-			df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
-			# the embedding is large and not scalable but quick, so we move to encode in dataloader batch. 
-		elif target_encoding == 'CNN_RNN':
-			AA = pd.Series(df_data['Target Sequence'].unique()).apply(trans_protein)
-			AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
-			df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
-		elif target_encoding == 'Transformer':
-			AA = pd.Series(df_data['Target Sequence'].unique()).apply(protein2emb_encoder)
-			AA_dict = dict(zip(df_data['Target Sequence'].unique(), AA))
-			df_data['target_encoding'] = [AA_dict[i] for i in df_data['Target Sequence']]
-		else:
-			raise AttributeError("Please use the correct protein encoding available!")
-
-		print('protein encoding finished...')
-
+	# dti split
+	if DTI_flag:
 		if split_method == 'repurposing_VS':
 			pass
 		else:
@@ -404,7 +455,22 @@ def data_process(X_drug, X_target = None, y=None, drug_encoding=None, target_enc
 			return df_data.reset_index(drop=True)
 		else:
 			raise AttributeError("Please select one of the three split method: random, cold_drug, cold_target!")
-	else:
+	elif DDI_flag:
+		if split_method == 'random': 
+			train, val, test = create_fold(df_data, random_seed, frac)
+		elif split_method == 'no_split':
+			return df_data.reset_index(drop=True)
+	elif PPI_flag:
+		if split_method == 'random': 
+			train, val, test = create_fold(df_data, random_seed, frac)
+		elif split_method == 'no_split':
+			return df_data.reset_index(drop=True)
+	elif function_prediction_flag:
+		if split_method == 'random': 
+			train, val, test = create_fold(df_data, random_seed, frac)
+		elif split_method == 'no_split':
+			return df_data.reset_index(drop=True)
+	elif property_prediction_flag:
 		# drug property predictions
 		if split_method == 'repurposing_VS':
 			train = df_data
@@ -459,6 +525,57 @@ class data_process_loader(data.Dataset):
 		return v_d, v_p, y
 
 
+class data_process_DDI_loader(data.Dataset):
+
+	def __init__(self, list_IDs, labels, df, **config):
+		'Initialization'
+		self.labels = labels
+		self.list_IDs = list_IDs
+		self.df = df
+		self.config = config
+		print(df.columns.values)
+	def __len__(self):
+		'Denotes the total number of samples'
+		return len(self.list_IDs)
+
+	def __getitem__(self, index):
+		'Generates one sample of data'
+		index = self.list_IDs[index]
+		v_d = self.df.iloc[index]['drug_encoding_1']        
+		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
+			v_d = drug_2_embed(v_d)
+		v_p = self.df.iloc[index]['drug_encoding_2']
+		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
+			v_p = drug_2_embed(v_p)
+		y = self.labels[index]
+		return v_d, v_p, y
+
+
+class data_process_PPI_loader(data.Dataset):
+
+	def __init__(self, list_IDs, labels, df, **config):
+		'Initialization'
+		self.labels = labels
+		self.list_IDs = list_IDs
+		self.df = df
+		self.config = config
+
+	def __len__(self):
+		'Denotes the total number of samples'
+		return len(self.list_IDs)
+
+	def __getitem__(self, index):
+		'Generates one sample of data'
+		index = self.list_IDs[index]
+		v_d = self.df.iloc[index]['target_encoding_1']        
+		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
+			v_d = protein_2_embed(v_d)
+		v_p = self.df.iloc[index]['target_encoding_2']
+		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
+			v_p = protein_2_embed(v_p)
+		y = self.labels[index]
+		return v_d, v_p, y
+
 class data_process_loader_Property_Prediction(data.Dataset):
 
 	def __init__(self, list_IDs, labels, df, **config):
@@ -482,8 +599,31 @@ class data_process_loader_Property_Prediction(data.Dataset):
 		y = self.labels[index]
 		return v_d, y
 
+class data_process_loader_Protein_Prediction(data.Dataset):
 
-def generate_config(drug_encoding, target_encoding = None, 
+	def __init__(self, list_IDs, labels, df, **config):
+		'Initialization'
+		self.labels = labels
+		self.list_IDs = list_IDs
+		self.df = df
+		self.config = config
+
+	def __len__(self):
+		'Denotes the total number of samples'
+		return len(self.list_IDs)
+
+	def __getitem__(self, index):
+		'Generates one sample of data'
+		index = self.list_IDs[index]
+		v_p = self.df.iloc[index]['target_encoding']
+		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
+			v_p = protein_2_embed(v_p)
+		#print("len(v_d)", len(v_d))
+		y = self.labels[index]
+		return v_p, y
+
+
+def generate_config(drug_encoding = None, target_encoding = None, 
 					result_folder = "./result/",
 					input_dim_drug = 1024, 
 					input_dim_protein = 8420,
@@ -580,6 +720,8 @@ def generate_config(drug_encoding, target_encoding = None,
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
+	elif drug_encoding is None:
+		pass
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 
@@ -829,7 +971,7 @@ def download_pretrained_model(model_name, save_dir = './save_folder'):
 
 	return pretrained_dir
 
-def download_pretrained_model_property(model_name, save_dir = './save_folder'):
+def download_pretrained_model_S3(model_name, save_dir = './save_folder'):
 	print('Beginning Downloading' + model_name + ' Model...')
 	url = 'https://deeppurpose.s3.amazonaws.com/' + model_name + '.zip'
 

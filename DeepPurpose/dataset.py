@@ -57,6 +57,70 @@ def read_file_training_dataset_drug_target_pairs(path):
 	file.close()
 	return np.array(X_drug), np.array(X_target), np.array(y)
 
+def read_file_training_dataset_drug_drug_pairs(path):
+	# a line in the file is SMILES SMILES score    
+	try:
+		file = open(path, "r")
+	except:
+		print('Path Not Found, please double check!')
+	X_drug = []
+	X_target = []
+	y = []
+	for aline in file:
+		values = aline.split()
+		X_drug.append(values[0])
+		X_target.append(values[1])
+		y.append(float(values[2]))
+	file.close()
+	return np.array(X_drug), np.array(X_target), np.array(y)
+
+def read_file_protein_function(path):
+	# a line in the file is protein names and target_seq 
+	try:
+		file = open(path, "r")
+	except:
+		print('Path Not Found, please double check!')    
+	X_drug = []
+	X_drug_names = []
+	for aline in file:
+		values = aline.split()
+		X_drug.append(values[1])
+		X_drug_names.append(values[0])
+	file.close()
+	return np.array(X_drug), np.array(X_drug_names)
+
+def read_file_compound_property(path):
+	# a line in the file is drug names and smiles 
+	try:
+		file = open(path, "r")
+	except:
+		print('Path Not Found, please double check!')    
+	X_drug = []
+	X_drug_names = []
+	for aline in file:
+		values = aline.split()
+		X_drug.append(values[1])
+		X_drug_names.append(values[0])
+	file.close()
+	return np.array(X_drug), np.array(X_drug_names)
+
+def read_file_training_dataset_protein_protein_pairs(path):
+	# a line in the file is target_seq target_seq score    
+	try:
+		file = open(path, "r")
+	except:
+		print('Path Not Found, please double check!')
+	X_drug = []
+	X_target = []
+	y = []
+	for aline in file:
+		values = aline.split()
+		X_drug.append(values[0])
+		X_target.append(values[1])
+		y.append(float(values[2]))
+	file.close()
+	return np.array(X_drug), np.array(X_target), np.array(y)
+
 def read_file_virtual_screening_drug_target_pairs(path):
 	# a line in the file is SMILES Target_seq    
 	try:
