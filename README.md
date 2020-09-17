@@ -20,9 +20,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Molecular Modeling and 
 
 ### Features
 
-- For computational researchers, 15+ powerful encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ combined models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
-
-- For non-computational researchers, ONE line of code from raw data to output drug repurposing/virtual screening result, aiming to allow wet-lab biochemists to leverage the power of deep learning. The result is ensembled from five pretrained deep learning models!
+- 15+ powerful encodings for drugs and proteins, ranging from deep neural network on classic cheminformatics fingerprints, CNN, transformers to message passing graph neural network, with 50+ combined models! Most of the combinations of the encodings are not yet in existing works. All of these under 10 lines but with lots of flexibility! Switching encoding is as simple as changing the encoding names!
 
 - Realistic and user-friendly design: 
 	- support DTI, DDI, PPI, molecular property prediction, protein function predictions!
@@ -99,7 +97,7 @@ _ = models.virtual_screening(X_repurpose, target, net, drug_name, target_name)
 
 
 ### Case Study 1(b): A Framework for Drug Property Prediction, with less than 10 lines of codes.
-Many screening dataset is from assay, thus have only drug and its activity score. 
+Many dataset is in the form of high throughput screening data, which have only drug and its activity score. It can be formulated as a drug property prediction task. We also provide a repurpose function to predict over large space of drugs. 
 
 <details>
   <summary>Click here for the code!</summary>
@@ -126,6 +124,10 @@ config = generate_config(drug_encoding = drug_encoding,
                         )
 model = models.model_initialize(**config)
 model.train(train, val, test)
+
+X_repurpose, drug_name, drug_cid = load_broad_repurposing_hub(SAVE_PATH)
+
+_ = models.repurpose(X_repurpose, model, drug_name)
 
 ```
 
@@ -235,7 +237,7 @@ model.train(train, val, test)
 </details>
 
 ### Case Study 2 (a): Antiviral Drugs Repurposing for SARS-CoV2 3CLPro, using One Line.
-  Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset!
+  Given a new target sequence (e.g. SARS-CoV2 3CL Protease), retrieve a list of repurposing drugs from a curated drug library of 81 antiviral drugs. The Binding Score is the Kd values. Results aggregated from five pretrained model on BindingDB dataset! (Caution: this currently is for educational purposes. The pretrained DTI models only cover a small dataset and thus cannot generalize to every new unseen protein. For best use case, train your own model with customized data.)
 
 <details>
   <summary>Click here for the code!</summary>
@@ -269,43 +271,8 @@ Drug Repurposing Result for SARS-CoV2 3CL Protease
 
 </details>
 
-### Case Study 2 (b): New Target Repurposing using Broad Drug Repurposing Hub, with One Line.
-Given a new target sequence (e.g. MMP9), retrieve a list of repurposing drugs from Broad Drug Repurposing Hub, which is the default. Results also aggregated from five pretrained model! Note the drug name here is the Pubchem CID since some drug names in Broad is too long.
 
-<details>
-  <summary>Click here for the code!</summary>
-	
-```python
-from DeepPurpose import oneliner
-from DeepPurpose.dataset import *
-oneliner.repurpose(*load_MMP9())
-```
-```
-----output----
-Drug Repurposing Result for MMP9
-+------+-------------+-------------+---------------+
-| Rank |  Drug Name  | Target Name | Binding Score |
-+------+-------------+-------------+---------------+
-|  1   |  6917849.0  |     MMP9    |      5.42     |
-|  2   |   441336.0  |     MMP9    |      6.97     |
-|  3   |   441335.0  |     MMP9    |      8.37     |
-|  4   |   27924.0   |     MMP9    |      9.84     |
-|  5   |   16490.0   |     MMP9    |      9.86     |
-|  6   |  23947600.0 |     MMP9    |     10.11     |
-|  7   |    5743.0   |     MMP9    |     12.44     |
-|  8   |    3288.0   |     MMP9    |     15.91     |
-|  9   | 129009989.0 |     MMP9    |     18.01     |
-|  10  | 129009925.0 |     MMP9    |     23.13     |
-|  11  |  40467076.0 |     MMP9    |     23.48     |
-|  12  |  6917974.0  |     MMP9    |     24.50     |
-|  13  |  73707512.0 |     MMP9    |     26.83     |
-```
-  
-</details>
-
-
-
-### Case Study 2(c): Repurposing using Customized training data, with One Line.
+### Case Study 2(b): Repurposing using Customized training data, with One Line.
 Given a new target sequence (e.g. SARS-CoV 3CL Pro), training on new data (AID1706 Bioassay), and then retrieve a list of repurposing drugs from a proprietary library (e.g. antiviral drugs). The model can be trained from scratch or finetuned from the pretraining checkpoint!
 
 <details>
