@@ -103,7 +103,7 @@ Many dataset is in the form of high throughput screening data, which have only d
   <summary>Click here for the code!</summary>
 
 ```python
-import DeepPurpose.property_pred as models
+import DeepPurpose.CompoundPred as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
