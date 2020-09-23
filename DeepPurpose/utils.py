@@ -19,6 +19,7 @@ import pickle
 import wget
 from zipfile import ZipFile 
 import os
+import sys
 
 # ESPF encoding
 vocab_path = './DeepPurpose/ESPF/drug_codes_chembl_freq_1500.txt'
@@ -870,6 +871,26 @@ def save_dict(path, obj):
 def load_dict(path):
 	with open(path + '/config.pkl', 'rb') as f:
 		return pickle.load(f)
+
+URLs = {
+	'HIV': 'https://s3-us-west-1.amazonaws.com/deepchem.io/datasets/molnet_publish/hiv.zip'
+	}
+
+
+def download_unzip(name, path, file_name):
+	if not os.path.exists(path):
+		os.mkdir(path)
+
+	if os.path.exists(os.path.join(path, file_name)):
+		print('Dataset already downloaded in the local system...', flush = True, file = sys.stderr)
+	else:
+		print('Download zip file...', flush = True, file = sys.stderr)
+		url = URLs[name]
+		saved_path = wget.download(url, path)
+
+		print('Extract zip file...', flush = True, file = sys.stderr)
+		with ZipFile(saved_path, 'r') as zip: 
+		    zip.extractall(path = path) 
 
 def download_pretrained_model(model_name, save_dir = './save_folder'):
 	if model_name == 'DeepDTA_DAVIS':

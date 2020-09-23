@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import wget
 from zipfile import ZipFile 
-from DeepPurpose.utils import convert_y_unit
+from DeepPurpose.utils import *
 import json
 import os 
 
@@ -392,6 +392,35 @@ def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, ba
 
 	print('Done!')
 	return np.array(X_drug), target, np.array(y)
+
+def load_HIV(path = './data'):
+	download_unzip('HIV', path, 'hiv.csv')
+
+	df = pd.read_csv(os.path.join(path,'hiv.csv'))
+	df = df.iloc[df['smiles'].drop_duplicates(keep = False).index.values]
+
+	df = df[df["HIV_active"].notnull()].reset_index(drop = True)
+	y = df["HIV_active"].values
+	drugs = df.smiles.values
+	drugs_idx = np.array(list(range(len(drugs))))
+
+	return drugs, y, drugs_idx	
+
+def load_AqSolDB(path = './data'):
+
+	if os.path.exists(os.path.join(path,'curated-solubility-dataset.csv')):
+		print('Dataset already downloaded in the local system...', flush = True, file = sys.stderr)
+	else:
+		wget.download('https://dataverse.harvard.edu/api/access/datafile/3407241?format=original&gbrecs=true', path)
+
+	df = pd.read_csv(os.path.join(path,'curated-solubility-dataset.csv'))
+	df = df.iloc[df['SMILES'].drop_duplicates(keep = False).index.values]
+	
+	y = df["Solubility"].values
+	drugs = df.SMILES.values
+	drugs_idx = df.Name.values
+
+	return drugs, y, drugs_idx
 
 def load_broad_repurposing_hub(path = './data'):
 	url = 'https://deeppurpose.s3.amazonaws.com/broad.csv'
