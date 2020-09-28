@@ -120,7 +120,7 @@ def smiles2morgan(s, radius = 2, nBits = 1024):
         DataStructs.ConvertToNumpyArray(features_vec, features)
     except:
         print('rdkit not found this smiles for morgan: ' + s + ' convert to all 1 features')
-        features = np.ones((nBits, ))
+        features = np.zeros((nBits, ))
     return features
 
 def smiles2rdkit2d(s):    
