@@ -119,7 +119,7 @@ def smiles2morgan(s, radius = 2, nBits = 1024):
         features = np.zeros((1,))
         DataStructs.ConvertToNumpyArray(features_vec, features)
     except:
-        print('rdkit not found this smiles for morgan: ' + s + ' convert to all 1 features')
+        print('rdkit not found this smiles for morgan: ' + s + ' convert to all 0 features')
         features = np.zeros((nBits, ))
     return features
 
@@ -130,8 +130,8 @@ def smiles2rdkit2d(s):
         NaNs = np.isnan(features)
         features[NaNs] = 0
     except:
-        print('descriptastorus not found this smiles: ' + s + ' convert to all 1 features')
-        features = np.ones((200, ))
+        print('descriptastorus not found this smiles: ' + s + ' convert to all 0 features')
+        features = np.zeros((200, ))
     return np.array(features)
 
 def smiles2daylight(s):
@@ -143,10 +143,49 @@ def smiles2daylight(s):
 		features = np.zeros((NumFinger, ))
 		features[np.array(temp)] = 1
 	except:
-		print('rdkit not found this smiles: ' + s + ' convert to all 1 features')
-		features = np.ones((2048, ))
+		print('rdkit not found this smiles: ' + s + ' convert to all 0 features')
+		features = np.zeros((2048, ))
 	return np.array(features)
 
+def smiles2pubchem(s):
+	try:
+		features = calcPubChemFingerAll(s)
+	except:
+		print('pubchem fingerprint not working for smiles: ' + s + ' convert to 0 vectors')
+		features = np.zeros((881, ))
+	return np.array(features)
+
+def target2quasi(s):
+	try:
+		features = GetQuasiSequenceOrder(s)
+	except:
+		print('Quasi-seq fingerprint not working for smiles: ' + s + ' convert to 0 vectors')
+		features = np.zeros((100, ))
+	return np.array(features)
+
+def target2aac(s):
+	try:
+		features = CalculateAADipeptideComposition(s)
+	except:
+		print('AAC fingerprint not working for smiles: ' + s + ' convert to 0 vectors')
+		features = np.zeros((8420, ))
+	return np.array(features)
+
+def target2paac(s):
+	try:
+		features = _GetPseudoAAC(s)
+	except:
+		print('PesudoAAC fingerprint not working for smiles: ' + s + ' convert to 0 vectors')
+		features = np.zeros((30, ))
+	return np.array(features)
+
+def target2ct(s):
+	try:
+		features = CalculateConjointTriad(s)
+	except:
+		print('Conjoint Triad fingerprint not working for smiles: ' + s + ' convert to 0 vectors')
+		features = np.zeros((343, ))
+	return np.array(features)
 
 def smiles2mpnnfeature(smiles):
 	## mpn.py::tensorize  
@@ -264,7 +303,7 @@ def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
 	elif drug_encoding == 'Pubchem':
-		unique = pd.Series(df_data[column_name].unique()).apply(calcPubChemFingerAll)
+		unique = pd.Series(df_data[column_name].unique()).apply(smiles2pubchem)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
 	elif drug_encoding == 'Daylight':
@@ -302,21 +341,21 @@ def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', sa
 	if target_encoding == 'AAC':
 		print('-- Encoding AAC takes time. Time Reference: 24s for ~100 sequences in a CPU.\
 				 Calculate your time by the unique target sequence #, instead of the entire dataset.')
-		AA = pd.Series(df_data[column_name].unique()).apply(CalculateAADipeptideComposition)
+		AA = pd.Series(df_data[column_name].unique()).apply(target2aac)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
 	elif target_encoding == 'PseudoAAC':
 		print('-- Encoding PseudoAAC takes time. Time Reference: 462s for ~100 sequences in a CPU.\
 				 Calculate your time by the unique target sequence #, instead of the entire dataset.')
-		AA = pd.Series(df_data[column_name].unique()).apply(_GetPseudoAAC)
+		AA = pd.Series(df_data[column_name].unique()).apply(target2paac)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
 	elif target_encoding == 'Conjoint_triad':
-		AA = pd.Series(df_data[column_name].unique()).apply(CalculateConjointTriad)
+		AA = pd.Series(df_data[column_name].unique()).apply(target2ct)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
 	elif target_encoding == 'Quasi-seq':
-		AA = pd.Series(df_data[column_name].unique()).apply(GetQuasiSequenceOrder)
+		AA = pd.Series(df_data[column_name].unique()).apply(target2quasi)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
 	elif target_encoding == 'CNN':
