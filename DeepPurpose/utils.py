@@ -115,7 +115,7 @@ def index_select_ND(source, dim, index):
 def smiles2morgan(s, radius = 2, nBits = 1024):
     try:
         mol = Chem.MolFromSmiles(s)
-        features_vec = AllChem.GetHashedMorganFingerprint(mol, radius, nBits=nBits)
+        features_vec = AllChem.GetMorganFingerprintAsBitVect(mol, radius, nBits=nBits)
         features = np.zeros((1,))
         DataStructs.ConvertToNumpyArray(features_vec, features)
     except:
