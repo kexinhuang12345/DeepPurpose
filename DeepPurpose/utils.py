@@ -915,6 +915,15 @@ URLs = {
 	'HIV': 'https://s3-us-west-1.amazonaws.com/deepchem.io/datasets/molnet_publish/hiv.zip'
 	}
 
+def obtain_compound_embedding(net, file, file_type = 'df'):
+    if file_type == 'df':
+        x = np.stack(file['drug_encoding'].values)
+    elif file_type == 'array':
+        x = file
+    else:
+        raise AttributeError
+    
+    return net.model_drug(torch.FloatTensor(x))
 
 def download_unzip(name, path, file_name):
 	if not os.path.exists(path):
