@@ -314,6 +314,10 @@ def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name
 		unique = pd.Series(df_data[column_name].unique()).apply(smiles2rdkit2d)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	if drug_encoding == 'ESPF':
+		unique = pd.Series(df_data[column_name].unique()).apply(drug2espf)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
 	elif drug_encoding == 'CNN':
 		unique = pd.Series(df_data[column_name].unique()).apply(trans_drug)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
@@ -358,6 +362,10 @@ def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', sa
 		AA = pd.Series(df_data[column_name].unique()).apply(target2quasi)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
+	elif target_encoding == 'ESPF':
+		unique = pd.Series(df_data[column_name].unique()).apply(protein2espf)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
 	elif target_encoding == 'CNN':
 		AA = pd.Series(df_data[column_name].unique()).apply(trans_protein)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
@@ -733,6 +741,9 @@ def generate_config(drug_encoding = None, target_encoding = None,
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1						
 	elif drug_encoding == 'rdkit_2d_normalized':
 		base_config['input_dim_drug'] = 200
+		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1
+	elif drug_encoding == 'ESPF':
+		base_config['input_dim_drug'] = len(idx2word_d)
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
 	elif drug_encoding == 'CNN':
 		base_config['cnn_drug_filters'] = cnn_drug_filters
@@ -775,7 +786,10 @@ def generate_config(drug_encoding = None, target_encoding = None,
 		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1				
 	elif target_encoding == 'Quasi-seq':
 		base_config['input_dim_protein'] = 100
-		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1				
+		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1	
+	elif target_encoding == 'ESPF':
+		base_config['input_dim_protein'] = len(idx2word_p)
+		base_config['mlp_hidden_dims_target'] = mlp_hidden_dims_target # MLP classifier dim 1			
 	elif target_encoding == 'CNN':
 		base_config['cnn_target_filters'] = cnn_target_filters
 		base_config['cnn_target_kernels'] = cnn_target_kernels
@@ -861,6 +875,25 @@ def drug2emb_encoder(x):
 		the returned tuple is fed into models.transformer.forward() 
     '''
 
+def drug2espf(x):
+    t1 = dbpe.process_line(x).split()  # split
+    try:
+        i1 = np.asarray([words2idx_d[i] for i in t1])  # index
+    except:
+        i1 = np.array([0])
+    v1 = np.zeros(len(idx2word_d),)
+    v1[i1] = 1
+    return v1	
+
+def protein2espf(x):
+    t1 = pbpe.process_line(x).split()  # split
+    try:
+        i1 = np.asarray([words2idx_p[i] for i in t1])  # index
+    except:
+        i1 = np.array([0])
+    v1 = np.zeros(len(idx2word_p),)
+    v1[i1] = 1
+    return v1
 
 # '?' padding
 amino_char = ['?', 'A', 'C', 'B', 'E', 'D', 'G', 'F', 'I', 'H', 'K', 'M', 'L', 'O',

@@ -409,6 +409,7 @@ Currently, we support the following encodings:
 | Pubchem| Pubchem Substructure-based Fingerprints|
 | Daylight | Daylight-type fingerprints | 
 | rdkit_2d_normalized| Normalized Descriptastorus|
+| ESPF | Explainable Substructure Partition Fingerprint |
 | CNN | Convolutional Neural Network on SMILES|
 |CNN_RNN| A GRU/LSTM on top of a CNN on SMILES|
 |Transformer| Transformer Encoder on ESPF|
@@ -420,6 +421,7 @@ Currently, we support the following encodings:
 | PseudoAAC| Pseudo amino acid composition|
 | Conjoint_triad | Conjoint triad features | 
 | Quasi-seq| Quasi-sequence order descriptor|
+| ESPF | Explainable Substructure Partition Fingerprint |
 | CNN | Convolutional Neural Network on target seq|
 |CNN_RNN| A GRU/LSTM on top of a CNN on target seq|
 |Transformer| Transformer Encoder on ESPF|
