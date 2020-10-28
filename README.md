@@ -601,7 +601,7 @@ Model name consists of first the drug encoding, then the target encoding and the
 
 |Model Name|
 |------|
-|DeepDTA_DAVIS|
+|CNN_CNN_DAVIS|
 |CNN_CNN_BindingDB|
 |Morgan_CNN_BindingDB|
 |Morgan_CNN_KIBA|

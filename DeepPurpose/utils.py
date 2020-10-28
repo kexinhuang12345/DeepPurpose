@@ -925,6 +925,70 @@ def obtain_compound_embedding(net, file, file_type = 'df'):
     
     return net.model_drug(torch.FloatTensor(x))
 
+
+name2ids = {
+	'cnn_cnn_bindingdb': 4159715,
+	'daylight_aac_bindingdb': 4159667,
+	'daylight_aac_davis': 4159679,
+	'daylight_aac_kiba': 4159649,
+	'cnn_cnn_davis': 4159673,
+	'morgan_aac_bindingdb': 4159694,
+	'morgan_aac_davis': 4159706,
+	'morgan_aac_kiba': 4159690,
+	'morgan_cnn_bindingdb': 4159708,
+	'morgan_cnn_davis': 4159705,
+	'morgan_cnn_kiba': 4159676,
+	'mpnn_aac_davis': 4159661,
+	'mpnn_cnn_bindingdb': 4159672,
+	'mpnn_cnn_davis': 4159677,
+	'mpnn_cnn_kiba': 4159696,
+	'transformer_cnn_bindingdb': 4159655,
+	'pretrained_models': 4159682,
+	'models_configs': 4159714
+ }
+
+name2zipfilename = {
+	'cnn_cnn_bindingdb': 'model_cnn_cnn_bindingdb',
+	'daylight_aac_bindingdb': 'model_daylight_aac_bindingdb',
+	'daylight_aac_davis': 'model_daylight_aac_davis',
+	'daylight_aac_kiba': 'model_daylight_aac_kiba',
+	'cnn_cnn_davis': 'model_cnn_cnn_davis',
+	'morgan_aac_bindingdb': 'model_morgan_aac_bindingdb',
+	'morgan_aac_davis': 'model_morgan_aac_davis',
+	'morgan_aac_kiba': 'model_morgan_aac_kiba',
+	'morgan_cnn_bindingdb': 'model_morgan_cnn_bindingdb',
+	'morgan_cnn_davis': 'model_morgan_cnn_davis',
+	'morgan_cnn_kiba': 'model_morgan_aac_kiba',
+	'mpnn_aac_davis': ' model_mpnn_aac_davis',
+	'mpnn_cnn_bindingdb': 'model_mpnn_cnn_bindingdb',
+	'mpnn_cnn_davis': 'model_mpnn_cnn_davis',
+	'mpnn_cnn_kiba': 'model_mpnn_cnn_kiba',
+	'transformer_cnn_bindingdb': 'model_transformer_cnn_bindingdb',
+	'pretrained_models': 'pretrained_models',
+	'models_configs': 'models_configs'
+}
+
+name2filename = {
+	'cnn_cnn_bindingdb': 'model_cnn_cnn_bindingdb',
+	'daylight_aac_bindingdb': 'model_daylight_aac_bindingdb',
+	'daylight_aac_davis': 'model_daylight_aac_davis',
+	'daylight_aac_kiba': 'model_daylight_aac_kiba',
+	'cnn_cnn_davis': 'model_cnn_cnn_davis',
+	'morgan_aac_bindingdb': 'model_morgan_aac_bindingdb',
+	'morgan_aac_davis': 'model_morgan_aac_davis',
+	'morgan_aac_kiba': 'model_morgan_aac_kiba',
+	'morgan_cnn_bindingdb': 'model_morgan_cnn_bindingdb',
+	'morgan_cnn_davis': 'model_morgan_cnn_davis',
+	'morgan_cnn_kiba': 'model_morgan_aac_kiba',
+	'mpnn_aac_davis': ' model_mpnn_aac_davis',
+	'mpnn_cnn_bindingdb': 'model_mpnn_cnn_bindingdb',
+	'mpnn_cnn_davis': 'model_mpnn_cnn_davis',
+	'mpnn_cnn_kiba': 'model_mpnn_cnn_kiba',
+	'transformer_cnn_bindingdb': 'model_transformer_cnn_bindingdb',
+	'pretrained_models': 'DeepPurpose_BindingDB',
+	'models_configs': 'models_configs'
+}
+
 def download_unzip(name, path, file_name):
 	if not os.path.exists(path):
 		os.mkdir(path)
@@ -941,54 +1005,10 @@ def download_unzip(name, path, file_name):
 		    zip.extractall(path = path) 
 
 def download_pretrained_model(model_name, save_dir = './save_folder'):
-	if model_name == 'DeepDTA_DAVIS':
-		print('Beginning Downloading DeepDTA_DAVIS Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_DeepDTA_DAVIS.zip'
-	elif model_name == 'CNN_CNN_DAVIS':
-		print('Beginning Downloading CNN_CNN DAVIS Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_cnn_cnn_davis.zip'
-	elif model_name == 'CNN_CNN_BindingDB':
-		print('Beginning Downloading CNN_CNN BindingDB Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_cnn_cnn_bindingdb.zip'
-	elif model_name == 'Daylight_AAC_DAVIS':
-		print('Beginning Downloading Daylight_AAC_DAVIS Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_daylight_aac_davis.zip'
-	elif model_name == 'Daylight_AAC_KIBA':
-		print('Beginning Downloading Daylight_AAC_KIBA Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_daylight_aac_kiba.zip'
-	elif model_name == 'Daylight_AAC_BindingDB':
-		print('Beginning Downloading Daylight_AAC_BindingDB Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_daylight_aac_bindingdb.zip'
-	elif model_name == 'Morgan_AAC_BindingDB':
-		print('Beginning Downloading Morgan_AAC_BindingDB Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_aac_bindingdb.zip'
-	elif model_name == 'Morgan_AAC_KIBA':
-		print('Beginning Downloading Morgan_AAC_KIBA Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_aac_kiba.zip'
-	elif model_name == 'Morgan_AAC_DAVIS':
-		print('Beginning Downloading Morgan_AAC_DAVIS Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_aac_davis.zip'
-	elif model_name == 'Morgan_CNN_BindingDB':
-		print('Beginning Downloading Morgan_CNN_BindingDB Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_cnn_bindingdb.zip'
-	elif model_name == 'Morgan_CNN_KIBA':
-		print('Beginning Downloading Morgan_CNN_KIBA Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_cnn_kiba.zip'
-	elif model_name == 'Morgan_CNN_DAVIS':
-		print('Beginning Downloading Morgan_CNN_DAVIS Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_morgan_cnn_davis.zip'
-	elif model_name == 'MPNN_CNN_BindingDB':
-		print('Beginning Downloading MPNN_CNN_BindingDB Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_mpnn_cnn_bindingdb.zip'
-	elif model_name == 'MPNN_CNN_KIBA':
-		print('Beginning Downloading MPNN_CNN_KIBA Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_mpnn_cnn_kiba.zip'
-	elif model_name == 'MPNN_CNN_DAVIS':
-		print('Beginning Downloading MPNN_CNN_DAVIS Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_mpnn_cnn_davis.zip'
-	elif model_name == 'Transformer_CNN_BindingDB':
-		print('Beginning Downloading Transformer_CNN_BindingDB Model...')
-		url = 'https://deeppurpose.s3.amazonaws.com/model_transformer_cnn_bindingdb.zip'
+	
+	if model_name.lower() in list(name2ids.keys()):
+		server_path = 'https://dataverse.harvard.edu/api/access/datafile/'
+		url = server_path + str(name2ids[model_name.lower()])
 	else:
 		raise Exception("Given name not a pretrained model. The full list is in the Github README https://github.com/kexinhuang12345/DeepPurpose/blob/master/README.md#pretrained-models")
 
@@ -998,47 +1018,28 @@ def download_pretrained_model(model_name, save_dir = './save_folder'):
 		os.mkdir(os.path.join(save_dir, 'pretrained_model'))
 
 	pretrained_dir = os.path.join(save_dir, 'pretrained_model')
-	pretrained_dir_ = wget.download(url, pretrained_dir)
+	downloaded_path = os.path.join(pretrained_dir, name2zipfilename[model_name.lower()] + '.zip')
 
-	print('Downloading finished... Beginning to extract zip file...')
-	with ZipFile(pretrained_dir_, 'r') as zip: 
-		zip.extractall(path = pretrained_dir)
-	print('pretrained model Successfully Downloaded...')
-    
-	if model_name == 'DeepDTA_DAVIS':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_DeepDTA_DAVIS')
-	elif model_name == 'CNN_CNN_DAVIS':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_cnn_cnn_davis')
-	elif model_name == 'CNN_CNN_BindingDB':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_cnn_cnn_bindingdb')
-	elif model_name == 'Daylight_AAC_DAVIS':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_daylight_aac_davis')
-	elif model_name == 'Daylight_AAC_KIBA':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_daylight_aac_kiba')
-	elif model_name == 'Daylight_AAC_BindingDB':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_daylight_aac_bindingdb')
-	elif model_name == 'Morgan_AAC_BindingDB':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_aac_bindingdb')
-	elif model_name == 'Morgan_AAC_KIBA':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_aac_kiba')
-	elif model_name == 'Morgan_AAC_DAVIS':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_aac_davis')
-	elif model_name == 'Morgan_CNN_BindingDB':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_cnn_bindingdb')
-	elif model_name == 'Morgan_CNN_KIBA':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_cnn_kiba')
-	elif model_name == 'Morgan_CNN_DAVIS':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_morgan_cnn_davis')
-	elif model_name == 'MPNN_CNN_BindingDB':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_mpnn_cnn_bindingdb')
-	elif model_name == 'MPNN_CNN_KIBA':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_mpnn_cnn_kiba')
-	elif model_name == 'MPNN_CNN_DAVIS':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_mpnn_cnn_davis')
-	elif model_name == 'Transformer_CNN_BindingDB':
-		pretrained_dir = os.path.join(pretrained_dir, 'model_transformer_cnn_bindingdb')
-
+	if os.path.exists(os.path.join(pretrained_dir, name2filename[model_name.lower()])):
+		print('Dataset already downloaded in the local system...')
+	else:
+		download_url(url, downloaded_path)
+		print('Downloading finished... Beginning to extract zip file...')
+		with ZipFile(downloaded_path, 'r') as zip: 
+			zip.extractall(path = pretrained_dir)
+		print('pretrained model Successfully Downloaded...')
+	
+	pretrained_dir = os.path.join(pretrained_dir, name2filename[model_name.lower()])
+	
 	return pretrained_dir
+	
+import requests 
+
+def download_url(url, save_path, chunk_size=128):
+    r = requests.get(url, stream=True)
+    with open(save_path, 'wb') as fd:
+        for chunk in r.iter_content(chunk_size=chunk_size):
+            fd.write(chunk)
 
 def download_pretrained_model_S3(model_name, save_dir = './save_folder'):
 	print('Beginning Downloading' + model_name + ' Model...')
