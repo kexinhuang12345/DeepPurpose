@@ -297,7 +297,6 @@ def create_fold_setting_cold_drug(df, fold_seed, frac):
 def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name = 'drug_encoding'):
 	print('encoding drug...')
 	print('unique drugs: ' + str(len(df_data[column_name].unique())))
-
 	if drug_encoding == 'Morgan':
 		unique = pd.Series(df_data[column_name].unique()).apply(smiles2morgan)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
@@ -314,7 +313,7 @@ def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name
 		unique = pd.Series(df_data[column_name].unique()).apply(smiles2rdkit2d)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
-	if drug_encoding == 'ESPF':
+	elif drug_encoding == 'ESPF':
 		unique = pd.Series(df_data[column_name].unique()).apply(drug2espf)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
