@@ -235,39 +235,17 @@ def virtual_screening(target, X_repurpose = None,
 		# load 6 pretrained model
 		print('Beginning Downloading Pretrained Model...')
 		print('Note: if you have already download the pretrained model before, please stop the program and set the input parameter \'pretrained_dir\' to the path')
-		url = 'https://deeppurpose.s3.amazonaws.com/pretrained_models.zip'
-		if not os.path.exists(os.path.join(save_dir, 'pretrained_models')):
-			os.mkdir(os.path.join(save_dir, 'pretrained_models'))
-
-		pretrained_dir = os.path.join(save_dir, 'pretrained_models')
-		pretrained_dir_ = wget.download(url, pretrained_dir)
-
-		print('Downloading finished... Beginning to extract zip file...')
-		with ZipFile(pretrained_dir_, 'r') as zip: 
-		    zip.extractall(path = pretrained_dir)
-		print('Pretrained Models Successfully Downloaded...')
-		pretrained_dir = os.path.join(pretrained_dir, 'DeepPurpose_BindingDB')
+		pretrained_dir = download_pretrained_model('pretrained_models')
 	elif pretrained == False:
 		print('Beginning Downloading Configs Files for training from scratch...')
-		url = 'https://deeppurpose.s3.amazonaws.com/models_configs.zip'
-		if not os.path.exists(os.path.join(save_dir, 'models_configs')):
-			os.mkdir(os.path.join(save_dir, 'models_configs'))
-
-		pretrained_dir = os.path.join(save_dir, 'models_configs')
-		pretrained_dir_ = wget.download(url, pretrained_dir)
-
-		print('Downloading finished... Beginning to extract zip file...')
-		with ZipFile(pretrained_dir_, 'r') as zip: 
-		    zip.extractall(path = pretrained_dir)
-		print('Configs Models Successfully Downloaded...')
-		pretrained_dir = os.path.join(pretrained_dir, 'models_configs')      
+		pretrained_dir = download_pretrained_model('models_configs')		    
 	else:
 		print('Checking if pretrained directory is valid...')
 		if not os.path.exists(pretrained_dir):
 			print('The directory to pretrained model is not found. Please double check, or download it again by setting the input parameter \'pretrained_dir\' to be \'None\'')
 		else:
 			print('Beginning to load the pretrained models...')
-
+			
 	if train_drug is None:
 		
 		print('Using pretrained model and making predictions...')
