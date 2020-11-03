@@ -947,16 +947,42 @@ URLs = {
 	'HIV': 'https://s3-us-west-1.amazonaws.com/deepchem.io/datasets/molnet_publish/hiv.zip'
 	}
 
-def obtain_compound_embedding(net, file, file_type = 'df'):
-    if file_type == 'df':
-        x = np.stack(file['drug_encoding'].values)
-    elif file_type == 'array':
-        x = file
-    else:
-        raise AttributeError
-    
-    return net.model_drug(torch.FloatTensor(x))
+def obtain_compound_embedding(net, file, drug_encoding):
 
+	if drug_encoding == 'CNN' or drug_encoding == 'CNN_RNN':
+		v_d = [drug_2_embed(i) for i in file['drug_encoding'].values]
+		x = np.stack(v_d)
+	elif drug_encoding == 'MPNN':
+		x = mpnn_collate_func(file['drug_encoding'].values)
+	else:
+		v_d = file['drug_encoding'].values
+		x = np.stack(v_d)
+	return net.model_drug(torch.FloatTensor(x))
+
+def obtain_protein_embedding(net, file, target_encoding):
+
+	if target_encoding == 'CNN' or target_encoding == 'CNN_RNN':
+		v_d = [protein_2_embed(i) for i in file['target_encoding'].values]
+		x = np.stack(v_d)
+	else:
+		v_d = file['target_encoding'].values
+		x = np.stack(v_d)
+	return net.model_protein(torch.FloatTensor(x))
+
+def mpnn_feature_collate_func(x): 
+	## first version 
+	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
+
+def mpnn_collate_func(x):
+	#print("len(x) is ", len(x)) ## batch_size 
+	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader.__getitem__ 
+	mpnn_feature = [i[0] for i in x]
+	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
+	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
+	from torch.utils.data.dataloader import default_collate
+	x_remain = [[i[1], i[2]] for i in x]
+	x_remain_collated = default_collate(x_remain)
+	return [mpnn_feature] + x_remain_collated
 
 name2ids = {
 	'cnn_cnn_bindingdb': 4159715,
@@ -1005,7 +1031,7 @@ name2filename = {
 	'daylight_aac_bindingdb': 'model_daylight_aac_bindingdb',
 	'daylight_aac_davis': 'model_daylight_aac_davis',
 	'daylight_aac_kiba': 'model_daylight_aac_kiba',
-	'cnn_cnn_davis': 'model_cnn_cnn_davis',
+	'cnn_cnn_davis': 'model_DeepDTA_DAVIS',
 	'morgan_aac_bindingdb': 'model_morgan_aac_bindingdb',
 	'morgan_aac_davis': 'model_morgan_aac_davis',
 	'morgan_aac_kiba': 'model_morgan_aac_kiba',
