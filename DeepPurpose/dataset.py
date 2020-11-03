@@ -423,20 +423,22 @@ def load_AqSolDB(path = './data'):
 	return drugs, y, drugs_idx
 
 def load_broad_repurposing_hub(path = './data'):
-	url = 'https://deeppurpose.s3.amazonaws.com/broad.csv'
+	url = 'https://dataverse.harvard.edu/api/access/datafile/4159648'
 	if not os.path.exists(path):
 	    os.makedirs(path)
-	saved_path_data = wget.download(url, path)
-	df = pd.read_csv(saved_path_data)
+	download_path = os.path.join(path, 'broad.tab')
+	download_url(url, download_path)
+	df = pd.read_csv(download_path, sep = '\t')
 	df = df.fillna('UNK')
 	return df.smiles.values, df.title.values, df.cid.values.astype(str)
 
 def load_antiviral_drugs(path = './data', no_cid = False):
-	url = 'https://deeppurpose.s3.amazonaws.com/antiviral_drugs.csv'
+	url = 'https://dataverse.harvard.edu/api/access/datafile/4159652'
 	if not os.path.exists(path):
-		os.mkdir(path)
-	saved_path_data = wget.download(url, path)
-	df = pd.read_csv(saved_path_data)
+	    os.makedirs(path)
+	download_path = os.path.join(path, 'antiviral_drugs.tab')
+	download_url(url, download_path)
+	df = pd.read_csv(download_path, sep = '\t')
 	if no_cid:
 		return df.SMILES.values, df[' Name'].values
 	else:
@@ -453,11 +455,12 @@ def load_IC50_Not_Pretrained(path = './data', n=500):
 
 def load_IC50_1000_Samples(path = './data', n=100): 
 	print('Downloading...')    
-	url = 'https://deeppurpose.s3.amazonaws.com/IC50_samples.csv'
+	url = 'https://dataverse.harvard.edu/api/access/datafile/4159681'
 	if not os.path.exists(path):
 	    os.makedirs(path)
-	saved_path_data = wget.download(url, path)
-	df = pd.read_csv(saved_path_data).sample(n = n, replace = False).reset_index(drop = True)
+	download_path = os.path.join(path, 'IC50_samples.csv')
+	download_url(url, download_path)
+	df = pd.read_csv(download_path).sample(n = n, replace = False).reset_index(drop = True)
 	return df['Target Sequence'].values, df['SMILES'].values
 
 def load_SARS_CoV_Protease_3CL():
