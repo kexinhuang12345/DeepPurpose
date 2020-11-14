@@ -314,13 +314,12 @@ Drug Repurposing Result for SARS-CoV 3CL Protease
 
 If you found this package useful, please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
 ```
-@article{huang2020deeppurpose,
-  title={DeepPurpose: a Deep Learning Based Drug Repurposing Toolkit},
-  author={Huang, Kexin and Fu, Tianfan and Xiao, Cao and Glass, Lucas and Sun, Jimeng},
-  journal={arXiv preprint arXiv:2004.08919},
+@article{deeppurpose,
+  title={DeepPurpose: a deep learning library for drug-target interaction prediction and applications to repurposing and screening},
+  author={Huang, Kexin and Fu, Tianfan and Glass, Lucas and Zitnik, Marinka and Xiao, Cao and Sun, Jimeng},
+  journal={arXiv:2004.08919},
   year={2020}
 }
-
 ```
 
 ## Install & Usage

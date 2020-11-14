@@ -341,13 +341,7 @@ def virtual_screening(target, X_repurpose = None,
 	table = PrettyTable(table_header)
 
 	with open(fo,'w') as fout:
-		print('virtual screening...')
-		df_data = data_process_repurpose_virtual_screening(X_repurpose, target, model.drug_encoding, model.target_encoding, 'virtual screening')
-		y_pred = model.predict(df_data)
-
-		if convert_y:
-			y_pred = convert_y_unit(np.array(y_pred), 'p', 'nM')
-
+		print('virtual screening...')		
 		print('---------------')
 		if drug_names is not None and target_name is not None:
 			print('Virtual Screening Result')
