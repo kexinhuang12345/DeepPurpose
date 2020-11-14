@@ -384,6 +384,9 @@ def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', sa
 
 def data_process(X_drug = None, X_target = None, y=None, drug_encoding=None, target_encoding=None, 
 				 split_method = 'random', frac = [0.7, 0.1, 0.2], random_seed = 1, sample_frac = 1, mode = 'DTI', X_drug_ = None, X_target_ = None):
+	
+	if random_seed == 'TDC':
+		random_seed = 1234
 	#property_prediction_flag = X_target is None
 	property_prediction_flag, function_prediction_flag, DDI_flag, PPI_flag, DTI_flag = False, False, False, False, False
 
