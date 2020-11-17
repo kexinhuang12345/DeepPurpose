@@ -20,21 +20,24 @@ import wget
 from zipfile import ZipFile 
 import os
 import sys
+import pathlib
+
+this_dir = str(pathlib.Path(__file__).parent.absolute())
 
 # ESPF encoding
-vocab_path = './DeepPurpose/ESPF/drug_codes_chembl_freq_1500.txt'
+vocab_path = f"{this_dir}/ESPF/drug_codes_chembl_freq_1500.txt"
 bpe_codes_drug = codecs.open(vocab_path)
 dbpe = BPE(bpe_codes_drug, merges=-1, separator='')
-sub_csv = pd.read_csv('./DeepPurpose/ESPF/subword_units_map_chembl_freq_1500.csv')
+sub_csv = pd.read_csv(f"{this_dir}/ESPF/subword_units_map_chembl_freq_1500.csv")
 
 idx2word_d = sub_csv['index'].values
 words2idx_d = dict(zip(idx2word_d, range(0, len(idx2word_d))))
 
-vocab_path = './DeepPurpose/ESPF/protein_codes_uniprot_2000.txt'
+vocab_path = f"{this_dir}/ESPF/protein_codes_uniprot_2000.txt"
 bpe_codes_protein = codecs.open(vocab_path)
 pbpe = BPE(bpe_codes_protein, merges=-1, separator='')
 #sub_csv = pd.read_csv(dataFolder + '/subword_units_map_protein.csv')
-sub_csv = pd.read_csv('./DeepPurpose/ESPF/subword_units_map_uniprot_2000.csv')
+sub_csv = pd.read_csv(f"{this_dir}/ESPF/subword_units_map_uniprot_2000.csv")
 
 idx2word_p = sub_csv['index'].values
 words2idx_p = dict(zip(idx2word_p, range(0, len(idx2word_p))))
