@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
 import wget
-from zipfile import ZipFile 
+from zipfile import ZipFile
 from DeepPurpose.utils import *
 import json
-import os 
+import os
 
 '''
 Acknowledgement:
@@ -12,11 +12,11 @@ The BindingDB dataset is hosted in https://www.bindingdb.org/bind/index.jsp.
 
 The Davis Dataset can be found in http://staff.cs.utu.fi/~aatapa/data/DrugTarget/.
 
-The KIBA dataset can be found in https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z. 
+The KIBA dataset can be found in https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0209-z.
 
 The Drug Target Common Dataset can be found in https://drugtargetcommons.fimm.fi/.
 
-The COVID-19 Dataset including SARS-CoV, Broad Repurposing Hub can be found in https://www.aicures.mit.edu/data; and https://pubchem.ncbi.nlm.nih.gov/bioassay/1706. 
+The COVID-19 Dataset including SARS-CoV, Broad Repurposing Hub can be found in https://www.aicures.mit.edu/data; and https://pubchem.ncbi.nlm.nih.gov/bioassay/1706.
 We use some existing files from https://github.com/yangkevin2/coronavirus_data
 
 We use the SMILES, protein sequence from DeepDTA github repo: https://github.com/hkmztrk/DeepDTA/tree/master/data.
@@ -30,7 +30,7 @@ def read_file_training_dataset_bioassay(path):
 		print('Path Not Found, please double check!')
 	target = file.readline()
 	if target[-1:] == '\n':
-		target = target[:-1]        
+		target = target[:-1]
 	X_drug = []
 	y = []
 	for aline in file:
@@ -41,7 +41,7 @@ def read_file_training_dataset_bioassay(path):
 	return np.array(X_drug), target, np.array(y)
 
 def read_file_training_dataset_drug_target_pairs(path):
-	# a line in the file is SMILES Target_seq score    
+	# a line in the file is SMILES Target_seq score
 	try:
 		file = open(path, "r")
 	except:
@@ -58,7 +58,7 @@ def read_file_training_dataset_drug_target_pairs(path):
 	return np.array(X_drug), np.array(X_target), np.array(y)
 
 def read_file_training_dataset_drug_drug_pairs(path):
-	# a line in the file is SMILES SMILES score    
+	# a line in the file is SMILES SMILES score
 	try:
 		file = open(path, "r")
 	except:
@@ -75,11 +75,11 @@ def read_file_training_dataset_drug_drug_pairs(path):
 	return np.array(X_drug), np.array(X_target), np.array(y)
 
 def read_file_protein_function(path):
-	# a line in the file is protein names and target_seq 
+	# a line in the file is protein names and target_seq
 	try:
 		file = open(path, "r")
 	except:
-		print('Path Not Found, please double check!')    
+		print('Path Not Found, please double check!')
 	X_drug = []
 	X_drug_names = []
 	for aline in file:
@@ -90,11 +90,11 @@ def read_file_protein_function(path):
 	return np.array(X_drug), np.array(X_drug_names)
 
 def read_file_compound_property(path):
-	# a line in the file is drug names and smiles 
+	# a line in the file is drug names and smiles
 	try:
 		file = open(path, "r")
 	except:
-		print('Path Not Found, please double check!')    
+		print('Path Not Found, please double check!')
 	X_drug = []
 	X_drug_names = []
 	for aline in file:
@@ -105,7 +105,7 @@ def read_file_compound_property(path):
 	return np.array(X_drug), np.array(X_drug_names)
 
 def read_file_training_dataset_protein_protein_pairs(path):
-	# a line in the file is target_seq target_seq score    
+	# a line in the file is target_seq target_seq score
 	try:
 		file = open(path, "r")
 	except:
@@ -122,7 +122,7 @@ def read_file_training_dataset_protein_protein_pairs(path):
 	return np.array(X_drug), np.array(X_target), np.array(y)
 
 def read_file_virtual_screening_drug_target_pairs(path):
-	# a line in the file is SMILES Target_seq    
+	# a line in the file is SMILES Target_seq
 	try:
 		file = open(path, "r")
 	except:
@@ -138,11 +138,11 @@ def read_file_virtual_screening_drug_target_pairs(path):
 
 
 def read_file_repurposing_library(path):
-	# a line in the file is drug names and SMILES 
+	# a line in the file is drug names and SMILES
 	try:
 		file = open(path, "r")
 	except:
-		print('Path Not Found, please double check!')    
+		print('Path Not Found, please double check!')
 	X_drug = []
 	X_drug_names = []
 	for aline in file:
@@ -153,11 +153,11 @@ def read_file_repurposing_library(path):
 	return np.array(X_drug), np.array(X_drug_names)
 
 def read_file_target_sequence(path):
-	# a line in the file is target name and target sequence 
+	# a line in the file is target name and target sequence
 	try:
 		file = open(path, "r")
 	except:
-		print('Path Not Found, please double check!')    
+		print('Path Not Found, please double check!')
 	values = file.readline().split()
 	file.close()
 	return values[1], values[0]
@@ -174,11 +174,11 @@ def download_BindingDB(path = './data'):
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
-	with ZipFile(saved_path, 'r') as zip: 
-	    zip.extractall(path = path) 
-	    print('Done!') 
+	with ZipFile(saved_path, 'r') as zip:
+	    zip.extractall(path = path)
+	    print('Done!')
 	path = path + '/BindingDB_All.tsv'
-	return path 
+	return path
 
 
 def download_DrugTargetCommons(path):
@@ -191,7 +191,7 @@ def download_DrugTargetCommons(path):
 	url = 'https://drugtargetcommons.fimm.fi/static/Excell_files/DTC_data.csv'
 	saved_path = wget.download(url, path)
 	path = path + '/DtcDrugTargetInteractions.csv'
-	return path 
+	return path
 
 
 def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_to_log = True, threshold = 30):
@@ -228,13 +228,13 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_
 							'PubChem CID':'PubChem_ID',
 							'UniProt (SwissProt) Primary ID of Target Chain':'UniProt_ID',
 							'BindingDB Target Chain  Sequence': 'Target Sequence',
-							idx_str: 'Label'}, 
+							idx_str: 'Label'},
 							inplace=True)
 
 	df_want['Label'] = df_want['Label'].str.replace('>', '')
 	df_want['Label'] = df_want['Label'].str.replace('<', '')
 	df_want['Label'] = df_want['Label'].astype(float)
-	
+
 	# have at least uniprot or pubchem ID
 	df_want = df_want[df_want.PubChem_ID.notnull() | df_want.UniProt_ID.notnull()]
 	df_want = df_want[df_want.InChI.notnull()]
@@ -248,7 +248,7 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, convert_
 	else:
 		if convert_to_log:
 			print('Default set to logspace (nM -> p) for easier regression')
-			y = convert_y_unit(df_want.Label.values, 'nM', 'p') 
+			y = convert_y_unit(df_want.Label.values, 'nM', 'p')
 		else:
 			y = df_want.Label.values
 
@@ -264,8 +264,8 @@ def load_process_DAVIS(path = './data', binary = False, convert_to_log = True, t
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
-	with ZipFile(saved_path, 'r') as zip: 
-	    zip.extractall(path = path) 
+	with ZipFile(saved_path, 'r') as zip:
+	    zip.extractall(path = path)
 
 	affinity = pd.read_csv(path + '/DAVIS/affinity.txt', header=None, sep = ' ')
 
@@ -294,7 +294,7 @@ def load_process_DAVIS(path = './data', binary = False, convert_to_log = True, t
 	else:
 		if convert_to_log:
 			print('Default set to logspace (nM -> p) for easier regression')
-			y = convert_y_unit(np.array(y), 'nM', 'p') 
+			y = convert_y_unit(np.array(y), 'nM', 'p')
 		else:
 			y = y
 	print('Done!')
@@ -311,8 +311,8 @@ def load_process_KIBA(path = './data', binary = False, threshold = 9):
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
-	with ZipFile(saved_path, 'r') as zip: 
-	    zip.extractall(path = path) 
+	with ZipFile(saved_path, 'r') as zip:
+	    zip.extractall(path = path)
 
 	affinity = pd.read_csv(path + '/KIBA/affinity.txt', header=None, sep = '\t')
 	affinity = affinity.fillna(-1)
@@ -352,8 +352,8 @@ def load_AID1706_txt_file(path = './data'):
 	print('Beginning Processing...')
 
 	if not os.path.exists(path):
-		os.makedirs(path)  
-        
+		os.makedirs(path)
+
 	url = 'https://deeppurpose.s3.amazonaws.com/AID1706.txt'
 	saved_path_data = wget.download(url, path)
 	return saved_path_data
@@ -382,7 +382,7 @@ def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, ba
 		val = pd.concat([val[val.binary_label==0].sample(n = len(val[val.binary_label==1]) * oversample_num, replace = False, random_state = seed), pd.concat([val[val.binary_label==1]]*oversample_num, ignore_index=True)]).sample(frac = 1, replace = False, random_state = seed).reset_index(drop = True)
 
 	cid2smiles = dict(zip(df_conversion[['cid','smiles']].values[:, 0], df_conversion[['cid','smiles']].values[:, 1]))
-	X_drug = [cid2smiles[i] for i in val.PUBCHEM_CID.values]    
+	X_drug = [cid2smiles[i] for i in val.PUBCHEM_CID.values]
 
 	if binary:
 		print('Default binary threshold for the binding affinity scores is 15, recommended by the investigator')
@@ -396,7 +396,7 @@ def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, ba
 def load_HIV(path = './data'):
 	download_unzip('HIV', path, 'hiv.csv')
 
-	df = pd.read_csv(os.path.join(path,'hiv.csv'))
+	df = pd.read_csv(os.path.join(path,'HIV.csv'))
 	df = df.iloc[df['smiles'].drop_duplicates(keep = False).index.values]
 
 	df = df[df["HIV_active"].notnull()].reset_index(drop = True)
@@ -404,7 +404,7 @@ def load_HIV(path = './data'):
 	drugs = df.smiles.values
 	drugs_idx = np.array(list(range(len(drugs))))
 
-	return drugs, y, drugs_idx	
+	return drugs, y, drugs_idx
 
 def load_AqSolDB(path = './data'):
 
@@ -415,7 +415,7 @@ def load_AqSolDB(path = './data'):
 
 	df = pd.read_csv(os.path.join(path,'curated-solubility-dataset.csv'))
 	df = df.iloc[df['SMILES'].drop_duplicates(keep = False).index.values]
-	
+
 	y = df["Solubility"].values
 	drugs = df.SMILES.values
 	drugs_idx = df.Name.values
@@ -444,8 +444,8 @@ def load_antiviral_drugs(path = './data', no_cid = False):
 	else:
 		return df.SMILES.values, df[' Name'].values, df['Pubchem CID'].values
 
-def load_IC50_Not_Pretrained(path = './data', n=500): 
-	print('Downloading...')    
+def load_IC50_Not_Pretrained(path = './data', n=500):
+	print('Downloading...')
 	url = 'https://deeppurpose.s3.amazonaws.com/IC50_not_Kd.csv'
 	if not os.path.exists(path):
 	    os.makedirs(path)
@@ -453,8 +453,8 @@ def load_IC50_Not_Pretrained(path = './data', n=500):
 	df = pd.read_csv(saved_path_data).sample(n = n, replace = False).reset_index(drop = True)
 	return df['Target Sequence'].values, df['SMILES'].values
 
-def load_IC50_1000_Samples(path = './data', n=100): 
-	print('Downloading...')    
+def load_IC50_1000_Samples(path = './data', n=100):
+	print('Downloading...')
 	url = 'https://dataverse.harvard.edu/api/access/datafile/4159681'
 	if not os.path.exists(path):
 	    os.makedirs(path)
