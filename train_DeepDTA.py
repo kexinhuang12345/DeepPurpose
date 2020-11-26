@@ -6,13 +6,16 @@ from DeepPurpose.dataset import *
 drug_encoding = 'CNN'
 target_encoding = 'CNN'
 
+# KIBA
+#X_drugs, X_targets, y = load_process_KIBA('./data/', binary=False, threshold=9)
+
 # DAVIS
-X_drugs, X_targets, y = load_process_DAVIS('./data/', binary=False)
+#X_drugs, X_targets, y = load_process_DAVIS('./data/', binary=False)
 
 
 # BindingDB
-#data_path = dataset.download_BindingDB('./data/')
-#X_drugs, X_targets, y = dataset.process_BindingDB(path = data_path, df = None, y = 'Kd', binary = False, convert_to_log = True, threshold = 30)
+data_path = dataset.download_BindingDB('./data/')
+X_drugs, X_targets, y = dataset.process_BindingDB(path = data_path, df = None, y = 'Kd', binary = False, convert_to_log = True, threshold = 30)
 
 
 
@@ -26,5 +29,6 @@ print('There are ' + str(len(X_drugs)) + ' drug-target pairs.')
 model = models.model_initialize(**config)
 model.train(train, val, test)
 
-model.save_model('./DeepDTA/DAVIS')
-#model.save_model('./tutorial_model/DeepDTA_bindingdb/')
+#model.save_model('./model/DeepDTA/KIBA/')
+#model.save_model('./model/DeepDTA/DAVIS/')
+model.save_model('./model/DeepDTA/BindingDB/')
