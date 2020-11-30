@@ -244,6 +244,8 @@ def smiles2mpnnfeature(smiles):
 	#fatoms, fbonds, agraph, bgraph = [], [], [], [] 
 	#print(fatoms.shape, fbonds.shape, agraph.shape, bgraph.shape)
 	Natom, Nbond = fatoms.shape[0], fbonds.shape[0]
+	# print("atom size", fatoms.shape[0], agraph.shape[0])
+	# print("bond size", fbonds.shape[0], bgraph.shape[0])
 	shape_tensor = torch.Tensor([Natom, Nbond]).view(1,-1)
 	return [fatoms.float(), fbonds.float(), agraph.float(), bgraph.float(), shape_tensor.float()]
 
@@ -972,13 +974,33 @@ def obtain_protein_embedding(net, file, target_encoding):
 		x = np.stack(v_d)
 	return net.model_protein(torch.FloatTensor(x))
 
-def mpnn_feature_collate_func(x): 
-	## first version 
-	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
+# def mpnn_feature_collate_func(x): 
+# 	## first version 
+# 	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
+
+def mpnn_feature_collate_func(x):
+	# print("mpnn_feature_collate_func batch size is", len(x))
+	assert len(x[0]) == 5
+	# N_atoms_N_bonds = [i[-1] for i in x]
+	N_atoms_scope = []
+	f_a = torch.cat([x[j][0] for j in range(len(x))], 0)
+	f_b = torch.cat([x[j][1] for j in range(len(x))], 0)
+	agraph_lst, bgraph_lst = [], []
+	Na, Nb = 0, 0
+	for j in range(len(x)):
+		agraph_lst.append(x[j][2] + Na)
+		bgraph_lst.append(x[j][3] + Nb)
+		N_atoms_scope.append([Na, x[j][2].shape[0]])
+		Na += x[j][2].shape[0]
+		Nb += x[j][3].shape[0]
+	agraph = torch.cat(agraph_lst, 0)
+	bgraph = torch.cat(bgraph_lst, 0)
+	return [f_a, f_b, agraph, bgraph, N_atoms_scope]
 
 def mpnn_collate_func(x):
 	#print("len(x) is ", len(x)) ## batch_size 
 	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader.__getitem__ 
+	# print("mpnn_collate_func batch size is", len(x))
 	mpnn_feature = [i[0] for i in x]
 	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
 	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)

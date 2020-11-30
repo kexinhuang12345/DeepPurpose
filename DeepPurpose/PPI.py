@@ -63,16 +63,34 @@ def model_pretrained(path_dir = None, model = None):
 	model.load_pretrained(path_dir + '/model.pt')    
 	return model
 
-def mpnn_feature_collate_func(x): 
-	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
+# def mpnn_feature_collate_func(x): 
+# 	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
 
-def mpnn_collate_func(x):
-	mpnn_feature = [i[0] for i in x]
-	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
-	from torch.utils.data.dataloader import default_collate
-	x_remain = [[i[1], i[2]] for i in x]
-	x_remain_collated = default_collate(x_remain)
-	return [mpnn_feature] + x_remain_collated
+# def mpnn_feature_collate_func(x):
+# 	assert len(x[0]) == 5
+# 	N_atoms_N_bonds = [i[-1] for i in x]
+# 	N_atoms_scope = []
+# 	f_a = torch.cat([x[j][0] for j in range(len(x))], 0)
+# 	f_b = torch.cat([x[j][1] for j in range(len(x))], 0)
+# 	agraph_lst, bgraph_lst = [], []
+# 	Na, Nb = 0, 0
+# 	for j in range(len(x)):
+# 		agraph_lst.append(x[j][2] + Na)
+# 		bgraph_lst.append(x[j][3] + Nb)
+# 		N_atoms_scope.append([Na, x[j][2].shape[0]])
+# 		Na += x[j][2].shape[0]
+# 		Nb += x[j][3].shape[0]
+# 	agraph = torch.cat(agraph_lst, 0)
+# 	bgraph = torch.cat(bgraph_lst, 0)
+# 	return [f_a, f_b, agraph, bgraph, N_atoms_scope]
+
+# def mpnn_collate_func(x):
+# 	mpnn_feature = [i[0] for i in x]
+# 	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
+# 	from torch.utils.data.dataloader import default_collate
+# 	x_remain = [[i[1], i[2]] for i in x]
+# 	x_remain_collated = default_collate(x_remain)
+# 	return [mpnn_feature] + x_remain_collated
 
 class PPI_Model:
 

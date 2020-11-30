@@ -131,24 +131,43 @@ def repurpose(X_repurpose, model, drug_names = None,
 					break
 	return y_pred
   
-def mpnn_feature_collate_func(x): 
-	## first version 
-	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
+# def mpnn_feature_collate_func(x): 
+# 	## first version 
+# 	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
 
-def mpnn_collate_func(x):
-	#print("len(x) is ", len(x)) ## batch_size == 128 
-	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
-	#print("len(x[1]) is ", len(x[1])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
-	#print("len(x[2]) is ", len(x[2])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
 
-	mpnn_feature = [i[0] for i in x]
-	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
-	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
-	from torch.utils.data.dataloader import default_collate
-	x_remain = [[i[1]] for i in x]
-	x_remain_collated = default_collate(x_remain)
-	return [mpnn_feature] + x_remain_collated
-## used in dataloader 
+# def mpnn_feature_collate_func(x):
+# 	assert len(x[0]) == 5
+# 	N_atoms_N_bonds = [i[-1] for i in x]
+# 	N_atoms_scope = []
+# 	f_a = torch.cat([x[j][0] for j in range(len(x))], 0)
+# 	f_b = torch.cat([x[j][1] for j in range(len(x))], 0)
+# 	agraph_lst, bgraph_lst = [], []
+# 	Na, Nb = 0, 0
+# 	for j in range(len(x)):
+# 		agraph_lst.append(x[j][2] + Na)
+# 		bgraph_lst.append(x[j][3] + Nb)
+# 		N_atoms_scope.append([Na, x[j][2].shape[0]])
+# 		Na += x[j][2].shape[0]
+# 		Nb += x[j][3].shape[0]
+# 	agraph = torch.cat(agraph_lst, 0)
+# 	bgraph = torch.cat(bgraph_lst, 0)
+# 	return [f_a, f_b, agraph, bgraph, N_atoms_scope]
+
+# def mpnn_collate_func(x):
+# 	#print("len(x) is ", len(x)) ## batch_size == 128 
+# 	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
+# 	#print("len(x[1]) is ", len(x[1])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
+# 	#print("len(x[2]) is ", len(x[2])) ## 3--- data_process_loader_Property_Prediction.__getitem__ 
+
+# 	mpnn_feature = [i[0] for i in x]
+# 	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
+# 	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
+# 	from torch.utils.data.dataloader import default_collate
+# 	x_remain = [[i[1]] for i in x]
+# 	x_remain_collated = default_collate(x_remain)
+# 	return [mpnn_feature] + x_remain_collated
+# ## used in dataloader 
 
 class Property_Prediction:
 	'''
