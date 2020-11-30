@@ -62,7 +62,7 @@ def model_initialize(**config):
 
 def model_pretrained(path_dir = None, model = None):
 	if model is not None:
-		path_dir = download_pretrained_model_S3(model)
+		path_dir = download_pretrained_model(model)
 	config = load_dict(path_dir)
 	model = Property_Prediction(**config)
 	model.load_pretrained(path_dir + '/model.pt')    
