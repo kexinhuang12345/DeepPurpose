@@ -21,6 +21,9 @@ from zipfile import ZipFile
 import os
 import sys
 
+MAX_ATOM = 100
+MAX_BOND = 200
+
 # ESPF encoding
 vocab_path = './DeepPurpose/ESPF/drug_codes_chembl_freq_1500.txt'
 bpe_codes_drug = codecs.open(vocab_path)
@@ -194,6 +197,9 @@ def smiles2mpnnfeature(smiles):
 			data_process(): apply(smiles2mpnnfeature)
 			DBTA: train(): data.DataLoader(data_process_loader())
 			mpnn_collate_func()
+
+	## utils.smiles2mpnnfeature -> utils.mpnn_collate_func -> utils.mpnn_feature_collate_func -> encoders.MPNN.forward
+
 	'''
 	try: 
 		padding = torch.zeros(ATOM_FDIM + BOND_FDIM)
@@ -235,6 +241,7 @@ def smiles2mpnnfeature(smiles):
 			for i,b2 in enumerate(in_bonds[x]):
 				if all_bonds[b2][0] != y:
 					bgraph[b1,i] = b2
+
 	except: 
 		print('Molecules not found and change to zero vectors..')
 		fatoms = torch.zeros(0,39)
@@ -244,6 +251,21 @@ def smiles2mpnnfeature(smiles):
 	#fatoms, fbonds, agraph, bgraph = [], [], [], [] 
 	#print(fatoms.shape, fbonds.shape, agraph.shape, bgraph.shape)
 	Natom, Nbond = fatoms.shape[0], fbonds.shape[0]
+
+
+	''' 
+	## completion to make feature size equal. 
+	MAX_ATOM = 100
+	MAX_BOND = 200
+	'''
+	atoms_completion_num = MAX_ATOM - fatoms.shape[0]
+	bonds_completion_num = MAX_BOND - fbonds.shape[0]
+	fatoms_dim = fatoms.shape[1]
+	fbonds_dim = fbonds.shape[1]
+	fatoms = torch.cat([fatoms, torch.zeros(atoms_completion_num, fatoms_dim)], 0)
+	fbonds = torch.cat([fbonds, torch.zeros(bonds_completion_num, fbonds_dim)], 0)
+	agraph = torch.cat([agraph.float(), torch.zeros(atoms_completion_num, MAX_NB)], 0)
+	bgraph = torch.cat([bgraph.float(), torch.zeros(bonds_completion_num, MAX_NB)], 0)
 	# print("atom size", fatoms.shape[0], agraph.shape[0])
 	# print("bond size", fbonds.shape[0], bgraph.shape[0])
 	shape_tensor = torch.Tensor([Natom, Nbond]).view(1,-1)
@@ -978,25 +1000,28 @@ def obtain_protein_embedding(net, file, target_encoding):
 # 	## first version 
 # 	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
 
+
+## utils.smiles2mpnnfeature -> utils.mpnn_collate_func -> utils.mpnn_feature_collate_func -> encoders.MPNN.forward
 def mpnn_feature_collate_func(x):
 	# print("mpnn_feature_collate_func batch size is", len(x))
-	assert len(x[0]) == 5
+	# assert len(x[0]) == 5
 	# N_atoms_N_bonds = [i[-1] for i in x]
-	N_atoms_scope = []
-	f_a = torch.cat([x[j][0] for j in range(len(x))], 0)
-	f_b = torch.cat([x[j][1] for j in range(len(x))], 0)
+	N_atoms_scope = torch.cat([i[4] for i in x], 0)
+	f_a = torch.cat([x[j][0].unsqueeze(0) for j in range(len(x))], 0)
+	f_b = torch.cat([x[j][1].unsqueeze(0) for j in range(len(x))], 0)
 	agraph_lst, bgraph_lst = [], []
-	Na, Nb = 0, 0
+	# Na, Nb = 0, 0
 	for j in range(len(x)):
-		agraph_lst.append(x[j][2] + Na)
-		bgraph_lst.append(x[j][3] + Nb)
-		N_atoms_scope.append([Na, x[j][2].shape[0]])
-		Na += x[j][2].shape[0]
-		Nb += x[j][3].shape[0]
+		agraph_lst.append(x[j][2].unsqueeze(0))
+		bgraph_lst.append(x[j][3].unsqueeze(0))
+		# Na += N_atoms_scope[j][0].item() 
+		# Nb += N_atoms_scope[j][1].item() 
 	agraph = torch.cat(agraph_lst, 0)
 	bgraph = torch.cat(bgraph_lst, 0)
 	return [f_a, f_b, agraph, bgraph, N_atoms_scope]
 
+
+## utils.smiles2mpnnfeature -> utils.mpnn_collate_func -> utils.mpnn_feature_collate_func -> encoders.MPNN.forward 
 def mpnn_collate_func(x):
 	#print("len(x) is ", len(x)) ## batch_size 
 	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader.__getitem__ 

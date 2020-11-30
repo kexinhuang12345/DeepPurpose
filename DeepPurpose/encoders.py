@@ -328,6 +328,7 @@ class MPNN(nn.Sequential):
 
 
 
+	## utils.smiles2mpnnfeature -> utils.mpnn_collate_func -> utils.mpnn_feature_collate_func -> encoders.MPNN.forward
 
 	def forward(self, feature):
 		'''
@@ -336,8 +337,36 @@ class MPNN(nn.Sequential):
 			agraph: (x, 6)
 			bgraph: (y, 6)
 		'''
-		fatoms, fbonds, agraph, bgraph, N_atoms_scope = feature
-		# print("MPNN forward N_atoms_scope", N_atoms_scope, fatoms.shape)
+		fatoms, fbonds, agraph, bgraph, N_atoms_bond = feature
+		N_atoms_scope = []
+		##### tensor feature -> matrix feature
+		N_a, N_b = 0, 0 
+		fatoms_lst, fbonds_lst, agraph_lst, bgraph_lst = [],[],[],[]
+		for i in range(N_atoms_bond.shape[0]):
+			atom_num = int(N_atoms_bond[i][0].item()) 
+			bond_num = int(N_atoms_bond[i][1].item()) 
+
+			fatoms_lst.append(fatoms[i,:atom_num,:])
+			fbonds_lst.append(fbonds[i,:bond_num,:])
+			agraph_lst.append(agraph[i,:atom_num,:] + N_a)
+			bgraph_lst.append(bgraph[i,:bond_num,:] + N_b)
+
+			N_atoms_scope.append((N_a, atom_num))
+			N_a += atom_num 
+			N_b += bond_num 
+
+
+		fatoms = torch.cat(fatoms_lst, 0)
+		fbonds = torch.cat(fbonds_lst, 0)
+		agraph = torch.cat(agraph_lst, 0)
+		bgraph = torch.cat(bgraph_lst, 0)
+		##### tensor feature -> matrix feature
+
+
+
+
+
+
 		agraph = agraph.long()
 		bgraph = bgraph.long()	
 
