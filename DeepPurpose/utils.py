@@ -260,6 +260,12 @@ def smiles2mpnnfeature(smiles):
 	'''
 	atoms_completion_num = MAX_ATOM - fatoms.shape[0]
 	bonds_completion_num = MAX_BOND - fbonds.shape[0]
+	try:
+		assert atoms_completion_num >= 0 and bonds_completion_num >= 0
+	except:
+		raise Exception("increase MAX_ATOM and MAX_BOND in utils")
+
+
 	fatoms_dim = fatoms.shape[1]
 	fbonds_dim = fbonds.shape[1]
 	fatoms = torch.cat([fatoms, torch.zeros(atoms_completion_num, fatoms_dim)], 0)
@@ -1030,7 +1036,8 @@ def mpnn_collate_func(x):
 	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
 	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
 	from torch.utils.data.dataloader import default_collate
-	x_remain = [[i[1], i[2]] for i in x]
+	# x_remain = [[i[1], i[2]] for i in x]
+	x_remain = [list(i[1:]) for i in x]
 	x_remain_collated = default_collate(x_remain)
 	return [mpnn_feature] + x_remain_collated
 
