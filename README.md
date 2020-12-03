@@ -11,6 +11,8 @@
 This repository hosts DeepPurpose, a Deep Learning Based Molecular Modeling and Prediction Toolkit on Drug-Target Interaction Prediction, Compound Property Prediction, Protein-Protein Interaction Prediction, and Protein Function prediction (using PyTorch). We focus on DTI and its applications in Drug Repurposing and Virtual Screening, but support various other molecular encoding tasks. It allows very easy usage (several lines of codes only) to facilitate deep learning for life science research. 
 
 ### News!
+- [11/20] DeepPurpose is published in Bioinformatics!
+- [11/20] Added 5 more pretrained models on BindingDB IC50 Units (around 1Million data points). 
 - [10/20] Google Colab Installation Instructions are provided [here](https://colab.research.google.com/drive/1eF60BwGX6PnB91vpx5dRxFa72e6-MYuZ?usp=sharing). Thanks to @hima111997 ! 
 - [10/20] Using DeepPurpose, we made a humans-in-the-loop molecular design web UI interface, check it out! \[[Website](http://deeppurpose.sunlab.org/), [paper](https://arxiv.org/abs/2010.03951)\]
 - [09/20] DeepPurpose has now supported three more tasks: DDI, PPI and Protein Function Prediction! You can simply call `from DeepPurpose import DDI/PPI/ProteinPred` to use, checkout examples below!
@@ -603,6 +605,11 @@ Model name consists of first the drug encoding, then the target encoding and the
 
 |Model Name|
 |------|
+|CNN_CNN_BindingDB_IC50|
+|Morgan_CNN_BindingDB_IC50|
+|Morgan_AAC_BindingDB_IC50|
+|MPNN_CNN_BindingDB_IC50|
+|Daylight_AAC_BindingDB_IC50|
 |CNN_CNN_DAVIS|
 |CNN_CNN_BindingDB|
 |Morgan_CNN_BindingDB|

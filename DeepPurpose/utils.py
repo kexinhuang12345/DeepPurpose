@@ -1100,7 +1100,12 @@ name2ids = {
 	'ppbr_morgan_model': 4159685,
 	'pgp_inhibitor_cnn_model': 4159646,
 	'pgp_inhibitor_mpnn_model': 4159683,
-	'pgp_inhibitor_morgan_model': 4159712
+	'pgp_inhibitor_morgan_model': 4159712,
+	'cnn_cnn_bindingdb_ic50': 4203606,
+	'daylight_aac_bindingdb_ic50': 4203604,
+	'morgan_aac_bindingdb_ic50': 4203602,
+	'morgan_cnn_bindingdb_ic50': 4203603,
+	'mpnn_cnn_bindingdb_ic50': 4203605
  }
 
 name2zipfilename = {
@@ -1169,7 +1174,12 @@ name2zipfilename = {
 	'ppbr_morgan_model': 'PPBR_Morgan_model',
 	'pgp_inhibitor_cnn_model': 'Pgp_inhibitor_CNN_model',
 	'pgp_inhibitor_mpnn_model': 'Pgp_inhibitor_MPNN_model',
-	'pgp_inhibitor_morgan_model': 'Pgp_inhibitor_Morgan_model'
+	'pgp_inhibitor_morgan_model': 'Pgp_inhibitor_Morgan_model',
+	'cnn_cnn_bindingdb_ic50': 'cnn_cnn_bindingdb_ic50',
+	'daylight_aac_bindingdb_ic50': 'daylight_aac_bindingdb_ic50',
+	'morgan_aac_bindingdb_ic50': 'morgan_aac_bindingdb_ic50',
+	'morgan_cnn_bindingdb_ic50': 'morgan_cnn_bindingdb_ic50',
+	'mpnn_cnn_bindingdb_ic50': 'mpnn_cnn_bindingdb_ic50'
 }
 
 name2filename = {
@@ -1238,7 +1248,12 @@ name2filename = {
 	'ppbr_morgan_model': 'PPBR_Morgan_model',
 	'pgp_inhibitor_cnn_model': 'Pgp_inhibitor_CNN_model',
 	'pgp_inhibitor_mpnn_model': 'Pgp_inhibitor_MPNN_model',
-	'pgp_inhibitor_morgan_model': 'Pgp_inhibitor_Morgan_model'
+	'pgp_inhibitor_morgan_model': 'Pgp_inhibitor_Morgan_model',
+	'cnn_cnn_bindingdb_ic50': 'cnn_cnn_bindingdb_ic50',
+	'daylight_aac_bindingdb_ic50': 'daylight_aac_bindingdb_ic50',
+	'morgan_aac_bindingdb_ic50': 'morgan_aac_bindingdb_ic50',
+	'morgan_cnn_bindingdb_ic50': 'morgan_cnn_bindingdb_ic50',
+	'mpnn_cnn_bindingdb_ic50': 'mpnn_cnn_bindingdb_ic50'
 }
 
 def download_unzip(name, path, file_name):

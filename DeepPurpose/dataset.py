@@ -348,16 +348,6 @@ def load_process_KIBA(path = './data', binary = False, threshold = 9):
 	print('Done!')
 	return np.array(SMILES), np.array(Target_seq), np.array(y)
 
-def load_AID1706_txt_file(path = './data'):
-	print('Beginning Processing...')
-
-	if not os.path.exists(path):
-		os.makedirs(path)
-
-	url = 'https://deeppurpose.s3.amazonaws.com/AID1706.txt'
-	saved_path_data = wget.download(url, path)
-	return saved_path_data
-
 def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, balanced = True, oversample_num = 30, seed = 1):
 	print('Beginning Processing...')
 
@@ -446,11 +436,12 @@ def load_antiviral_drugs(path = './data', no_cid = False):
 
 def load_IC50_Not_Pretrained(path = './data', n=500):
 	print('Downloading...')
-	url = 'https://deeppurpose.s3.amazonaws.com/IC50_not_Kd.csv'
+	url = 'https://dataverse.harvard.edu/api/access/datafile/4159695'
 	if not os.path.exists(path):
 	    os.makedirs(path)
-	saved_path_data = wget.download(url, path)
-	df = pd.read_csv(saved_path_data).sample(n = n, replace = False).reset_index(drop = True)
+	download_path = os.path.join(path, 'IC50_not_Kd.csv')
+	download_url(url, download_path)
+	df = pd.read_csv(download_path).sample(n = n, replace = False).reset_index(drop = True)
 	return df['Target Sequence'].values, df['SMILES'].values
 
 def load_IC50_1000_Samples(path = './data', n=100):
