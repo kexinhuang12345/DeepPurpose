@@ -248,88 +248,9 @@ class MPNN(nn.Sequential):
 		self.W_h = nn.Linear(self.mpnn_hidden_size, self.mpnn_hidden_size, bias=False)
 		self.W_o = nn.Linear(ATOM_FDIM + self.mpnn_hidden_size, self.mpnn_hidden_size)
 
-	
-	# ### first version, forward single molecule sequentially. 
-	# def forward(self, feature):
-	# 	''' 
-	# 		batch_size == 1 
-	# 		feature: utils.smiles2mpnnfeature 
-	# 	'''
-	# 	fatoms, fbonds, agraph, bgraph, atoms_bonds = feature
-	# 	agraph = agraph.long()
-	# 	bgraph = bgraph.long()
-	# 	#print(fatoms.shape, fbonds.shape, agraph.shape, bgraph.shape, atoms_bonds.shape)
-	# 	atoms_bonds = atoms_bonds.long()
-	# 	batch_size = atoms_bonds.shape[0]
-	# 	N_atoms, N_bonds = 0, 0 
-	# 	embeddings = []
-	# 	embeddings = create_var(torch.zeros(batch_size, self.mpnn_hidden_size)).to(device)
-	# 	# print("atoms_bonds", atoms_bonds)
-	# 	for i in range(batch_size):
-	# 		n_a = atoms_bonds[i,0].item()
-	# 		# print(i, "/", batch_size, "n_a", n_a)
-	# 		n_b = atoms_bonds[i,1].item()
-	# 		# print(i, "/", batch_size, "n_b", n_b)
-	# 		if (n_a == 0):
-	# 			embed = create_var(torch.zeros(1, self.mpnn_hidden_size))
-	# 			# embeddings.append(embed.to(device))
-	# 			embeddings[i,:] = embed.to(device)
-	# 			continue 
-	# 		sub_fatoms = fatoms[N_atoms:N_atoms+n_a,:].to(device)
-	# 		sub_fbonds = fbonds[N_bonds:N_bonds+n_b,:].to(device)
-	# 		sub_agraph = agraph[N_atoms:N_atoms+n_a,:].to(device)
-	# 		sub_bgraph = bgraph[N_bonds:N_bonds+n_b,:].to(device)
-	# 		# print(i, "/", batch_size, "\t\t\t before single_molecule_forward")
-	# 		embed = self.single_molecule_forward(sub_fatoms, sub_fbonds, sub_agraph, sub_bgraph)
-	# 		# print(i, "/", batch_size, "\t\t\t after single_molecule_forward")
-	# 		embed = embed.to(device)  
-	# 		embeddings[i,:] = embed           
-	# 		# embeddings.append(embed)
-	# 		N_atoms += n_a
-	# 		N_bonds += n_b
-	# 	# try:
-	# 	# 	embeddings = torch.cat(embeddings, 0)
-	# 	# except:
-	# 	# 	#embeddings = torch.cat(embeddings, 0)
-	# 	# 	print(embeddings)
-	# 	return embeddings
-	
-
-
-	# def single_molecule_forward(self, fatoms, fbonds, agraph, bgraph):
-	# 	'''
-	# 		fatoms: (x, 39)
-	# 		fbonds: (y, 50)
-	# 		agraph: (x, 6)
-	# 		bgraph: (y, 6)
-	# 	'''
-	# 	fatoms = create_var(fatoms)
-	# 	fbonds = create_var(fbonds)
-	# 	agraph = create_var(agraph)
-	# 	bgraph = create_var(bgraph)
-	# 	print("fatoms", fatoms)
-	# 	print("fbonds", fbonds)
-	# 	print("agraph", agraph)
-	# 	print("bgraph", bgraph)
-	# 	binput = self.W_i(fbonds) #### (y, d1)
-	# 	message = F.relu(binput)  #### (y, d1)
-	# 	#print("shapes", fbonds.shape, binput.shape, message.shape)
-	# 	for i in range(self.mpnn_depth - 1):
-	# 		nei_message = index_select_ND(message, 0, bgraph)
-	# 		nei_message = nei_message.sum(dim=1)
-	# 		nei_message = self.W_h(nei_message)
-	# 		message = F.relu(binput + nei_message) ### (y,d1) 
-
-	# 	nei_message = index_select_ND(message, 0, agraph)
-	# 	nei_message = nei_message.sum(dim=1)
-	# 	ainput = torch.cat([fatoms, nei_message], dim=1)
-	# 	atom_hiddens = F.relu(self.W_o(ainput))
-	# 	return torch.mean(atom_hiddens, 0).view(1,-1).to(device)
-
 
 
 	## utils.smiles2mpnnfeature -> utils.mpnn_collate_func -> utils.mpnn_feature_collate_func -> encoders.MPNN.forward
-
 	def forward(self, feature):
 		'''
 			fatoms: (x, 39)
@@ -363,10 +284,6 @@ class MPNN(nn.Sequential):
 		##### tensor feature -> matrix feature
 
 
-
-
-
-
 		agraph = agraph.long()
 		bgraph = bgraph.long()	
 
@@ -390,9 +307,7 @@ class MPNN(nn.Sequential):
 		atom_hiddens = F.relu(self.W_o(ainput))
 		output = [torch.mean(atom_hiddens.narrow(0, sts,leng), 0) for sts,leng in N_atoms_scope]
 		output = torch.stack(output, 0)
-		# print("MPNN forward output", output.shape)
 		return output 
-		# return torch.mean(atom_hiddens, 0).view(1,-1).to(device)
 
 
 

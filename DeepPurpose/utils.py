@@ -1009,19 +1009,13 @@ def obtain_protein_embedding(net, file, target_encoding):
 
 ## utils.smiles2mpnnfeature -> utils.mpnn_collate_func -> utils.mpnn_feature_collate_func -> encoders.MPNN.forward
 def mpnn_feature_collate_func(x):
-	# print("mpnn_feature_collate_func batch size is", len(x))
-	# assert len(x[0]) == 5
-	# N_atoms_N_bonds = [i[-1] for i in x]
 	N_atoms_scope = torch.cat([i[4] for i in x], 0)
 	f_a = torch.cat([x[j][0].unsqueeze(0) for j in range(len(x))], 0)
 	f_b = torch.cat([x[j][1].unsqueeze(0) for j in range(len(x))], 0)
 	agraph_lst, bgraph_lst = [], []
-	# Na, Nb = 0, 0
 	for j in range(len(x)):
 		agraph_lst.append(x[j][2].unsqueeze(0))
 		bgraph_lst.append(x[j][3].unsqueeze(0))
-		# Na += N_atoms_scope[j][0].item() 
-		# Nb += N_atoms_scope[j][1].item() 
 	agraph = torch.cat(agraph_lst, 0)
 	bgraph = torch.cat(bgraph_lst, 0)
 	return [f_a, f_b, agraph, bgraph, N_atoms_scope]
@@ -1029,14 +1023,9 @@ def mpnn_feature_collate_func(x):
 
 ## utils.smiles2mpnnfeature -> utils.mpnn_collate_func -> utils.mpnn_feature_collate_func -> encoders.MPNN.forward 
 def mpnn_collate_func(x):
-	#print("len(x) is ", len(x)) ## batch_size 
-	#print("len(x[0]) is ", len(x[0])) ## 3--- data_process_loader.__getitem__ 
-	# print("mpnn_collate_func batch size is", len(x))
 	mpnn_feature = [i[0] for i in x]
-	#print("len(mpnn_feature)", len(mpnn_feature), "len(mpnn_feature[0])", len(mpnn_feature[0]))
 	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
 	from torch.utils.data.dataloader import default_collate
-	# x_remain = [[i[1], i[2]] for i in x]
 	x_remain = [list(i[1:]) for i in x]
 	x_remain_collated = default_collate(x_remain)
 	return [mpnn_feature] + x_remain_collated
