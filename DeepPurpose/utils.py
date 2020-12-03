@@ -21,8 +21,8 @@ from zipfile import ZipFile
 import os
 import sys
 
-MAX_ATOM = 100
-MAX_BOND = 200
+MAX_ATOM = 200
+MAX_BOND = 400
 
 # ESPF encoding
 vocab_path = './DeepPurpose/ESPF/drug_codes_chembl_freq_1500.txt'
