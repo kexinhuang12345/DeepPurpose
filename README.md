@@ -51,7 +51,7 @@ In addition to the DTI prediction, we also provide repurpose and virtual screeni
   <summary>Click here for the code!</summary>
 
 ```python
-from DeepPurpose import models
+from DeepPurpose import DTI as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
@@ -107,7 +107,7 @@ Many dataset is in the form of high throughput screening data, which have only d
   <summary>Click here for the code!</summary>
 
 ```python
-import DeepPurpose.CompoundPred as models
+from DeepPurpose import CompoundPred as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
@@ -144,7 +144,7 @@ DDI is very important for drug safety profiling and the success of clinical tria
   <summary>Click here for the code!</summary>
 
 ```python
-import DeepPurpose.DDI as models
+from DeepPurpose import DDI as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
@@ -178,7 +178,7 @@ PPI is important to study the relations among targets.
   <summary>Click here for the code!</summary>
 
 ```python
-import DeepPurpose.DDI as models
+from DeepPurpose import PPI as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
@@ -213,7 +213,7 @@ Protein function prediction help predict various useful functions such as GO ter
   <summary>Click here for the code!</summary>
 
 ```python
-import DeepPurpose.ProteinPred as models
+from DeepPurpose import ProteinPred as models
 from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
