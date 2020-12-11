@@ -4,3 +4,5 @@ tqdm
 scikit-learn
 wget
 torch
+matplotlib
+requests
