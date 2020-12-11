@@ -2,3 +2,5 @@ numpy
 pandas
 tqdm
 scikit-learn
+wget
+torch
