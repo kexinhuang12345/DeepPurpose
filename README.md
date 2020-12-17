@@ -40,7 +40,19 @@ This repository hosts DeepPurpose, a Deep Learning Based Molecular Modeling and 
 	- PyTorch based, support CPU, GPU, Multi-GPUs.
 	
 *NOTE: We are actively looking for constructive advices/user feedbacks/experiences on using DeepPurpose! Please open an issue or [contact us](mailto:kexinhuang@hsph.harvard.edu).*
-	
+
+
+## Cite Us
+
+If you found this package useful, please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
+```
+@article{huang2020deeppurpose,
+  title={DeepPurpose: A Deep Learning Library for Drug-Target Interaction Prediction},
+  author={Huang, Kexin and Fu, Tianfan and Glass, Lucas M and Zitnik, Marinka and Xiao, Cao and Sun, Jimeng},
+  journal={Bioinformatics},
+  year={2020}
+}
+```
 
 ## Example
 
@@ -312,17 +324,6 @@ Drug Repurposing Result for SARS-CoV 3CL Protease
 ```
 </details>
 
-## Cite Us
-
-If you found this package useful, please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
-```
-@article{deeppurpose,
-  title={DeepPurpose: a deep learning library for drug-target interaction prediction and applications to repurposing and screening},
-  author={Huang, Kexin and Fu, Tianfan and Glass, Lucas and Zitnik, Marinka and Xiao, Cao and Sun, Jimeng},
-  journal={arXiv:2004.08919},
-  year={2020}
-}
-```
 
 ## Install & Usage
 Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
