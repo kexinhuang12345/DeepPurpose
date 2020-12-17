@@ -44,7 +44,7 @@ This repository hosts DeepPurpose, a Deep Learning Based Molecular Modeling and 
 
 ## Cite Us
 
-If you found this package useful, please cite [arxiv](https://arxiv.org/abs/2004.08919) for now:
+If you found this package useful, please cite [our paper](https://doi.org/10.1093/bioinformatics/btaa1005):
 ```
 @article{huang2020deeppurpose,
   title={DeepPurpose: A Deep Learning Library for Drug-Target Interaction Prediction},
