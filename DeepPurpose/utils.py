@@ -858,7 +858,10 @@ def convert_y_unit(y, from_, to_):
 		y = 10**(-y) / 1e-9
 
 	if to_ == 'p':
-		y = -np.log10(y*1e-9)
+		if y == 0:
+			y = -np.log10(10**-10)
+		else:
+			y = -np.log10(y*1e-9)
 	elif to_ == 'nM':
 		y = y
 
