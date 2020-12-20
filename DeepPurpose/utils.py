@@ -850,20 +850,26 @@ def generate_config(drug_encoding = None, target_encoding = None,
 	return base_config
 
 def convert_y_unit(y, from_, to_):
+	array_flag = False
+	if isinstance(y, (int, float)):
+		y = np.array([y])
+		array_flag = True
+	y = y.astype(float)    
 	# basis as nM
-
 	if from_ == 'nM':
 		y = y
 	elif from_ == 'p':
 		y = 10**(-y) / 1e-9
 
 	if to_ == 'p':
-		zero_idxs = np.where(y == 0)[0]
+		zero_idxs = np.where(y == 0.)[0]
 		y[zero_idxs] = 1e-10
 		y = -np.log10(y*1e-9)
 	elif to_ == 'nM':
 		y = y
-
+        
+	if array_flag:
+		return y[0]
 	return y
 
 def protein2emb_encoder(x):
