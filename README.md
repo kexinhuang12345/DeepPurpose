@@ -8,7 +8,7 @@
 
 ---
 
-[![PyPI version](https://badge.fury.io/py/DeepPurpose.svg)](https://badge.fury.io/py/DeepPurpose.svg)
+[![PyPI version](https://badge.fury.io/py/DeepPurpose.svg)](https://pypi.org/project/DeepPurpose/)
 [![GitHub Repo stars](https://img.shields.io/github/stars/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/stargazers)
 [![GitHub Repo forks](https://img.shields.io/github/forks/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/network/members)
 
