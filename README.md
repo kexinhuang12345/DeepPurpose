@@ -332,10 +332,24 @@ Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook int
 
 [Video tutorial](https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
 
-We recommend to install it locally since Binder needs to be refreshed every time launching:
+We recommend to install it locally since Binder needs to be refreshed every time launching. To install locally, you can install from `pip`:
 
-<details>
-  <summary>Click here for the installation instruction!</summary>
+### `pip`
+
+```bash
+conda create -n DeepPurpose python=3.6
+conda activate DeepPurpose
+conda install -c conda-forge rdkit
+pip install DeepPurpose
+```
+If you want to use the RDKit2D model, also install:
+```bash
+pip install git+https://github.com/bp-kelley/descriptastorus
+```
+
+You can also build from source:
+
+### Build from Source
 
 First time:
 ```bash
@@ -378,7 +392,6 @@ jupyter notebook
 conda deactivate 
 ## when done, exit conda environment 
 ```
-</details>
 
 [Video tutorial](https://youtu.be/bqinehjnWvE) to install locally using conda.
 
