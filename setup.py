@@ -13,7 +13,8 @@ with open(path.join(this_directory, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name="DeepPurpose", 
-    version="0.0.3",
+    packages = ['DeepPurpose'],
+    version="0.0.4",
     author="Kexin Huang, Tianfan Fu",
     license="BSD-3-Clause",
     author_email="kexinhuang@hsph.harvard.edu",
