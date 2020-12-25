@@ -4,3 +4,4 @@ prune docs
 include README.md
 include requirements.txt
 include LICENSE
+include DeepPurpose/ESPF
