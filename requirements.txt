@@ -6,3 +6,7 @@ wget
 torch
 matplotlib
 requests
+pandas-flavor
+subword-nmt
+lifelines
+prettytable
