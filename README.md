@@ -8,10 +8,15 @@
 
 ---
 
+[![PyPI version](https://badge.fury.io/py/DeepPurpose.svg)](https://badge.fury.io/py/DeepPurpose.svg)
+[![GitHub Repo stars](https://img.shields.io/github/stars/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/stargazers)
+[![GitHub Repo forks](https://img.shields.io/github/forks/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/network/members)
+
 This repository hosts DeepPurpose, a Deep Learning Based Molecular Modeling and Prediction Toolkit on Drug-Target Interaction Prediction, Compound Property Prediction, Protein-Protein Interaction Prediction, and Protein Function prediction (using PyTorch). We focus on DTI and its applications in Drug Repurposing and Virtual Screening, but support various other molecular encoding tasks. It allows very easy usage (several lines of codes only) to facilitate deep learning for life science research. 
 
 ### News!
-- [11/20] DeepPurpose is published in Bioinformatics!
+- [12/20] DeepPurpose can now be installed via `pip`!
+- [11/20] DeepPurpose is published in [Bioinformatics](https://doi.org/10.1093/bioinformatics/btaa1005)!
 - [11/20] Added 5 more pretrained models on BindingDB IC50 Units (around 1Million data points). 
 - [10/20] Google Colab Installation Instructions are provided [here](https://colab.research.google.com/drive/1eF60BwGX6PnB91vpx5dRxFa72e6-MYuZ?usp=sharing). Thanks to @hima111997 ! 
 - [10/20] Using DeepPurpose, we made a humans-in-the-loop molecular design web UI interface, check it out! \[[Website](http://deeppurpose.sunlab.org/), [paper](https://arxiv.org/abs/2010.03951)\]
@@ -53,6 +58,74 @@ If you found this package useful, please cite [our paper](https://doi.org/10.109
   year={2020}
 }
 ```
+
+## Installation
+Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)
+
+[Video tutorial](https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
+
+We recommend to install it locally since Binder needs to be refreshed every time launching. To install locally, you can install from `pip`:
+
+### `pip`
+
+```bash
+conda create -n DeepPurpose python=3.6
+conda activate DeepPurpose
+conda install -c conda-forge rdkit
+pip install git+https://github.com/bp-kelley/descriptastorus 
+pip install DeepPurpose
+```
+
+You can also build from source:
+
+### Build from Source
+
+First time:
+```bash
+git clone https://github.com/kexinhuang12345/DeepPurpose.git
+## Download code repository
+
+cd DeepPurpose
+## Change directory to DeepPurpose
+
+conda env create -f environment.yml  
+## Build virtual environment with all packages installed using conda
+
+conda activate DeepPurpose
+## Activate conda environment (use "source activate DeepPurpose" for anaconda 4.4 or earlier) 
+
+jupyter notebook
+## open the jupyter notebook with the conda env
+
+## run our code, e.g. click a file in the DEMO folder
+... ...
+
+conda deactivate 
+## when done, exit conda environment 
+```
+
+In the future:
+```bash
+cd DeepPurpose
+## Change directory to DeepPurpose
+
+conda activate DeepPurpose
+## Activate conda environment
+
+jupyter notebook
+## open the jupyter notebook with the conda env
+
+## run our code, e.g. click a file in the DEMO folder
+... ...
+
+conda deactivate 
+## when done, exit conda environment 
+```
+
+[Video tutorial](https://youtu.be/bqinehjnWvE) to install locally using conda.
+
 
 ## Example
 
@@ -324,75 +397,6 @@ Drug Repurposing Result for SARS-CoV 3CL Protease
 ```
 </details>
 
-
-## Install & Usage
-Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook interface that will install our environment dependency for you. 
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kexinhuang12345/DeepPurpose/master)
-
-[Video tutorial](https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
-
-We recommend to install it locally since Binder needs to be refreshed every time launching. To install locally, you can install from `pip`:
-
-### `pip`
-
-```bash
-conda create -n DeepPurpose python=3.6
-conda activate DeepPurpose
-conda install -c conda-forge rdkit
-pip install git+https://github.com/bp-kelley/descriptastorus 
-pip install DeepPurpose
-```
-
-You can also build from source:
-
-### Build from Source
-
-First time:
-```bash
-git clone https://github.com/kexinhuang12345/DeepPurpose.git
-## Download code repository
-
-cd DeepPurpose
-## Change directory to DeepPurpose
-
-conda env create -f environment.yml  
-## Build virtual environment with all packages installed using conda
-
-conda activate DeepPurpose
-## Activate conda environment (use "source activate DeepPurpose" for anaconda 4.4 or earlier) 
-
-jupyter notebook
-## open the jupyter notebook with the conda env
-
-## run our code, e.g. click a file in the DEMO folder
-... ...
-
-conda deactivate 
-## when done, exit conda environment 
-```
-
-In the future:
-```bash
-cd DeepPurpose
-## Change directory to DeepPurpose
-
-conda activate DeepPurpose
-## Activate conda environment
-
-jupyter notebook
-## open the jupyter notebook with the conda env
-
-## run our code, e.g. click a file in the DEMO folder
-... ...
-
-conda deactivate 
-## when done, exit conda environment 
-```
-
-[Video tutorial](https://youtu.be/bqinehjnWvE) to install locally using conda.
-
-*We are currently in the testing release stage with frequent modifications based on user feedback. After testing (few months), we will upload to conda for release, which could have easier installation.*
 
 ## Demos
 Checkout 10+ demos & tutorials to start:
