@@ -980,11 +980,11 @@ def drug_2_embed(x):
 	return enc_drug.transform(np.array(x).reshape(-1,1)).toarray().T    
 
 def save_dict(path, obj):
-	with open(path + '/config.pkl', 'wb') as f:
+	with open(os.path.join(path, 'config.pkl'), 'wb') as f:
 		pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 def load_dict(path):
-	with open(path + '/config.pkl', 'rb') as f:
+	with open(os.path.join(path, 'config.pkl'), 'rb') as f:
 		return pickle.load(f)
 
 URLs = {
