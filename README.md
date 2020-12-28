@@ -9,12 +9,14 @@
 ---
 
 [![PyPI version](https://badge.fury.io/py/DeepPurpose.svg)](https://pypi.org/project/DeepPurpose/)
+[![Downloads](https://pepy.tech/badge/deeppurpose/week)](https://pepy.tech/project/deeppurpose)
 [![GitHub Repo stars](https://img.shields.io/github/stars/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/stargazers)
 [![GitHub Repo forks](https://img.shields.io/github/forks/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/network/members)
 
 This repository hosts DeepPurpose, a Deep Learning Based Molecular Modeling and Prediction Toolkit on Drug-Target Interaction Prediction, Compound Property Prediction, Protein-Protein Interaction Prediction, and Protein Function prediction (using PyTorch). We focus on DTI and its applications in Drug Repurposing and Virtual Screening, but support various other molecular encoding tasks. It allows very easy usage (several lines of codes only) to facilitate deep learning for life science research. 
 
 ### News!
+- [12/20] DeepPurpose is now supported by TDC data loader, which contains a large collection of ML for therapeutics datasets, including many drug property, DTI datasets. Here is a [tutorial](https://github.com/mims-harvard/TDC/blob/master/tutorials/TDC_104_ML_Model_DeepPurpose.ipynb)!
 - [12/20] DeepPurpose can now be installed via `pip`!
 - [11/20] DeepPurpose is published in [Bioinformatics](https://doi.org/10.1093/bioinformatics/btaa1005)!
 - [11/20] Added 5 more pretrained models on BindingDB IC50 Units (around 1Million data points). 
@@ -66,7 +68,7 @@ Try it on [Binder](https://mybinder.org)! Binder is a cloud Jupyter Notebook int
 
 [Video tutorial](https://www.youtube.com/watch?v=ghUyZknxq5o) to install Binder.
 
-We recommend to install it locally since Binder needs to be refreshed every time launching. To install locally, you can install from `pip`:
+We recommend to install it locally since Binder needs to be refreshed every time launching. To install locally, we recommend to install from `pip`:
 
 ### `pip`
 
@@ -78,53 +80,35 @@ pip install git+https://github.com/bp-kelley/descriptastorus
 pip install DeepPurpose
 ```
 
-You can also build from source:
-
 ### Build from Source
 
 First time:
 ```bash
-git clone https://github.com/kexinhuang12345/DeepPurpose.git
-## Download code repository
-
-cd DeepPurpose
-## Change directory to DeepPurpose
-
-conda env create -f environment.yml  
-## Build virtual environment with all packages installed using conda
-
-conda activate DeepPurpose
-## Activate conda environment (use "source activate DeepPurpose" for anaconda 4.4 or earlier) 
-
-jupyter notebook
-## open the jupyter notebook with the conda env
+git clone https://github.com/kexinhuang12345/DeepPurpose.git ## Download code repository
+cd DeepPurpose ## Change directory to DeepPurpose
+conda env create -f environment.yml  ## Build virtual environment with all packages installed using conda
+conda activate DeepPurpose ## Activate conda environment (use "source activate DeepPurpose" for anaconda 4.4 or earlier) 
+jupyter notebook ## open the jupyter notebook with the conda env
 
 ## run our code, e.g. click a file in the DEMO folder
 ... ...
 
-conda deactivate 
-## when done, exit conda environment 
+conda deactivate ## when done, exit conda environment 
 ```
 
 In the future:
 ```bash
-cd DeepPurpose
-## Change directory to DeepPurpose
-
-conda activate DeepPurpose
-## Activate conda environment
-
-jupyter notebook
-## open the jupyter notebook with the conda env
+cd DeepPurpose ## Change directory to DeepPurpose
+conda activate DeepPurpose ## Activate conda environment
+jupyter notebook ## open the jupyter notebook with the conda env
 
 ## run our code, e.g. click a file in the DEMO folder
 ... ...
 
-conda deactivate 
-## when done, exit conda environment 
+conda deactivate ## when done, exit conda environment 
 ```
 
-[Video tutorial](https://youtu.be/bqinehjnWvE) to install locally using conda.
+[Video tutorial](https://youtu.be/bqinehjnWvE) to install locally from source.
 
 
 ## Example
