@@ -9,7 +9,8 @@
 ---
 
 [![PyPI version](https://badge.fury.io/py/DeepPurpose.svg)](https://pypi.org/project/DeepPurpose/)
-[![Downloads](https://pepy.tech/badge/deeppurpose/week)](https://pepy.tech/project/deeppurpose)
+[![Downloads](https://pepy.tech/badge/deeppurpose/month)](https://pepy.tech/project/deeppurpose)
+[![Downloads](https://pepy.tech/badge/deeppurpose)](https://pepy.tech/project/deeppurpose)
 [![GitHub Repo stars](https://img.shields.io/github/stars/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/stargazers)
 [![GitHub Repo forks](https://img.shields.io/github/forks/kexinhuang12345/DeepPurpose)](https://github.com/kexinhuang12345/DeepPurpose/network/members)
 
