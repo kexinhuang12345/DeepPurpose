@@ -395,9 +395,9 @@ def encode_protein(df_data, target_encoding, column_name = 'Target Sequence', sa
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
 		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
 	elif target_encoding == 'ESPF':
-		unique = pd.Series(df_data[column_name].unique()).apply(protein2espf)
-		unique_dict = dict(zip(df_data[column_name].unique(), unique))
-		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+		AA = pd.Series(df_data[column_name].unique()).apply(protein2espf)
+		AA_dict = dict(zip(df_data[column_name].unique(), AA))
+		df_data[save_column_name] = [AA_dict[i] for i in df_data[column_name]]
 	elif target_encoding == 'CNN':
 		AA = pd.Series(df_data[column_name].unique()).apply(trans_protein)
 		AA_dict = dict(zip(df_data[column_name].unique(), AA))
