@@ -266,7 +266,7 @@ def smiles2mpnnfeature(smiles):
 	try:
 		assert atoms_completion_num >= 0 and bonds_completion_num >= 0
 	except:
-		raise Exception("Please increasing MAX_ATOM and MAX_BOND in line 24,25 utils.py and reinstall it. The current setting is for small molecule. ")
+		raise Exception("Please increasing MAX_ATOM and MAX_BOND in line 26,27 utils.py, for example, MAX_ATOM=400,MAX_BOND=800, and reinstall it via 'python setup.py install'. The current setting is for small molecule. ")
 
 
 	fatoms_dim = fatoms.shape[1]
