@@ -1,0 +1,7 @@
+prune DEMO
+prune toy_data
+prune docs
+include README.md
+include requirements.txt
+include LICENSE
+include DeepPurpose/ESPF
