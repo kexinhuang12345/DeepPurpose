@@ -24,8 +24,8 @@ import pathlib
 
 this_dir = str(pathlib.Path(__file__).parent.absolute())
 
-MAX_ATOM = 200
-MAX_BOND = 400
+MAX_ATOM = 400
+MAX_BOND = MAX_ATOM * 2
 
 # ESPF encoding
 vocab_path = f"{this_dir}/ESPF/drug_codes_chembl_freq_1500.txt"
@@ -266,7 +266,7 @@ def smiles2mpnnfeature(smiles):
 	try:
 		assert atoms_completion_num >= 0 and bonds_completion_num >= 0
 	except:
-		raise Exception("Please increasing MAX_ATOM and MAX_BOND in line 26,27 utils.py, for example, MAX_ATOM=400,MAX_BOND=800, and reinstall it via 'python setup.py install'. The current setting is for small molecule. ")
+		raise Exception("Please increasing MAX_ATOM in line 26 utils.py, for example, MAX_ATOM=600 and reinstall it via 'python setup.py install'. The current setting is for small molecule. ")
 
 
 	fatoms_dim = fatoms.shape[1]
