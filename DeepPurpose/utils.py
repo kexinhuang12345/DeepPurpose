@@ -1288,10 +1288,10 @@ def download_pretrained_model(model_name, save_dir = './save_folder'):
 
 	if not os.path.exists(save_dir):
 		os.mkdir(save_dir)
-	if not os.path.exists(os.path.join(save_dir, 'pretrained_model')):
-		os.mkdir(os.path.join(save_dir, 'pretrained_model'))
+	if not os.path.exists(os.path.join(save_dir, 'pretrained_models')):
+		os.mkdir(os.path.join(save_dir, 'pretrained_models'))
 
-	pretrained_dir = os.path.join(save_dir, 'pretrained_model')
+	pretrained_dir = os.path.join(save_dir, 'pretrained_models')
 	downloaded_path = os.path.join(pretrained_dir, name2zipfilename[model_name.lower()] + '.zip')
 
 	if os.path.exists(os.path.join(pretrained_dir, name2filename[model_name.lower()])):
