@@ -77,6 +77,7 @@ We recommend to install it locally since Binder needs to be refreshed every time
 conda create -n DeepPurpose python=3.6
 conda activate DeepPurpose
 conda install -c conda-forge rdkit
+conda install -c conda-forge notebook
 pip install git+https://github.com/bp-kelley/descriptastorus 
 pip install DeepPurpose
 ```

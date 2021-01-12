@@ -254,7 +254,7 @@ class DBTA:
 		drug_encoding = config['drug_encoding']
 		target_encoding = config['target_encoding']
 
-		if drug_encoding == 'Morgan' or drug_encoding=='Pubchem' or drug_encoding=='Daylight' or drug_encoding=='rdkit_2d_normalized' or drug_encoding == 'ESPF':
+		if drug_encoding == 'Morgan' or drug_encoding == 'ErG' or drug_encoding=='Pubchem' or drug_encoding=='Daylight' or drug_encoding=='rdkit_2d_normalized' or drug_encoding == 'ESPF':
 			# Future TODO: support multiple encoding scheme for static input 
 			self.model_drug = MLP(config['input_dim_drug'], config['hidden_dim_drug'], config['mlp_hidden_dims_drug'])
 		elif drug_encoding == 'CNN':
