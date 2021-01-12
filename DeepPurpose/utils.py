@@ -3,6 +3,7 @@ import pandas as pd
 from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem
 from rdkit.Chem.Fingerprints import FingerprintMols
+from rdkit.Chem.rdReducedGraphs import GetErGFingerprint
 from DeepPurpose.pybiomed_helper import _GetPseudoAAC, CalculateAADipeptideComposition, \
 calcPubChemFingerAll, CalculateConjointTriad, GetQuasiSequenceOrder
 import torch
@@ -117,6 +118,15 @@ def index_select_ND(source, dim, index):
     final_size = index_size + suffix_dim
     target = source.index_select(dim, index.view(-1))
     return target.view(final_size)
+
+def smiles2erg(s):
+    try:
+        mol = Chem.MolFromSmiles(s)
+        features = np.array(GetErGFingerprint(mol))
+    except:
+        print('rdkit cannot find this SMILES for ErG: ' + s + 'convert to all 0 features')
+        features = np.zeros((315, ))
+    return features
 
 def smiles2morgan(s, radius = 2, nBits = 1024):
     try:
@@ -365,6 +375,10 @@ def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
 	elif drug_encoding == 'MPNN':
 		unique = pd.Series(df_data[column_name].unique()).apply(smiles2mpnnfeature)
+		unique_dict = dict(zip(df_data[column_name].unique(), unique))
+		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding == 'ErG':
+		unique = pd.Series(df_data[column_name].unique()).apply(smiles2erg)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
 	else:
@@ -768,6 +782,9 @@ def generate_config(drug_encoding = None, target_encoding = None,
 	
 	if drug_encoding == 'Morgan':
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
+	elif drug_encoding == 'ErG':
+		base_config['input_dim_drug'] = 315
+		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1
 	elif drug_encoding == 'Pubchem':
 		base_config['input_dim_drug'] = 881
 		base_config['mlp_hidden_dims_drug'] = mlp_hidden_dims_drug # MLP classifier dim 1				
