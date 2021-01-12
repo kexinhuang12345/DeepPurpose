@@ -413,6 +413,7 @@ Currently, we support the following encodings:
 | Daylight | Daylight-type fingerprints | 
 | rdkit_2d_normalized| Normalized Descriptastorus|
 | ESPF | Explainable Substructure Partition Fingerprint |
+| ErG | 2D pharmacophore descriptions for scaffold hopping |
 | CNN | Convolutional Neural Network on SMILES|
 |CNN_RNN| A GRU/LSTM on top of a CNN on SMILES|
 |Transformer| Transformer Encoder on ESPF|
