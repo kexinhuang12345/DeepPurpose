@@ -131,3 +131,4 @@ dependencies:
     - subword-nmt==0.3.7
     - urllib3==1.25.8
     - wget==3.2
+    - ax-platform==0.1.19
