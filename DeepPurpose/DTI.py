@@ -509,7 +509,7 @@ class DBTA:
 					  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7] + ' , Cross-entropy Loss: ' + \
 					  str(loss)[:7])				
 			else:
-				mse, r2, p_val, CI, logits = self.test_(testing_generator, model_max)
+				mse, r2, p_val, CI, logits, loss_test = self.test_(testing_generator, model_max)
 				test_table = PrettyTable(["MSE", "Pearson Correlation", "with p-value", "Concordance Index"])
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
 				if verbose:
