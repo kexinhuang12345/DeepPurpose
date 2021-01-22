@@ -25,6 +25,8 @@ from DeepPurpose.utils import *
 from DeepPurpose.model_helper import Encoder_MultipleLayers, Embeddings        
 from DeepPurpose.encoders import *
 
+from torch.utils.tensorboard import SummaryWriter
+
 class Classifier(nn.Sequential):
 	def __init__(self, model_drug, model_protein, **config):
 		super(Classifier, self).__init__()
@@ -312,6 +314,9 @@ class DBTA:
 				m = torch.nn.Sigmoid()
 				logits = torch.squeeze(m(score)).detach().cpu().numpy()
 			else:
+				loss_fct = torch.nn.MSELoss()
+				n = torch.squeeze(score, 1)
+				loss = loss_fct(n, Variable(torch.from_numpy(np.array(label)).float()).to(self.device))
 				logits = torch.squeeze(score).detach().cpu().numpy()
 			label_ids = label.to('cpu').numpy()
 			y_label = y_label + label_ids.flatten().tolist()
@@ -334,7 +339,7 @@ class DBTA:
 		else:
 			if repurposing_mode:
 				return y_pred
-			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred
+			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred, loss
 
 	def train(self, train, val, test = None, verbose = True):
 		if len(train.Label.unique()) == 2:
@@ -408,7 +413,9 @@ class DBTA:
 		float2str = lambda x:'%0.4f'%x
 		if verbose:
 			print('--- Go for Training ---')
+		writer = SummaryWriter()
 		t_start = time() 
+		iteration_loss = 0
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
 				if self.target_encoding == 'Transformer':
@@ -434,6 +441,8 @@ class DBTA:
 					n = torch.squeeze(score, 1)
 					loss = loss_fct(n, label)
 				loss_history.append(loss.item())
+				writer.add_scalar("Loss/train", loss.item(), iteration_loss)
+				iteration_loss += 1
 
 				opt.zero_grad()
 				loss.backward()
@@ -446,6 +455,7 @@ class DBTA:
 							' with loss ' + str(loss.cpu().detach().numpy())[:7] +\
 							". Total time " + str(int(t_now - t_start)/3600)[:7] + " hours") 
 						### record total run time
+						
 
 			##### validate, select the best model up to now 
 			with torch.set_grad_enabled(False):
@@ -458,20 +468,24 @@ class DBTA:
 						model_max = copy.deepcopy(self.model)
 						max_auc = auc   
 					if verbose:
-						print('Validation at Epoch '+ str(epo + 1) + ' , AUROC: ' + str(auc)[:7] + \
+						print('Validation at Epoch '+ str(epo + 1) + ', AUROC: ' + str(auc)[:7] + \
 						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7] + ' , Cross-entropy Loss: ' + \
 						  str(loss)[:7])
 				else:  
 					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
-					mse, r2, p_val, CI, logits = self.test_(validation_generator, self.model)
+					mse, r2, p_val, CI, logits, loss_val = self.test_(validation_generator, self.model)
 					lst = ["epoch " + str(epo)] + list(map(float2str,[mse, r2, p_val, CI]))
 					valid_metric_record.append(lst)
 					if mse < max_MSE:
 						model_max = copy.deepcopy(self.model)
 						max_MSE = mse
 					if verbose:
-						print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
+						print('Validation at Epoch '+ str(epo + 1) + ' with loss:' + str(loss_val.item())[:7] +', MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
 						 + str(r2)[:7] + ' with p-value: ' + str(p_val)[:7] +' , Concordance Index: '+str(CI)[:7])
+						writer.add_scalar("valid/mse", mse, epo)
+						writer.add_scalar("valid/pearson_correlation", r2, epo)
+						writer.add_scalar("valid/concordance_index", CI, epo)
+						writer.add_scalar("Loss/valid", loss_val.item(), iteration_loss)
 			table.add_row(lst)
 
 
@@ -526,6 +540,8 @@ class DBTA:
 		plt.savefig(fig_file)
 		if verbose:
 			print('--- Training Finished ---')
+			writer.flush()
+			writer.close()
           
 
 	def predict(self, df_data):
