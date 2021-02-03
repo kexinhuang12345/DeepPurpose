@@ -10,6 +10,7 @@ dependencies:
   - backcall=0.1.0
   - blas=1.0
   - bleach=3.1.0
+  - botorch=0.2.2
   - bzip2=1.0.8
   - ca-certificates=2020.1.1
   - cairo=1.14.12
@@ -23,6 +24,7 @@ dependencies:
   - fontconfig=2.13.0
   - freetype=2.9.1
   - gettext=0.19.8.1
+  - gpytorch=1.1.1
   - icu=58.2
   - importlib-metadata=1.5.0
   - intel-openmp=2019.4
@@ -93,10 +95,12 @@ dependencies:
   - scikit-learn=0.22.1
   - scikit-plot=0.3.7
   - scipy=1.4.1
+  - seaborn=0.11.0
   - send2trash=1.5.0
   - setuptools=46.1.3
   - six=1.14.0=py_1
   - sqlite=3.31.1
+  - tensorboard=2.1.0
   - terminado=0.8.3
   - testpath=0.4.4
   - tk=8.6.8
@@ -112,12 +116,11 @@ dependencies:
   - zipp=2.2.0
   - zlib=1.2.11
   - zstd=1.3.7
-  - seaborn=0.11.0
-  - tensorboard=2.1.0
   - pip:
     - alabaster==0.7.12
     - autograd==1.3
     - autograd-gamma==0.4.2
+    - ax-platform==0.1.11
     - babel==2.8.0
     - chardet==3.0.4
     - docutils==0.16
@@ -132,4 +135,3 @@ dependencies:
     - subword-nmt==0.3.7
     - urllib3==1.25.8
     - wget==3.2
-    - ax-platform==0.1.19
