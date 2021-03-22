@@ -11,4 +11,3 @@ subword-nmt
 lifelines
 prettytable
 tensorboard
-ax-platform
