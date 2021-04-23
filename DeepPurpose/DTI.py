@@ -283,6 +283,10 @@ class DBTA:
 
 		self.model = Classifier(self.model_drug, self.model_protein, **config)
 		self.config = config
+
+		if 'cuda_id' in self.config:
+			self.device = torch.device('cuda:' + str(self.config['cuda_id']) if torch.cuda.is_available() else 'cpu')
+				
 		self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		
 		self.drug_encoding = drug_encoding
@@ -341,7 +345,7 @@ class DBTA:
 				return y_pred
 			return mean_squared_error(y_label, y_pred), pearsonr(y_label, y_pred)[0], pearsonr(y_label, y_pred)[1], concordance_index(y_label, y_pred), y_pred, loss
 
-	def train(self, train, val, test = None, verbose = True):
+	def train(self, train, val = None, test = None, verbose = True):
 		if len(train.Label.unique()) == 2:
 			self.binary = True
 			self.config['binary'] = True
@@ -382,7 +386,8 @@ class DBTA:
 			params['collate_fn'] = mpnn_collate_func
 
 		training_generator = data.DataLoader(data_process_loader(train.index.values, train.Label.values, train, **self.config), **params)
-		validation_generator = data.DataLoader(data_process_loader(val.index.values, val.Label.values, val, **self.config), **params)
+		if val is not None:
+			validation_generator = data.DataLoader(data_process_loader(val.index.values, val.Label.values, val, **self.config), **params)
 		
 		if test is not None:
 			info = data_process_loader(test.index.values, test.Label.values, test, **self.config)
@@ -456,46 +461,48 @@ class DBTA:
 							". Total time " + str(int(t_now - t_start)/3600)[:7] + " hours") 
 						### record total run time
 						
-
-			##### validate, select the best model up to now 
-			with torch.set_grad_enabled(False):
-				if self.binary:  
-					## binary: ROC-AUC, PR-AUC, F1, cross-entropy loss
-					auc, auprc, f1, loss, logits = self.test_(validation_generator, self.model)
-					lst = ["epoch " + str(epo)] + list(map(float2str,[auc, auprc, f1]))
-					valid_metric_record.append(lst)
-					if auc > max_auc:
-						model_max = copy.deepcopy(self.model)
-						max_auc = auc   
-					if verbose:
-						print('Validation at Epoch '+ str(epo + 1) + ', AUROC: ' + str(auc)[:7] + \
-						  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7] + ' , Cross-entropy Loss: ' + \
-						  str(loss)[:7])
-				else:  
-					### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
-					mse, r2, p_val, CI, logits, loss_val = self.test_(validation_generator, self.model)
-					lst = ["epoch " + str(epo)] + list(map(float2str,[mse, r2, p_val, CI]))
-					valid_metric_record.append(lst)
-					if mse < max_MSE:
-						model_max = copy.deepcopy(self.model)
-						max_MSE = mse
-					if verbose:
-						print('Validation at Epoch '+ str(epo + 1) + ' with loss:' + str(loss_val.item())[:7] +', MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
-						 + str(r2)[:7] + ' with p-value: ' + str(p_val)[:7] +' , Concordance Index: '+str(CI)[:7])
-						writer.add_scalar("valid/mse", mse, epo)
-						writer.add_scalar("valid/pearson_correlation", r2, epo)
-						writer.add_scalar("valid/concordance_index", CI, epo)
-						writer.add_scalar("Loss/valid", loss_val.item(), iteration_loss)
-			table.add_row(lst)
-
+			if val is not None:
+				##### validate, select the best model up to now 
+				with torch.set_grad_enabled(False):
+					if self.binary:  
+						## binary: ROC-AUC, PR-AUC, F1, cross-entropy loss
+						auc, auprc, f1, loss, logits = self.test_(validation_generator, self.model)
+						lst = ["epoch " + str(epo)] + list(map(float2str,[auc, auprc, f1]))
+						valid_metric_record.append(lst)
+						if auc > max_auc:
+							model_max = copy.deepcopy(self.model)
+							max_auc = auc   
+						if verbose:
+							print('Validation at Epoch '+ str(epo + 1) + ', AUROC: ' + str(auc)[:7] + \
+							  ' , AUPRC: ' + str(auprc)[:7] + ' , F1: '+str(f1)[:7] + ' , Cross-entropy Loss: ' + \
+							  str(loss)[:7])
+					else:  
+						### regression: MSE, Pearson Correlation, with p-value, Concordance Index  
+						mse, r2, p_val, CI, logits, loss_val = self.test_(validation_generator, self.model)
+						lst = ["epoch " + str(epo)] + list(map(float2str,[mse, r2, p_val, CI]))
+						valid_metric_record.append(lst)
+						if mse < max_MSE:
+							model_max = copy.deepcopy(self.model)
+							max_MSE = mse
+						if verbose:
+							print('Validation at Epoch '+ str(epo + 1) + ' with loss:' + str(loss_val.item())[:7] +', MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
+							 + str(r2)[:7] + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI)[:7])
+							writer.add_scalar("valid/mse", mse, epo)
+							writer.add_scalar("valid/pearson_correlation", r2, epo)
+							writer.add_scalar("valid/concordance_index", CI, epo)
+							writer.add_scalar("Loss/valid", loss_val.item(), iteration_loss)
+				table.add_row(lst)
+			else:
+				model_max = copy.deepcopy(self.model)
 
 		# load early stopped model
 		self.model = model_max
 
-		#### after training 
-		prettytable_file = os.path.join(self.result_folder, "valid_markdowntable.txt")
-		with open(prettytable_file, 'w') as fp:
-			fp.write(table.get_string())
+		if val is not None:
+			#### after training 
+			prettytable_file = os.path.join(self.result_folder, "valid_markdowntable.txt")
+			with open(prettytable_file, 'w') as fp:
+				fp.write(table.get_string())
 
 		if test is not None:
 			if verbose:
@@ -514,7 +521,7 @@ class DBTA:
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
 				if verbose:
 					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
-					  + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+					  + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.drug_encoding) + '_' + str(self.target_encoding) 
 				     + '_logits.npy'), np.array(logits))                
 	
@@ -551,7 +558,7 @@ class DBTA:
 		'''
 		print('predicting...')
 		info = data_process_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
-		self.model.to(device)
+		self.model.to(self.device)
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
 				'num_workers': self.config['num_workers'],
@@ -577,7 +584,7 @@ class DBTA:
 		if not os.path.exists(path):
 			os.makedirs(path)
 
-		if self.device == 'cuda':
+		if self.device[:4] == 'cuda':
 			state_dict = torch.load(path)
 		else:
 			state_dict = torch.load(path, map_location = torch.device('cpu'))

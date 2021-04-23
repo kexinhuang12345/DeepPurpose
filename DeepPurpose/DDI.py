@@ -299,7 +299,7 @@ class DDI_Model:
 						max_MSE = mse
 					if verbose:
 						print('Validation at Epoch '+ str(epo + 1) + ' , MSE: ' + str(mse)[:7] + ' , Pearson Correlation: '\
-						 + str(r2)[:7] + ' with p-value: ' + str(p_val)[:7] +' , Concordance Index: '+str(CI)[:7])
+						 + str(r2)[:7] + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI)[:7])
 			table.add_row(lst)
 
 
@@ -328,7 +328,7 @@ class DDI_Model:
 				test_table.add_row(list(map(float2str, [mse, r2, p_val, CI])))
 				if verbose:
 					print('Testing MSE: ' + str(mse) + ' , Pearson Correlation: ' + str(r2) 
-					  + ' with p-value: ' + str(p_val) +' , Concordance Index: '+str(CI))
+					  + ' with p-value: ' + str(f"{p_val:.2E}") +' , Concordance Index: '+str(CI))
 			np.save(os.path.join(self.result_folder, str(self.drug_encoding)
 				     + '_logits.npy'), np.array(logits))                
 	
