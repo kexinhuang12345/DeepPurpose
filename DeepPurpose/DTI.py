@@ -285,9 +285,12 @@ class DBTA:
 		self.config = config
 
 		if 'cuda_id' in self.config:
-			self.device = torch.device('cuda:' + str(self.config['cuda_id']) if torch.cuda.is_available() else 'cpu')
-				
-		self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+			if self.config['cuda_id'] is None:
+				self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+			else:
+				self.device = torch.device('cuda:' + str(self.config['cuda_id']) if torch.cuda.is_available() else 'cpu')
+		else:
+			self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		
 		self.drug_encoding = drug_encoding
 		self.target_encoding = target_encoding

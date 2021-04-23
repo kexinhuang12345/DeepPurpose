@@ -759,7 +759,8 @@ def generate_config(drug_encoding = None, target_encoding = None,
 					rnn_target_hid_dim = 64,
 					rnn_target_n_layers = 2,
 					rnn_target_bidirectional = True,
-					num_workers = 0                    
+					num_workers = 0,
+					cuda_id = None                    
 					):
 
 	base_config = {'input_dim_drug': input_dim_drug,
@@ -775,7 +776,8 @@ def generate_config(drug_encoding = None, target_encoding = None,
 					'target_encoding': target_encoding, 
 					'result_folder': result_folder,
 					'binary': False,
-					'num_workers': num_workers                  
+					'num_workers': num_workers,
+					'cuda_id': cuda_id                 
 	}
 	if not os.path.exists(base_config['result_folder']):
 		os.makedirs(base_config['result_folder'])
