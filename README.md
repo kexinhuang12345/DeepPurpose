@@ -593,7 +593,7 @@ Checkout [Dataset Tutorial](DEMO/load_data_tutorial.ipynb).
 We provide more than 10 pretrained models. Please see [Pretraining Model Tutorial](DEMO/load_pretraining_models_tutorial.ipynb) on how to load them. It is as simple as 
 
 ```python
-from DeepPurpose import models
+from DeepPurpose import DTI as models
 net = models.model_pretrained(model = 'MPNN_CNN_DAVIS')
 or
 net = models.model_pretrained(FILE_PATH)

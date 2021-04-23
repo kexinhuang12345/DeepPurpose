@@ -587,10 +587,7 @@ class DBTA:
 		if not os.path.exists(path):
 			os.makedirs(path)
 
-		if self.device[:4] == 'cuda':
-			state_dict = torch.load(path)
-		else:
-			state_dict = torch.load(path, map_location = torch.device('cpu'))
+		state_dict = torch.load(path, map_location = torch.device('cpu'))
 		# to support training from multi-gpus data-parallel:
         
 		if next(iter(state_dict))[:7] == 'module.':
