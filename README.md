@@ -602,6 +602,8 @@ The list of avaiable pretrained models:
 
 Model name consists of first the drug encoding, then the target encoding and then the trained dataset.
 
+Note that for DTI models, the BindingDB and DAVIS are trained on log scale. But DeepPurpose allows you to specify conversion between log scale (e.g. pIC50) and original scale by the variable `convert_y`.
+
 <details>
   <summary>Click here for the models supported!</summary>
 
