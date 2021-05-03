@@ -9,6 +9,8 @@ calcPubChemFingerAll, CalculateConjointTriad, GetQuasiSequenceOrder
 import torch
 from torch.utils import data
 from torch.autograd import Variable
+import torch.nn.functional as F
+
 try:
 	from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
 except:
@@ -170,6 +172,18 @@ def smiles2pubchem(s):
 		print('pubchem fingerprint not working for smiles: ' + s + ' convert to 0 vectors')
 		features = np.zeros((881, ))
 	return np.array(features)
+
+'''
+def smiles2dgl_canonical(s, node_featurizer, edge_featurizer):
+	try:
+		g = smiles_to_bigraph(smiles=s, 
+                  node_featurizer=node_featurizer,
+                  edge_featurizer=edge_featurizer)
+	except:
+		print('dgl canonical fingerprint not working for smiles: ' + s + ' removed...')
+		g = 'REMOVED'
+	return g
+'''
 
 def target2quasi(s):
 	try:
@@ -381,6 +395,12 @@ def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name
 		unique = pd.Series(df_data[column_name].unique()).apply(smiles2erg)
 		unique_dict = dict(zip(df_data[column_name].unique(), unique))
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
+	elif drug_encoding in ['DGL_GCN', 'DGL_NeuralFP']:
+		df_data[save_column_name] = df_data[column_name]
+	elif drug_encoding == 'AttentiveFP':
+		df_data[save_column_name] = df_data[column_name]
+	elif drug_encoding in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
+		df_data[save_column_name] = df_data[column_name]
 	else:
 		raise AttributeError("Please use the correct drug encoding available!")
 	return df_data
@@ -682,6 +702,27 @@ class data_process_loader_Property_Prediction(data.Dataset):
 		self.df = df
 		self.config = config
 
+		if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP']:
+			from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
+			self.node_featurizer = CanonicalAtomFeaturizer()
+			self.edge_featurizer = CanonicalBondFeaturizer(self_loop = True)
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
+		elif self.config['drug_encoding'] == 'AttentiveFP':
+			from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
+			self.node_featurizer = AttentiveFPAtomFeaturizer()
+			self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+		
+		elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
+			from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
+			self.node_featurizer = PretrainAtomFeaturizer()
+			self.edge_featurizer = PretrainBondFeaturizer()
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
 	def __len__(self):
 		'Denotes the total number of samples'
 		return len(self.list_IDs)
@@ -692,7 +733,8 @@ class data_process_loader_Property_Prediction(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
-		#print("len(v_d)", len(v_d))
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		y = self.labels[index]
 		return v_d, y
 
@@ -760,7 +802,13 @@ def generate_config(drug_encoding = None, target_encoding = None,
 					rnn_target_n_layers = 2,
 					rnn_target_bidirectional = True,
 					num_workers = 0,
-					cuda_id = None                    
+					cuda_id = None,
+					gnn_hid_dim_drug = 64,
+					gnn_num_layers = 3,
+					gnn_activation = F.relu,
+					neuralfp_max_degree = 10,
+					neuralfp_predictor_hid_dim = 128,
+					neuralfp_predictor_activation = F.tanh
 					):
 
 	base_config = {'input_dim_drug': input_dim_drug,
@@ -825,6 +873,23 @@ def generate_config(drug_encoding = None, target_encoding = None,
 		base_config['mpnn_hidden_size'] = mpnn_hidden_size
 		base_config['mpnn_depth'] = mpnn_depth
 		#raise NotImplementedError
+	elif drug_encoding == 'DGL_GCN':
+		base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+		base_config['gnn_num_layers'] = gnn_num_layers
+		base_config['gnn_activation'] = gnn_activation
+	elif drug_encoding == 'DGL_NeuralFP':
+		base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+		base_config['neuralfp_max_degree'] = neuralfp_max_degree
+		base_config['gnn_activation'] = gnn_activation
+		base_config['neuralfp_predictor_hid_dim'] = neuralfp_predictor_hid_dim
+		base_config['gnn_num_layers'] = gnn_num_layers
+		base_config['neuralfp_predictor_activation'] = neuralfp_predictor_activation
+	elif drug_encoding == 'DGL_GIN_AttrMasking':
+		## loaded pretrained model specifications
+		pass
+	elif drug_encoding == 'DGL_GIN_ContextPred':
+		## loaded pretrained model specifications
+		pass
 	elif drug_encoding is None:
 		pass
 	else:
