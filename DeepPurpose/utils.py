@@ -625,6 +625,27 @@ class data_process_loader(data.Dataset):
 		self.df = df
 		self.config = config
 
+		if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP']:
+			from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
+			self.node_featurizer = CanonicalAtomFeaturizer()
+			self.edge_featurizer = CanonicalBondFeaturizer(self_loop = True)
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
+		elif self.config['drug_encoding'] == 'AttentiveFP':
+			from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
+			self.node_featurizer = AttentiveFPAtomFeaturizer()
+			self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
+		elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
+			from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
+			self.node_featurizer = PretrainAtomFeaturizer()
+			self.edge_featurizer = PretrainBondFeaturizer()
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
 	def __len__(self):
 		'Denotes the total number of samples'
 		return len(self.list_IDs)
@@ -635,6 +656,8 @@ class data_process_loader(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		v_p = self.df.iloc[index]['target_encoding']
 		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
 			v_p = protein_2_embed(v_p)
@@ -650,7 +673,27 @@ class data_process_DDI_loader(data.Dataset):
 		self.list_IDs = list_IDs
 		self.df = df
 		self.config = config
-		print(df.columns.values)
+
+		if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP']:
+			from dgllife.utils import smiles_to_bigraph, CanonicalAtomFeaturizer, CanonicalBondFeaturizer
+			self.node_featurizer = CanonicalAtomFeaturizer()
+			self.edge_featurizer = CanonicalBondFeaturizer(self_loop = True)
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
+		elif self.config['drug_encoding'] == 'AttentiveFP':
+			from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
+			self.node_featurizer = AttentiveFPAtomFeaturizer()
+			self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
+
+		elif self.config['drug_encoding'] in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
+			from dgllife.utils import smiles_to_bigraph, PretrainAtomFeaturizer, PretrainBondFeaturizer
+			self.node_featurizer = PretrainAtomFeaturizer()
+			self.edge_featurizer = PretrainBondFeaturizer()
+			from functools import partial
+			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
 	def __len__(self):
 		'Denotes the total number of samples'
 		return len(self.list_IDs)
@@ -661,9 +704,13 @@ class data_process_DDI_loader(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding_1']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		v_p = self.df.iloc[index]['drug_encoding_2']
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_p = drug_2_embed(v_p)
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			v_p = self.fc(smiles = v_p, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		y = self.labels[index]
 		return v_d, v_p, y
 
