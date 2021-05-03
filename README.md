@@ -17,6 +17,7 @@
 This repository hosts DeepPurpose, a Deep Learning Based Molecular Modeling and Prediction Toolkit on Drug-Target Interaction Prediction, Compound Property Prediction, Protein-Protein Interaction Prediction, and Protein Function prediction (using PyTorch). We focus on DTI and its applications in Drug Repurposing and Virtual Screening, but support various other molecular encoding tasks. It allows very easy usage (several lines of codes only) to facilitate deep learning for life science research. 
 
 ### News!
+- [05/21] `0.1.2` Support 5 new graph neural network based models for compound encoding (DGL_GCN, DGL_NeuralFP, DGL_GIN_AttrMasking, DGL_GIN_ContextPred, DGL_AttentiveFP), implemented using [DGL Life Science](https://github.com/awslabs/dgl-lifesci)! An example is provided [here](DEMO/GNN_Models_Release_Example.ipynb)!
 - [12/20] DeepPurpose is now supported by TDC data loader, which contains a large collection of ML for therapeutics datasets, including many drug property, DTI datasets. Here is a [tutorial](https://github.com/mims-harvard/TDC/blob/master/tutorials/TDC_104_ML_Model_DeepPurpose.ipynb)!
 - [12/20] DeepPurpose can now be installed via `pip`!
 - [11/20] DeepPurpose is published in [Bioinformatics](https://doi.org/10.1093/bioinformatics/btaa1005)!
@@ -418,6 +419,12 @@ Currently, we support the following encodings:
 |CNN_RNN| A GRU/LSTM on top of a CNN on SMILES|
 |Transformer| Transformer Encoder on ESPF|
 |  MPNN | Message-passing neural network |
+| DGL_GCN | Graph Convolutional Network |
+| DGL_NeuralFP | Neural Fingerprint |
+| DGL_GIN_AttrMasking | Pretrained GIN with Attribute Masking |
+| DGL_GIN_ContextPred | Pretrained GIN with Context Prediction |
+| DGL_AttentiveFP | Attentive FP, Xiong et al. 2020 |
+
 
 | Target Encodings  | Description |
 |-----------------|-------------|

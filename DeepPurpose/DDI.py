@@ -63,35 +63,12 @@ def model_pretrained(path_dir = None, model = None):
 	model.load_pretrained(path_dir + '/model.pt')    
 	return model
 
-# def mpnn_feature_collate_func(x): 
-# 	## first version 
-# 	return [torch.cat([x[j][i] for j in range(len(x))], 0) for i in range(len(x[0]))]
-
-# def mpnn_feature_collate_func(x):
-# 	assert len(x[0]) == 5
-# 	N_atoms_N_bonds = [i[-1] for i in x]
-# 	N_atoms_scope = []
-# 	f_a = torch.cat([x[j][0] for j in range(len(x))], 0)
-# 	f_b = torch.cat([x[j][1] for j in range(len(x))], 0)
-# 	agraph_lst, bgraph_lst = [], []
-# 	Na, Nb = 0, 0
-# 	for j in range(len(x)):
-# 		agraph_lst.append(x[j][2] + Na)
-# 		bgraph_lst.append(x[j][3] + Nb)
-# 		N_atoms_scope.append([Na, x[j][2].shape[0]])
-# 		Na += x[j][2].shape[0]
-# 		Nb += x[j][3].shape[0]
-# 	agraph = torch.cat(agraph_lst, 0)
-# 	bgraph = torch.cat(bgraph_lst, 0)
-# 	return [f_a, f_b, agraph, bgraph, N_atoms_scope]
-
-# def mpnn_collate_func(x):
-# 	mpnn_feature = [i[0] for i in x]
-# 	mpnn_feature = mpnn_feature_collate_func(mpnn_feature)
-# 	from torch.utils.data.dataloader import default_collate
-# 	x_remain = [[i[1], i[2]] for i in x]
-# 	x_remain_collated = default_collate(x_remain)
-# 	return [mpnn_feature] + x_remain_collated
+def dgl_collate_func(x):
+	d1, d2, y = zip(*x)
+	import dgl
+	d1 = dgl.batch(d1)
+	d2 = dgl.batch(d2)
+	return d1, d2, torch.tensor(y)
 
 class DDI_Model:
 
@@ -110,6 +87,31 @@ class DDI_Model:
 			self.model_drug = transformer('drug', **config)
 		elif drug_encoding == 'MPNN':
 			self.model_drug = MPNN(config['hidden_dim_drug'], config['mpnn_depth'])
+		elif drug_encoding == 'DGL_GCN':
+			self.model_drug = DGL_GCN(in_feats = 74, 
+									hidden_feats = [config['gnn_hid_dim_drug']] * config['gnn_num_layers'], 
+									activation = [config['gnn_activation']] * config['gnn_num_layers'], 
+									predictor_dim = config['hidden_dim_drug'])
+		elif drug_encoding == 'DGL_NeuralFP':
+			self.model_drug = DGL_NeuralFP(in_feats = 74, 
+									hidden_feats = [config['gnn_hid_dim_drug']] * config['gnn_num_layers'], 
+									max_degree = config['neuralfp_max_degree'],
+									activation = [config['gnn_activation']] * config['gnn_num_layers'], 
+									predictor_hidden_size = config['neuralfp_predictor_hid_dim'],
+									predictor_dim = config['hidden_dim_drug'],
+									predictor_activation = config['neuralfp_predictor_activation'])
+		elif drug_encoding == 'DGL_GIN_AttrMasking':
+			self.model_drug = DGL_GIN_AttrMasking(predictor_dim = config['hidden_dim_drug'])
+		elif drug_encoding == 'DGL_GIN_ContextPred':
+			self.model_drug = DGL_GIN_ContextPred(predictor_dim = config['hidden_dim_drug'])
+		elif drug_encoding == 'DGL_AttentiveFP':
+			self.model_drug = DGL_AttentiveFP(node_feat_size = 39, 
+											edge_feat_size = 11,  
+											num_layers = config['gnn_num_layers'], 
+											num_timesteps = config['attentivefp_num_timesteps'], 
+											graph_feat_size = config['gnn_hid_dim_drug'], 
+											predictor_dim = config['hidden_dim_drug'])
+
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
@@ -132,7 +134,7 @@ class DDI_Model:
 		y_label = []
 		model.eval()
 		for i, (v_d, v_p, label) in enumerate(data_generator):
-			if self.drug_encoding == "MPNN" or self.drug_encoding == 'Transformer':
+			if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 				v_d = v_d
 				v_p = v_p
 			else:
@@ -206,6 +208,8 @@ class DDI_Model:
 	    		'drop_last': False}
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
+		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+			params['collate_fn'] = dgl_collate_func
 
 		training_generator = data.DataLoader(data_process_DDI_loader(train.index.values, train.Label.values, train, **self.config), **params)
 		validation_generator = data.DataLoader(data_process_DDI_loader(val.index.values, val.Label.values, val, **self.config), **params)
@@ -220,6 +224,8 @@ class DDI_Model:
         
 			if (self.drug_encoding == "MPNN"):
 				params_test['collate_fn'] = mpnn_collate_func
+			elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+				params_test['collate_fn'] = dgl_collate_func
 			testing_generator = data.DataLoader(data_process_DDI_loader(test.index.values, test.Label.values, test, **self.config), **params_test)
 
 		# early stopping
@@ -242,7 +248,7 @@ class DDI_Model:
 		t_start = time() 
 		for epo in range(train_epoch):
 			for i, (v_d, v_p, label) in enumerate(training_generator):
-				if self.drug_encoding == "MPNN" or self.drug_encoding == 'Transformer':
+				if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 					v_d = v_d
 					v_p = v_p
 				else:
@@ -372,7 +378,8 @@ class DDI_Model:
 
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
-
+		elif self.drug_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+				params_test['collate_fn'] = dgl_collate_func
 
 		generator = data.DataLoader(info, **params)
 

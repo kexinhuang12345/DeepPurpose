@@ -212,9 +212,6 @@ def virtual_screening(X_repurpose, target, model, drug_names = None, target_name
 
 def dgl_collate_func(x):
 	d, p, y = zip(*x)
-	print(d)
-	print(p)
-	print(y)
 	import dgl
 	d = dgl.batch(d)
 	return d, torch.tensor(p), torch.tensor(y)
@@ -256,6 +253,13 @@ class DBTA:
 			self.model_drug = DGL_GIN_AttrMasking(predictor_dim = config['hidden_dim_drug'])
 		elif drug_encoding == 'DGL_GIN_ContextPred':
 			self.model_drug = DGL_GIN_ContextPred(predictor_dim = config['hidden_dim_drug'])
+		elif drug_encoding == 'DGL_AttentiveFP':
+			self.model_drug = DGL_AttentiveFP(node_feat_size = 39, 
+											edge_feat_size = 11,  
+											num_layers = config['gnn_num_layers'], 
+											num_timesteps = config['attentivefp_num_timesteps'], 
+											graph_feat_size = config['gnn_hid_dim_drug'], 
+											predictor_dim = config['hidden_dim_drug'])
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
@@ -297,7 +301,7 @@ class DBTA:
 		y_label = []
 		model.eval()
 		for i, (v_d, v_p, label) in enumerate(data_generator):
-			if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 				v_d = v_d
 			else:
 				v_d = v_d.float().to(self.device)                
@@ -376,7 +380,7 @@ class DBTA:
 	    		'drop_last': False}
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
-		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			params['collate_fn'] = dgl_collate_func
 
 		training_generator = data.DataLoader(data_process_loader(train.index.values, train.Label.values, train, **self.config), **params)
@@ -393,7 +397,7 @@ class DBTA:
         
 			if (self.drug_encoding == "MPNN"):
 				params_test['collate_fn'] = mpnn_collate_func
-			elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 				params_test['collate_fn'] = dgl_collate_func
 			testing_generator = data.DataLoader(data_process_loader(test.index.values, test.Label.values, test, **self.config), **params_test)
 
@@ -423,7 +427,7 @@ class DBTA:
 					v_p = v_p
 				else:
 					v_p = v_p.float().to(self.device) 
-				if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+				if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 					v_d = v_d
 				else:
 					v_d = v_d.float().to(self.device)                
@@ -563,7 +567,7 @@ class DBTA:
 
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
-		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			params['collate_fn'] = dgl_collate_func
 
 		generator = data.DataLoader(info, **params)

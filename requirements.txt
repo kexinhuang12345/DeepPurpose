@@ -12,3 +12,4 @@ lifelines
 prettytable
 tensorboard
 ax-platform
+dgllife

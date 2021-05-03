@@ -173,8 +173,8 @@ class Property_Prediction:
 			self.model_drug = DGL_GIN_AttrMasking(predictor_dim = config['hidden_dim_drug'])
 		elif drug_encoding == 'DGL_GIN_ContextPred':
 			self.model_drug = DGL_GIN_ContextPred(predictor_dim = config['hidden_dim_drug'])
-		elif drug_encoding == 'AttentiveFP':
-			self.model_drug = AttentiveFP(node_feat_size = 39, 
+		elif drug_encoding == 'DGL_AttentiveFP':
+			self.model_drug = DGL_AttentiveFP(node_feat_size = 39, 
 											edge_feat_size = 11,  
 											num_layers = config['gnn_num_layers'], 
 											num_timesteps = config['attentivefp_num_timesteps'], 
@@ -203,7 +203,7 @@ class Property_Prediction:
 		y_label = []
 		model.eval()
 		for i, (v_d, label) in enumerate(data_generator):
-			if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 				v_d = v_d
 			else:
 				v_d = v_d.float().to(self.device)                
@@ -285,7 +285,7 @@ class Property_Prediction:
 	    		'drop_last': False}
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
-		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			params['collate_fn'] = dgl_collate_func
 
 		training_generator = data.DataLoader(data_process_loader_Property_Prediction(train.index.values, 
@@ -307,7 +307,7 @@ class Property_Prediction:
         
 			if (self.drug_encoding == "MPNN"):
 				params_test['collate_fn'] = mpnn_collate_func
-			elif self.drug_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+			elif self.drug_encoding in ['DGL_GCN', 'DGL_GAT', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 				params_test['collate_fn'] = dgl_collate_func
 			testing_generator = data.DataLoader(data_process_loader_Property_Prediction(test.index.values, test.Label.values, test, **self.config), **params_test)
 
@@ -333,7 +333,7 @@ class Property_Prediction:
 		for epo in range(train_epoch):
 			for i, (v_d, label) in enumerate(training_generator):
 				
-				if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+				if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 					v_d = v_d
 				else:
 					v_d = v_d.float().to(self.device)                
@@ -462,7 +462,7 @@ class Property_Prediction:
 
 		if (self.drug_encoding == "MPNN"):
 			params['collate_fn'] = mpnn_collate_func
-		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			params['collate_fn'] = dgl_collate_func
 
 		generator = data.DataLoader(info, **params)

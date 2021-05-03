@@ -397,7 +397,7 @@ def encode_drug(df_data, drug_encoding, column_name = 'SMILES', save_column_name
 		df_data[save_column_name] = [unique_dict[i] for i in df_data[column_name]]
 	elif drug_encoding in ['DGL_GCN', 'DGL_NeuralFP']:
 		df_data[save_column_name] = df_data[column_name]
-	elif drug_encoding == 'AttentiveFP':
+	elif drug_encoding == 'DGL_AttentiveFP':
 		df_data[save_column_name] = df_data[column_name]
 	elif drug_encoding in ['DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred']:
 		df_data[save_column_name] = df_data[column_name]
@@ -632,7 +632,7 @@ class data_process_loader(data.Dataset):
 			from functools import partial
 			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
 
-		elif self.config['drug_encoding'] == 'AttentiveFP':
+		elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
 			from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
 			self.node_featurizer = AttentiveFPAtomFeaturizer()
 			self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
@@ -656,7 +656,7 @@ class data_process_loader(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
-		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		v_p = self.df.iloc[index]['target_encoding']
 		if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
@@ -681,7 +681,7 @@ class data_process_DDI_loader(data.Dataset):
 			from functools import partial
 			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
 
-		elif self.config['drug_encoding'] == 'AttentiveFP':
+		elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
 			from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
 			self.node_featurizer = AttentiveFPAtomFeaturizer()
 			self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
@@ -704,12 +704,12 @@ class data_process_DDI_loader(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding_1']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
-		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		v_p = self.df.iloc[index]['drug_encoding_2']
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_p = drug_2_embed(v_p)
-		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			v_p = self.fc(smiles = v_p, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		y = self.labels[index]
 		return v_d, v_p, y
@@ -756,7 +756,7 @@ class data_process_loader_Property_Prediction(data.Dataset):
 			from functools import partial
 			self.fc = partial(smiles_to_bigraph, add_self_loop=True)
 
-		elif self.config['drug_encoding'] == 'AttentiveFP':
+		elif self.config['drug_encoding'] == 'DGL_AttentiveFP':
 			from dgllife.utils import smiles_to_bigraph, AttentiveFPAtomFeaturizer, AttentiveFPBondFeaturizer
 			self.node_featurizer = AttentiveFPAtomFeaturizer()
 			self.edge_featurizer = AttentiveFPBondFeaturizer(self_loop=True)
@@ -780,7 +780,7 @@ class data_process_loader_Property_Prediction(data.Dataset):
 		v_d = self.df.iloc[index]['drug_encoding']        
 		if self.config['drug_encoding'] == 'CNN' or self.config['drug_encoding'] == 'CNN_RNN':
 			v_d = drug_2_embed(v_d)
-		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'AttentiveFP']:
+		elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
 			v_d = self.fc(smiles = v_d, node_featurizer = self.node_featurizer, edge_featurizer = self.edge_featurizer)
 		y = self.labels[index]
 		return v_d, y
@@ -855,7 +855,7 @@ def generate_config(drug_encoding = None, target_encoding = None,
 					gnn_activation = F.relu,
 					neuralfp_max_degree = 10,
 					neuralfp_predictor_hid_dim = 128,
-					neuralfp_predictor_activation = F.tanh,
+					neuralfp_predictor_activation = torch.tanh,
 					attentivefp_num_timesteps = 2
 					):
 
@@ -938,7 +938,7 @@ def generate_config(drug_encoding = None, target_encoding = None,
 	elif drug_encoding == 'DGL_GIN_ContextPred':
 		## loaded pretrained model specifications
 		pass
-	elif drug_encoding == 'AttentiveFP':
+	elif drug_encoding == 'DGL_AttentiveFP':
 		base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
 		base_config['gnn_num_layers'] = gnn_num_layers
 		base_config['attentivefp_num_timesteps'] = attentivefp_num_timesteps

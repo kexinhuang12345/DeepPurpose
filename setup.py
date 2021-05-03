@@ -15,7 +15,7 @@ setup(
     name="DeepPurpose", 
     packages = ['DeepPurpose'],
     package_data={'DeepPurpose': ['ESPF/*']},
-    version="0.1.1",
+    version="0.1.2",
     author="Kexin Huang, Tianfan Fu",
     license="BSD-3-Clause",
     author_email="kexinhuang@hsph.harvard.edu",
