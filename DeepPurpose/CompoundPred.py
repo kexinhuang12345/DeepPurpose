@@ -173,6 +173,14 @@ class Property_Prediction:
 			self.model_drug = DGL_GIN_AttrMasking(predictor_dim = config['hidden_dim_drug'])
 		elif drug_encoding == 'DGL_GIN_ContextPred':
 			self.model_drug = DGL_GIN_ContextPred(predictor_dim = config['hidden_dim_drug'])
+		elif drug_encoding == 'AttentiveFP':
+			self.model_drug = AttentiveFP(node_feat_size = 39, 
+											edge_feat_size = 11,  
+											num_layers = config['gnn_num_layers'], 
+											num_timesteps = config['attentivefp_num_timesteps'], 
+											graph_feat_size = config['gnn_hid_dim_drug'], 
+											predictor_dim = config['hidden_dim_drug'])
+
 		else:
 			raise AttributeError('Please use one of the available encoding method.')
 
