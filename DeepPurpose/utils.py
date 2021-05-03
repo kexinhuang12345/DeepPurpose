@@ -808,7 +808,8 @@ def generate_config(drug_encoding = None, target_encoding = None,
 					gnn_activation = F.relu,
 					neuralfp_max_degree = 10,
 					neuralfp_predictor_hid_dim = 128,
-					neuralfp_predictor_activation = F.tanh
+					neuralfp_predictor_activation = F.tanh,
+					attentivefp_num_timesteps = 2
 					):
 
 	base_config = {'input_dim_drug': input_dim_drug,
@@ -890,6 +891,10 @@ def generate_config(drug_encoding = None, target_encoding = None,
 	elif drug_encoding == 'DGL_GIN_ContextPred':
 		## loaded pretrained model specifications
 		pass
+	elif drug_encoding == 'AttentiveFP':
+		base_config['gnn_hid_dim_drug'] = gnn_hid_dim_drug
+		base_config['gnn_num_layers'] = gnn_num_layers
+		base_config['attentivefp_num_timesteps'] = attentivefp_num_timesteps
 	elif drug_encoding is None:
 		pass
 	else:

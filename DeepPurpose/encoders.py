@@ -412,3 +412,29 @@ class DGL_GIN_ContextPred(nn.Module):
 		node_feats = self.gnn(bg, node_feats, edge_feats)
 		graph_feats = self.readout(bg, node_feats)
 		return self.transform(graph_feats)
+
+
+class AttentiveFP(nn.Module):
+	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/attentivefp_predictor.py#L17
+	def __init__(self, node_feat_size, edge_feat_size, num_layers = 2, num_timesteps = 2, graph_feat_size = 200, predictor_dim=None):
+		super(AttentiveFP, self).__init__()
+		from dgllife.model.gnn import AttentiveFPGNN
+		from dgllife.model.readout import AttentiveFPReadout
+
+		self.gnn = AttentiveFPGNN(node_feat_size=node_feat_size,
+                                  edge_feat_size=edge_feat_size,
+                                  num_layers=num_layers,
+                                  graph_feat_size=graph_feat_size)
+
+		self.readout = AttentiveFPReadout(feat_size=graph_feat_size,
+                                          num_timesteps=num_timesteps)
+
+		self.transform = nn.Linear(graph_feat_size, predictor_dim)
+
+	def forward(self, bg):
+		node_feats = bg.ndata.pop('h')
+		edge_feats = bg.edata.pop('e')
+
+		node_feats = self.gnn(bg, node_feats, edge_feats)
+		graph_feats = self.readout(bg, node_feats, False)
+		return self.transform(graph_feats)
