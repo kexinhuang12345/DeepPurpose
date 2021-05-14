@@ -351,6 +351,7 @@ class DGL_NeuralFP(nn.Module):
 		self.transform = nn.Linear(predictor_hidden_size * 2, predictor_dim)
 
 	def forward(self, bg):
+		bg = bg.to(device)        
 		feats = bg.ndata.pop('h') 
 		node_feats = self.gnn(bg, feats)
 		node_feats = self.node_to_graph(node_feats)
@@ -373,6 +374,7 @@ class DGL_GIN_AttrMasking(nn.Module):
 		self.transform = nn.Linear(300, predictor_dim)
 
 	def forward(self, bg):
+		bg = bg.to(device)                
 		node_feats = [
 			bg.ndata.pop('atomic_number'),
 			bg.ndata.pop('chirality_type')
@@ -400,6 +402,7 @@ class DGL_GIN_ContextPred(nn.Module):
 		self.transform = nn.Linear(300, predictor_dim)
 
 	def forward(self, bg):
+		bg = bg.to(device)                
 		node_feats = [
 			bg.ndata.pop('atomic_number'),
 			bg.ndata.pop('chirality_type')
@@ -432,6 +435,7 @@ class DGL_AttentiveFP(nn.Module):
 		self.transform = nn.Linear(graph_feat_size, predictor_dim)
 
 	def forward(self, bg):
+		bg = bg.to(device)                
 		node_feats = bg.ndata.pop('h')
 		edge_feats = bg.edata.pop('e')
 
