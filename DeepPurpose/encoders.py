@@ -310,12 +310,136 @@ class MPNN(nn.Sequential):
 		return output 
 
 
+class DGL_GCN(nn.Module):
+	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gcn_predictor.py#L16
+	def __init__(self, in_feats, hidden_feats=None, activation=None, predictor_dim=None):
+		super(DGL_GCN, self).__init__()
+		from dgllife.model.gnn.gcn import GCN
+		from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
+
+		self.gnn = GCN(in_feats=in_feats,
+						hidden_feats=hidden_feats,
+						activation=activation
+						)
+		gnn_out_feats = self.gnn.hidden_feats[-1]
+		self.readout = WeightedSumAndMax(gnn_out_feats)
+		self.transform = nn.Linear(self.gnn.hidden_feats[-1] * 2, predictor_dim)
+
+	def forward(self, bg):
+		bg = bg.to(device)
+		feats = bg.ndata.pop('h') 
+		node_feats = self.gnn(bg, feats)
+		graph_feats = self.readout(bg, node_feats)
+		return self.transform(graph_feats)
+
+class DGL_NeuralFP(nn.Module):
+	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/gat_predictor.py
+	def __init__(self, in_feats, hidden_feats=None, max_degree = None, activation=None, predictor_hidden_size = None, predictor_activation = None, predictor_dim=None):
+		super(DGL_NeuralFP, self).__init__()
+		from dgllife.model.gnn.nf import NFGNN
+		from dgllife.model.readout.sum_and_max import SumAndMax
+
+		self.gnn = NFGNN(in_feats=in_feats,
+						hidden_feats=hidden_feats,
+						max_degree=max_degree,
+						activation=activation
+						)
+		gnn_out_feats = self.gnn.gnn_layers[-1].out_feats
+		self.node_to_graph = nn.Linear(gnn_out_feats, predictor_hidden_size)
+		self.predictor_activation = predictor_activation
+
+		self.readout = SumAndMax()
+		self.transform = nn.Linear(predictor_hidden_size * 2, predictor_dim)
+
+	def forward(self, bg):
+		bg = bg.to(device)        
+		feats = bg.ndata.pop('h') 
+		node_feats = self.gnn(bg, feats)
+		node_feats = self.node_to_graph(node_feats)
+		graph_feats = self.readout(bg, node_feats)
+		graph_feats = self.predictor_activation(graph_feats)
+		return self.transform(graph_feats)
 
 
+class DGL_GIN_AttrMasking(nn.Module):
+	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
+	def __init__(self, predictor_dim=None):
+		super(DGL_GIN_AttrMasking, self).__init__()
+		from dgllife.model import load_pretrained
+		from dgl.nn.pytorch.glob import AvgPooling
+
+		## this is fixed hyperparameters as it is a pretrained model
+		self.gnn = load_pretrained('gin_supervised_masking')
+
+		self.readout = AvgPooling()
+		self.transform = nn.Linear(300, predictor_dim)
+
+	def forward(self, bg):
+		bg = bg.to(device)                
+		node_feats = [
+			bg.ndata.pop('atomic_number'),
+			bg.ndata.pop('chirality_type')
+		]
+		edge_feats = [
+			bg.edata.pop('bond_type'),
+			bg.edata.pop('bond_direction_type')
+		]
+
+		node_feats = self.gnn(bg, node_feats, edge_feats)
+		graph_feats = self.readout(bg, node_feats)
+		return self.transform(graph_feats)
+
+class DGL_GIN_ContextPred(nn.Module):
+	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
+	def __init__(self, predictor_dim=None):
+		super(DGL_GIN_ContextPred, self).__init__()
+		from dgllife.model import load_pretrained
+		from dgl.nn.pytorch.glob import AvgPooling
+
+		## this is fixed hyperparameters as it is a pretrained model
+		self.gnn = load_pretrained('gin_supervised_contextpred')
+
+		self.readout = AvgPooling()
+		self.transform = nn.Linear(300, predictor_dim)
+
+	def forward(self, bg):
+		bg = bg.to(device)                
+		node_feats = [
+			bg.ndata.pop('atomic_number'),
+			bg.ndata.pop('chirality_type')
+		]
+		edge_feats = [
+			bg.edata.pop('bond_type'),
+			bg.edata.pop('bond_direction_type')
+		]
+
+		node_feats = self.gnn(bg, node_feats, edge_feats)
+		graph_feats = self.readout(bg, node_feats)
+		return self.transform(graph_feats)
 
 
+class DGL_AttentiveFP(nn.Module):
+	## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/python/dgllife/model/model_zoo/attentivefp_predictor.py#L17
+	def __init__(self, node_feat_size, edge_feat_size, num_layers = 2, num_timesteps = 2, graph_feat_size = 200, predictor_dim=None):
+		super(DGL_AttentiveFP, self).__init__()
+		from dgllife.model.gnn import AttentiveFPGNN
+		from dgllife.model.readout import AttentiveFPReadout
 
+		self.gnn = AttentiveFPGNN(node_feat_size=node_feat_size,
+                                  edge_feat_size=edge_feat_size,
+                                  num_layers=num_layers,
+                                  graph_feat_size=graph_feat_size)
 
+		self.readout = AttentiveFPReadout(feat_size=graph_feat_size,
+                                          num_timesteps=num_timesteps)
 
+		self.transform = nn.Linear(graph_feat_size, predictor_dim)
 
+	def forward(self, bg):
+		bg = bg.to(device)                
+		node_feats = bg.ndata.pop('h')
+		edge_feats = bg.edata.pop('e')
 
+		node_feats = self.gnn(bg, node_feats, edge_feats)
+		graph_feats = self.readout(bg, node_feats, False)
+		return self.transform(graph_feats)

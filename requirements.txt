@@ -11,3 +11,4 @@ subword-nmt
 lifelines
 prettytable
 tensorboard
+dgllife
