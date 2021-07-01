@@ -419,8 +419,7 @@ class DBTA:
             elif self.drug_encoding in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred',
                                         'DGL_AttentiveFP']:
                 params_test['collate_fn'] = dgl_collate_func
-            testing_generator = data.DataLoader(
-                data_process_loader(test.index.values, test.Label.values, test, **self.config), **params_test)
+            testing_generator = data.DataLoader(info, **params_test)
 
         # early stopping
         if self.binary:
@@ -442,46 +441,43 @@ class DBTA:
         writer = SummaryWriter()
         t_start = time()
         iteration_loss = 0
+
         for epo in range(train_epoch):
-            for i, (v_d, v_p, label) in enumerate(training_generator):
-                if self.target_encoding == 'Transformer':
-                    v_p = v_p
-                else:
-                    v_p = v_p.float().to(self.device)
-                if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking',
-                                          'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
-                    v_d = v_d
-                else:
-                    v_d = v_d.float().to(self.device)
-                # score = self.model(v_d, v_p.float().to(self.device))
+            with tqdm(enumerate(training_generator), total=training_generator.__len__()) as tepoch:
+                for i, (v_d, v_p, label) in tepoch:
+                    tepoch.set_description(f"Epoch {epo + 1}")
+                    if self.target_encoding == 'Transformer':
+                        v_p = v_p
+                    else:
+                        v_p = v_p.float().to(self.device)
+                    if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking',
+                                              'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+                        v_d = v_d
+                    else:
+                        v_d = v_d.float().to(self.device)
+                    # score = self.model(v_d, v_p.float().to(self.device))
+                    score = self.model(v_d, v_p)
+                    label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
 
-                score = self.model(v_d, v_p)
-                label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
+                    if self.binary:
+                        loss_fct = torch.nn.BCELoss()
+                        m = torch.nn.Sigmoid()
+                        n = torch.squeeze(m(score), 1)
+                        loss = loss_fct(n, label)
+                    else:
+                        loss_fct = torch.nn.MSELoss()
+                        n = torch.squeeze(score, 1)
+                        loss = loss_fct(n, label)
+                    loss_history.append(loss.item())
+                    writer.add_scalar("Loss/train", loss.item(), iteration_loss)
+                    iteration_loss += 1
 
-                if self.binary:
-                    loss_fct = torch.nn.BCELoss()
-                    m = torch.nn.Sigmoid()
-                    n = torch.squeeze(m(score), 1)
-                    loss = loss_fct(n, label)
-                else:
-                    loss_fct = torch.nn.MSELoss()
-                    n = torch.squeeze(score, 1)
-                    loss = loss_fct(n, label)
-                loss_history.append(loss.item())
-                writer.add_scalar("Loss/train", loss.item(), iteration_loss)
-                iteration_loss += 1
-
-                opt.zero_grad()
-                loss.backward()
-                opt.step()
-
-                if verbose:
-                    if (i % 100 == 0):
-                        t_now = time()
-                        print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
-                              ' with loss ' + str(loss.cpu().detach().numpy())[:7] + \
-                              ". Total time " + str(int(t_now - t_start) / 3600)[:7] + " hours")
-            ### record total run time
+                    opt.zero_grad()
+                    loss.backward()
+                    opt.step()
+                    t_now = time()
+                    tepoch.set_postfix(loss=loss.cpu().detach().numpy(),
+                                       total_time=str(int(t_now - t_start) / 3600)[:7])
 
             if val is not None:
                 ##### validate, select the best model up to now

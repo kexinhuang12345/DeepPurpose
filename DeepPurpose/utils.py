@@ -10,7 +10,7 @@ import torch
 from torch.utils import data
 from torch.autograd import Variable
 import torch.nn.functional as F
-
+from tqdm import tqdm
 try:
     from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
 except:
@@ -668,20 +668,23 @@ class data_process_loader(data.Dataset):
             self.edge_featurizer = PretrainBondFeaturizer()
             from functools import partial
             self.fc = partial(smiles_to_bigraph, add_self_loop=True)
-        if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_GIN_AttrMasking',
-                                            'DGL_GIN_ContextPred']:
-            for row in df.iterrows():
-                print(row[0])
-                v_d = self.fc(smiles=row[1]['SMILES'], node_featurizer=self.node_featurizer,
-                              edge_featurizer=self.edge_featurizer)
-                if v_d is not None:
-                    self.drug_graphs.append(v_d)
-                else:
-                    self.df.drop(row[0], axis=0, inplace=True)
 
-            self.df.reset_index(inplace=True)
-            self.labels = df['Label']
-            self.list_IDs = df.index.values
+        if self.config['high_memory']:
+            if self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_AttentiveFP', 'DGL_GIN_AttrMasking',
+                                                'DGL_GIN_ContextPred']:
+                print("-- Generating Graphs")
+                with tqdm(self.df.iterrows(), total=len(self.df.index)) as t:
+                    for row in t:
+                        v_d = self.fc(smiles=row[1]['SMILES'], node_featurizer=self.node_featurizer,
+                                      edge_featurizer=self.edge_featurizer)
+                        if v_d is not None:
+                            self.drug_graphs.append(v_d)
+                        else:
+                            self.df.drop(row[0], axis=0, inplace=True)
+
+                self.df.reset_index(drop=True, inplace=True)
+                self.labels = df['Label']
+                self.list_IDs = df.index.values
 
     def __len__(self):
         'Denotes the total number of samples'
@@ -695,7 +698,10 @@ class data_process_loader(data.Dataset):
             v_d = drug_2_embed(v_d)
         elif self.config['drug_encoding'] in ['DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred',
                                               'DGL_AttentiveFP']:
-            v_d = self.drug_graphs[index]
+            if self.config['high_memory']:
+                v_d = self.drug_graphs[index]
+            else:
+                v_d = self.fc(smiles=v_d, node_featurizer=self.node_featurizer, edge_featurizer=self.edge_featurizer)
         v_p = self.df.iloc[index]['target_encoding']
         if self.config['target_encoding'] == 'CNN' or self.config['target_encoding'] == 'CNN_RNN':
             v_p = protein_2_embed(v_p)
@@ -867,6 +873,7 @@ def generate_config(drug_encoding=None, target_encoding=None,
                     test_every_X_epoch=20,
                     LR=1e-4,
                     decay=0,
+                    high_memory=True,
                     transformer_emb_size_drug=128,
                     transformer_intermediate_size_drug=512,
                     transformer_num_attention_heads_drug=8,
@@ -916,8 +923,18 @@ def generate_config(drug_encoding=None, target_encoding=None,
                    'result_folder': result_folder,
                    'binary': False,
                    'num_workers': num_workers,
-                   'cuda_id': cuda_id
+                   'cuda_id': cuda_id,
+                   'high_memory': True,
                    }
+
+    from psutil import virtual_memory
+    mem = virtual_memory()
+    base_config['high_memory'] = high_memory
+    # if system memory is > 12 gb enter high memory mode
+    THRESHOLD = 12 * 1024 * 1024 * 1024
+    if mem.available <= THRESHOLD:
+        base_config['high_memory'] = False
+
     if not os.path.exists(base_config['result_folder']):
         os.makedirs(base_config['result_folder'])
 

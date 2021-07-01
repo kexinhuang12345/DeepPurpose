@@ -13,3 +13,4 @@ prettytable
 tensorboard
 ax-platform
 dgllife
+psutil

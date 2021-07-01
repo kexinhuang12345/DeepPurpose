@@ -370,6 +370,10 @@ class DGL_NeuralFP(nn.Module):
         return self.transform(graph_feats)
 
 
+class DGL_BranchGCN(nn.Module):
+    pass
+
+
 class DGL_GIN_AttrMasking(nn.Module):
     ## adapted from https://github.com/awslabs/dgl-lifesci/blob/2fbf5fd6aca92675b709b6f1c3bc3c6ad5434e96/examples/property_prediction/moleculenet/utils.py#L76
     def __init__(self, predictor_dim=None):
