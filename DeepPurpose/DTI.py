@@ -221,6 +221,14 @@ def virtual_screening(X_repurpose, target, model, drug_names=None, target_names=
 
 def dgl_collate_func(x):
     d, p, y = zip(*x)
+    d = list(d)
+    p = list(p)
+    y = list(y)
+    for idx, item in enumerate(d):
+        if item is None:
+            d.pop(idx)
+            p.pop(idx)
+            y.pop(idx)
     import dgl
     d = dgl.batch(d)
     return d, torch.tensor(p), torch.tensor(y)
