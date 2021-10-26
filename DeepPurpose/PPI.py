@@ -353,14 +353,13 @@ class PPI_Model:
 			pd.DataFrame
 		'''
 		print('predicting...')
-		info = data_process_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		self.model.to(device)
+		info = data_process_PPI_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
 				'num_workers': self.config['num_workers'],
 				'drop_last': False,
 				'sampler':SequentialSampler(info)}
-
 		generator = data.DataLoader(info, **params)
 
 		score = self.test_(generator, self.model, repurposing_mode = True)

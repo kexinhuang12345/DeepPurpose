@@ -368,7 +368,7 @@ class DDI_Model:
 			pd.DataFrame
 		'''
 		print('predicting...')
-		info = data_process_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
+		info = data_process_DDI_loader(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		self.model.to(device)
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
