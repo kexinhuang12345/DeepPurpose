@@ -130,12 +130,22 @@ def repurpose(X_repurpose, model, drug_names = None,
 					print('checkout ' + fo + ' for the whole list')
 					break
 	return y_pred
- 
+
+
 def dgl_collate_func(x):
-	x, y = zip(*x)
-	import dgl
-	x = dgl.batch(x)
-	return x, torch.tensor(y)
+    d, p, y = zip(*x)
+    d = list(d)
+    p = list(p)
+    y = list(y)
+    for idx, item in enumerate(d):
+        if item is None:
+            d.pop(idx)
+            p.pop(idx)
+            y.pop(idx)
+    import dgl
+    d = dgl.batch(d)
+    return d, torch.tensor(p), torch.tensor(y)
+
 
 class Property_Prediction:
 	'''
@@ -331,40 +341,36 @@ class Property_Prediction:
 			print('--- Go for Training ---')
 		t_start = time() 
 		for epo in range(train_epoch):
-			for i, (v_d, label) in enumerate(training_generator):
-				
-				if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
-					v_d = v_d
-				else:
-					v_d = v_d.float().to(self.device)                
-					#score = self.model(v_d, v_p.float().to(self.device))
-               
-				score = self.model(v_d)
-				label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
+			with tqdm(enumerate(training_generator), total=training_generator.__len__()) as tepoch:
+				tepoch.set_description(f"Epoch {epo + 1}")
+				for i, (v_d, v_p, label) in tepoch:
+					if self.drug_encoding in ["MPNN", 'Transformer', 'DGL_GCN', 'DGL_NeuralFP', 'DGL_GIN_AttrMasking', 'DGL_GIN_ContextPred', 'DGL_AttentiveFP']:
+						v_d = v_d
+					else:
+						v_d = v_d.float().to(self.device)
+						#score = self.model(v_d, v_p.float().to(self.device))
 
-				if self.binary:
-					loss_fct = torch.nn.BCELoss()
-					m = torch.nn.Sigmoid()
-					n = torch.squeeze(m(score), 1)
-					loss = loss_fct(n, label)
-				else:
-					loss_fct = torch.nn.MSELoss()
-					n = torch.squeeze(score, 1)
-					loss = loss_fct(n, label)
-				loss_history.append(loss.item())
+					score = self.model(v_d)
+					label = Variable(torch.from_numpy(np.array(label)).float()).to(self.device)
 
-				opt.zero_grad()
-				loss.backward()
-				opt.step()
+					if self.binary:
+						loss_fct = torch.nn.BCELoss()
+						m = torch.nn.Sigmoid()
+						n = torch.squeeze(m(score), 1)
+						loss = loss_fct(n, label)
+					else:
+						loss_fct = torch.nn.MSELoss()
+						n = torch.squeeze(score, 1)
+						loss = loss_fct(n, label)
+					loss_history.append(loss.item())
 
-				if verbose:
-					if (i % 100 == 0):
-						t_now = time()
-						if verbose:
-							print('Training at Epoch ' + str(epo + 1) + ' iteration ' + str(i) + \
-							' with loss ' + str(loss.cpu().detach().numpy())[:7] +\
-							". Total time " + str(int(t_now - t_start)/3600)[:7] + " hours") 
-						### record total run time
+					opt.zero_grad()
+					loss.backward()
+					opt.step()
+
+					t_now = time()
+					tepoch.set_postfix(loss=loss.cpu().detach().numpy(),
+									   total_time=str(int(t_now - t_start) / 3600)[:7])
 
 			##### validate, select the best model up to now 
 			with torch.set_grad_enabled(False):

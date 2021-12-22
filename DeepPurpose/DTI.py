@@ -168,7 +168,7 @@ def virtual_screening(X_repurpose, target, model, drug_names=None, target_names=
 
     with open(fo, 'w') as fout:
         print('virtual screening...')
-        df_data = data_process_repurpose_virtual_screening(X_repurpose, target, \
+        df_data = data_process_repurpose_virtual_screening(X_repurpose, target,
                                                            model.drug_encoding, model.target_encoding,
                                                            'virtual screening')
         y_pred = model.predict(df_data)
@@ -452,8 +452,8 @@ class DBTA:
 
         for epo in range(train_epoch):
             with tqdm(enumerate(training_generator), total=training_generator.__len__()) as tepoch:
+                tepoch.set_description(f"Epoch {epo + 1}")
                 for i, (v_d, v_p, label) in tepoch:
-                    tepoch.set_description(f"Epoch {epo + 1}")
                     if self.target_encoding == 'Transformer':
                         v_p = v_p
                     else:
