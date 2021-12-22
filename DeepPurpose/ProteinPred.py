@@ -342,7 +342,7 @@ class Protein_Prediction:
 		'''
 		if verbose:
 			print('predicting...')
-		info = data_process_loader_Property_Prediction(df_data.index.values, df_data.Label.values, df_data, **self.config)
+		info = data_process_loader_Protein_Prediction(df_data.index.values, df_data.Label.values, df_data, **self.config)
 		self.model.to(device)
 		params = {'batch_size': self.config['batch_size'],
 				'shuffle': False,
