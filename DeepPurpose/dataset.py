@@ -260,7 +260,8 @@ def load_process_DAVIS(path = './data', binary = False, convert_to_log = True, t
 	if not os.path.exists(path):
 	    os.makedirs(path)
 
-	url = 'https://drive.google.com/uc?export=download&id=14h-0YyHN8lxuc0KV3whsaSaA-4KSmiVN'
+	# url = 'https://drive.google.com/uc?export=download&id=14h-0YyHN8lxuc0KV3whsaSaA-4KSmiVN'
+	url = 'https://github.com/futianfan/DeepPurpose_Data/blob/main/DAVIS.zip?raw=true'
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
@@ -307,7 +308,8 @@ def load_process_KIBA(path = './data', binary = False, threshold = 9):
 	if not os.path.exists(path):
 	    os.makedirs(path)
 
-	url = 'https://drive.google.com/uc?export=download&id=1fb3ZI-3_865OuRMWNMzLPnbLm9CktM44'
+	# url = 'https://drive.google.com/uc?export=download&id=1fb3ZI-3_865OuRMWNMzLPnbLm9CktM44'
+	url = 'https://github.com/futianfan/DeepPurpose_Data/blob/main/KIBA.zip?raw=true'
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
@@ -358,7 +360,8 @@ def load_AID1706_SARS_CoV_3CL(path = './data', binary = True, threshold = 15, ba
 	url = 'https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?query=download&record_type=datatable&actvty=all&response_type=save&aid=1706'
 	saved_path_data = wget.download(url, path)
 
-	url = 'https://drive.google.com/uc?export=download&id=1eipPaFrg-mVULoBhyp2kvEemi2WhDxsM'
+	# url = 'https://drive.google.com/uc?export=download&id=1eipPaFrg-mVULoBhyp2kvEemi2WhDxsM'
+	url = 'https://github.com/futianfan/DeepPurpose_Data/blob/main/AID1706_training_conversions.csv?raw=true'
 	saved_path_conversion = wget.download(url, path)
 
 	df_data = pd.read_csv(saved_path_data)
