@@ -136,7 +136,7 @@ X_drug, X_target, y  = process_BindingDB(download_BindingDB(SAVE_PATH),
 					 convert_to_log = True)
 
 # Type in the encoding names for drug/protein.
-drug_encoding, target_encoding = 'MPNN', 'Transformer'
+drug_encoding, target_encoding = 'CNN', 'Transformer'
 
 # Data processing, here we select cold protein split setup.
 train, val, test = data_process(X_drug, X_target, y, 
