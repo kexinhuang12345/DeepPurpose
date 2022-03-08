@@ -3,7 +3,7 @@ pandas
 tqdm
 scikit-learn
 wget
-torch
+torch==1.10.2+cu113
 matplotlib
 requests
 pandas-flavor
@@ -13,3 +13,4 @@ prettytable
 tensorboard
 ax-platform
 dgllife
+psutil
