@@ -170,7 +170,8 @@ def download_BindingDB(path = './data'):
 	if not os.path.exists(path):
 	    os.makedirs(path)
 
-	url = 'https://www.bindingdb.org/bind/downloads/BindingDB_All_2021m11.tsv.zip'
+	url = " https://www.bindingdb.org/rwd/bind/chemsearch/marvin/SDFdownload.jsp?download_file=/bind/downloads/BindingDB_All_2022m7.tsv.zip"	
+	## url = 'https://www.bindingdb.org/bind/downloads/BindingDB_All_2021m11.tsv.zip'
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
