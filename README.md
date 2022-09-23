@@ -255,7 +255,7 @@ from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
 # load DB Binary Data
-X_targets, X_targets_, y = read_file_training_dataset_protein_proteins_pairs()
+X_targets, X_targets_, y = read_file_training_dataset_protein_protein_pairs()
 
 target_encoding = 'CNN'
 train, val, test = data_process(X_target = X_targets, X_target_ = X_targets_, y = y, 
@@ -553,7 +553,7 @@ Then, use
 
 ```python 
 from DeepPurpose import dataset
-X_drug, X_target, y = dataset.read_file_training_dataset_protein_proteins_pairs(PATH)
+X_drug, X_target, y = dataset.read_file_training_dataset_protein_protein_pairs(PATH)
 ```
 
 For drug repurposing library:
