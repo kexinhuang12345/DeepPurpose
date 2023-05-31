@@ -5,6 +5,8 @@ from zipfile import ZipFile
 from DeepPurpose.utils import *
 import json
 import os
+import requests
+import re
 
 '''
 Acknowledgement:
@@ -170,8 +172,13 @@ def download_BindingDB(path = './data'):
 	if not os.path.exists(path):
 	    os.makedirs(path)
 
-	url = " https://www.bindingdb.org/rwd/bind/chemsearch/marvin/SDFdownload.jsp?download_file=/bind/downloads/BindingDB_All_2022m7.tsv.zip"	
-	## url = 'https://www.bindingdb.org/bind/downloads/BindingDB_All_2021m11.tsv.zip'
+	try:
+	    url = "https://www.bindingdb.org/bind/downloads/" + [url.split('/')[-1] for url in re.findall(
+		    r'(/rwd/bind/chemsearch/marvin/SDFdownload.jsp\?download_file=/bind/downloads/BindingDB_All_.*?\.tsv\.zip)',
+			requests.get("https://www.bindingdb.org/rwd/bind/chemsearch/marvin/Download.jsp").text)][0]
+	except Exception:
+	    print("Failed to retrieve current URL for BindingDB, falling back on hard-coded URL")
+	    url = "https://www.bindingdb.org/bind/downloads/BindingDB_All_202305.tsv.zip"
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
