@@ -1,3 +1,4 @@
+rdkit-pypi
 numpy
 pandas
 tqdm
