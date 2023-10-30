@@ -233,7 +233,7 @@ from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
 # load DB Binary Data
-X_drugs, X_drugs_, y = read_file_training_dataset_drug_drug_pairs()
+X_drugs, X_drugs_, y = read_file_training_dataset_drug_drug_pairs("toy_data/ddi.txt")
 
 drug_encoding = 'rdkit_2d_normalized'
 train, val, test = data_process(X_drug = X_drugs, X_drug_ = X_drugs_, y = y, 
@@ -267,7 +267,7 @@ from DeepPurpose.utils import *
 from DeepPurpose.dataset import *
 
 # load DB Binary Data
-X_targets, X_targets_, y = read_file_training_dataset_protein_protein_pairs()
+X_targets, X_targets_, y = read_file_training_dataset_protein_protein_pairs("toy_data/ppi.txt")
 
 target_encoding = 'CNN'
 train, val, test = data_process(X_target = X_targets, X_target_ = X_targets_, y = y, 
