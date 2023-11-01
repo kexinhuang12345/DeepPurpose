@@ -259,7 +259,7 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, \
 		
 	df_want = df_want[['BindingDB Reactant_set_id', 'Ligand InChI', 'Ligand SMILES',\
 					'PubChem CID', 'UniProt (SwissProt) Primary ID of Target Chain',\
-					'BindingDB Target Chain  Sequence'] + idx_str]
+					'BindingDB Target Chain Sequence'] + idx_str]
 	
 	for y in idx_str:
 		df_want[y] = df_want[y].str.replace('>', '')
@@ -274,7 +274,7 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, \
 							'Ligand InChI':'InChI',
 							'PubChem CID':'PubChem_ID',
 							'UniProt (SwissProt) Primary ID of Target Chain':'UniProt_ID',
-							'BindingDB Target Chain  Sequence': 'Target Sequence'},
+							'BindingDB Target Chain Sequence': 'Target Sequence'},
 							inplace=True)
 
 	# have at least uniprot or pubchem ID
