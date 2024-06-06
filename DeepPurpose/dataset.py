@@ -227,7 +227,7 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, \
 		print('Loading Dataset from the pandas input...')
 	elif path is not None:
 		print('Loading Dataset from path...')
-		df = pd.read_csv(path, sep = '\t', error_bad_lines=False)
+		df = pd.read_csv(path, sep = '\t', on_bad_lines= "skip")
 	else:
 		ValueError("Either 'df' of 'path' must be provided")
 
