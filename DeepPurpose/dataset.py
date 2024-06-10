@@ -178,14 +178,14 @@ def download_BindingDB(path = './data'):
 			requests.get("https://www.bindingdb.org/rwd/bind/chemsearch/marvin/Download.jsp").text)][0]
 	except Exception:
 	    print("Failed to retrieve current URL for BindingDB, falling back on hard-coded URL")
-	    url = "https://www.bindingdb.org/bind/downloads/BindingDB_All_202305.tsv.zip"
+	    url = "https://www.bindingdb.org/bind/downloads/BindingDB_All_202406_tsv.zip"
 	saved_path = wget.download(url, path)
 
 	print('Beginning to extract zip file...')
 	with ZipFile(saved_path, 'r') as zip:
 	    zip.extractall(path = path)
 	    print('Done!')
-	path = path + '/BindingDB_All.tsv'
+	path = path + '/BindingDB_All_202406.tsv'
 	return path
 
 
@@ -259,7 +259,7 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, \
 		
 	df_want = df_want[['BindingDB Reactant_set_id', 'Ligand InChI', 'Ligand SMILES',\
 					'PubChem CID', 'UniProt (SwissProt) Primary ID of Target Chain',\
-					'BindingDB Target Chain  Sequence'] + idx_str]
+					'BindingDB Target Chain Sequence'] + idx_str]
 	
 	for y in idx_str:
 		df_want[y] = df_want[y].str.replace('>', '')
@@ -274,7 +274,7 @@ def process_BindingDB(path = None, df = None, y = 'Kd', binary = False, \
 							'Ligand InChI':'InChI',
 							'PubChem CID':'PubChem_ID',
 							'UniProt (SwissProt) Primary ID of Target Chain':'UniProt_ID',
-							'BindingDB Target Chain  Sequence': 'Target Sequence'},
+							'BindingDB Target Chain Sequence': 'Target Sequence'},
 							inplace=True)
 
 	# have at least uniprot or pubchem ID
