@@ -77,9 +77,8 @@ We recommend to install it locally since Binder needs to be refreshed every time
 ```bash
 conda create -n DeepPurpose python=3.6
 conda activate DeepPurpose
-conda install -c conda-forge notebook
-pip install git+https://github.com/bp-kelley/descriptastorus 
-pip install DeepPurpose
+pip install git+https://github.com/bp-kelley/descriptastorus@2.4.0 
+pip install git+https://github.com/sniperyyc/DeepPurpose
 ```
 
 ### Build from Source
@@ -88,7 +87,7 @@ First time:
 ```bash
 git clone https://github.com/kexinhuang12345/DeepPurpose.git ## Download code repository
 cd DeepPurpose ## Change directory to DeepPurpose
-conda env create -f environment.yml  ## Build virtual environment with all packages installed using conda
+pip install . ## Install DeepPurpose
 conda activate DeepPurpose ## Activate conda environment (use "source activate DeepPurpose" for anaconda 4.4 or earlier) 
 jupyter notebook ## open the jupyter notebook with the conda env
 
